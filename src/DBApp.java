@@ -434,801 +434,813 @@ public class DBApp {
     private Scanner scan;
 
     // connection and statement variables
-    private Connection connection;
-    private Statement statement;
-    private ResultSet rSet;
+    private Connection conn;
 
     public DBApp() {
         scan = new Scanner(System.in);
-        connection = null;
-        statement = null;
-        rSet = null;
+        conn = null;
     }
 
     public void search() {
         // Ask the user which record they want to edit
         System.out.println(
-                "Enter the type of the record to be searched for (Media, Person, or Creator): ");
-        String itemType = scan.nextLine().toLowerCase();
+                "Enter the type of the record to be searched for (Album, Track, Interview, Movie, Audiobook, AudiobookChapter, PhysicalBook, PhysicalBookChapter, Actor, Artist, Director, or Writer): ");
+        String type = scan.nextLine().toLowerCase();
 
-        switch (itemType) {
-            case "media":
-                searchForMedia();
+        switch (type) {
+            case "album":
+            case "track":
+            case "interview":
+            case "movie":
+            case "audiobook":
+            case "audiobookchapter":
+            case "physicalbookchapter":
+            case "physicalbook":
+                // TODO: search for item
                 break;
-            case "person":
-                searchForPerson();
-                break;
-            case "creator":
-                searchForCreator();
+            case "actor":
+            case "director":
+            case "artist":
+            case "writer":
+                // TODO: search for creator
                 break;
             default:
                 // print invalid
-                System.out.println(
-                        "Invalid type: not Media, Person, or Creator");
-
+                System.out.println(type + " is an Invalid input");
         }
     }
 
-    public void searchForCreator() {
-        System.out.println("Enter the name of a creator to search for: ");
-        String nameOfCreator = scan.nextLine();
-        creators.searchForCreator(nameOfCreator);
-    }
+    // public void searchForCreator() {
+    // System.out.println("Enter the name of a creator to search for: ");
+    // String nameOfCreator = scan.nextLine();
+    // creators.searchForCreator(nameOfCreator);
+    // }
 
-    public void searchForPerson() {
-        System.out.println("Enter the name of a person to search for: ");
-        String nameOfPerson = scan.nextLine();
-        people.searchForPerson(nameOfPerson);
-    }
+    // public void searchForPerson() {
+    // System.out.println("Enter the name of a person to search for: ");
+    // String nameOfPerson = scan.nextLine();
+    // people.searchForPerson(nameOfPerson);
+    // }
 
-    public void searchForMedia() {
-        // ask the user which record search for and find it
-        System.out.println("Enter the title of the item you are searching for: ");
-        // get the title
-        String titleSearchingFor = scan.nextLine();
-        // go through the items and print out the ones with a matching title
-        boolean found = false;
-        for (Item i : items) {
-            if (i.title.equals(titleSearchingFor)) {
-                found = true;
-                // print out the record
-                System.out.println("Title: " + i.title + "\nYear Released: " + i.yearReleased + "\nGenre: " + i.genre
-                        + "\nType: " + i.type + "\nType" + i.active + "\nItemID: " + i.itemID);
-            }
-        }
-        if (!found)
-            System.out.println("Record not found");
-    }
+    // public void searchForMedia() {
+    // // ask the user which record search for and find it
+    // System.out.println("Enter the title of the item you are searching for: ");
+    // // get the title
+    // String titleSearchingFor = scan.nextLine();
+    // // go through the items and print out the ones with a matching title
+    // boolean found = false;
+    // for (Item i : items) {
+    // if (i.title.equals(titleSearchingFor)) {
+    // found = true;
+    // // print out the record
+    // System.out.println("Title: " + i.title + "\nYear Released: " + i.yearReleased
+    // + "\nGenre: " + i.genre
+    // + "\nType: " + i.type + "\nType" + i.active + "\nItemID: " + i.itemID);
+    // }
+    // }
+    // if (!found)
+    // System.out.println("Record not found");
+    // }
 
-    public Item editSearch(String title) {
-        // go through the items and print out the ones with a matching title
-        boolean found = false;
-        int count = 1;
+    // public Item editSearch(String title) {
+    // // go through the items and print out the ones with a matching title
+    // boolean found = false;
+    // int count = 1;
 
-        ArrayList<Item> possibleItems = new ArrayList<Item>();
-        while (!found) {
-            for (Item i : items) {
-                if (i.title.equals(title)) {
-                    found = true;
-                    // print out the record
-                    System.out.println(
-                            count + ". Title: " + i.title + "\nYear Released: " + i.yearReleased + "\nGenre: " + i.genre
-                                    + "\nType: " + i.type + "\nActive: " + i.active + "\nItemID: " + i.itemID);
-                    possibleItems.add(i);
-                }
-            }
-            if (!found) {
-                System.out.println("Record not found. Press q to quit, press anything else to try again.");
-                String userChoice = scan.nextLine();
-                if (userChoice.equals("q")) {
-                    return null;
-                } else {
-                    System.out.println("Enter the title of a record to be edited: ");
-                    String nameOfRecord = scan.nextLine();
-                    return editSearch(nameOfRecord);
-                }
-            }
-        }
+    // ArrayList<Item> possibleItems = new ArrayList<Item>();
+    // while (!found) {
+    // for (Item i : items) {
+    // if (i.title.equals(title)) {
+    // found = true;
+    // // print out the record
+    // System.out.println(
+    // count + ". Title: " + i.title + "\nYear Released: " + i.yearReleased +
+    // "\nGenre: " + i.genre
+    // + "\nType: " + i.type + "\nActive: " + i.active + "\nItemID: " + i.itemID);
+    // possibleItems.add(i);
+    // }
+    // }
+    // if (!found) {
+    // System.out.println("Record not found. Press q to quit, press anything else to
+    // try again.");
+    // String userChoice = scan.nextLine();
+    // if (userChoice.equals("q")) {
+    // return null;
+    // } else {
+    // System.out.println("Enter the title of a record to be edited: ");
+    // String nameOfRecord = scan.nextLine();
+    // return editSearch(nameOfRecord);
+    // }
+    // }
+    // }
 
-        System.out.println("Enter the number corresponding to the item that you would like to edit.");
-        String itemToEdit = scan.nextLine();
-        int numToEdit = Integer.parseInt(itemToEdit);
+    // System.out.println("Enter the number corresponding to the item that you would
+    // like to edit.");
+    // String itemToEdit = scan.nextLine();
+    // int numToEdit = Integer.parseInt(itemToEdit);
 
-        return possibleItems.get(numToEdit - 1);
-    }
+    // return possibleItems.get(numToEdit - 1);
+    // }
 
-    public static Item getItemInfo(String type, Scanner scan) {
-        // get everything we need
-        System.out.println("Enter the title:");
-        String title = scan.nextLine();
-        System.out.println("Enter the release year:");
-        int year = Integer.valueOf(scan.nextLine());
-        System.out.println("Enter the item genre:");
-        String genre = scan.nextLine();
+    // public static Item getItemInfo(String type, Scanner scan) {
+    // // get everything we need
+    // System.out.println("Enter the title:");
+    // String title = scan.nextLine();
+    // System.out.println("Enter the release year:");
+    // int year = Integer.valueOf(scan.nextLine());
+    // System.out.println("Enter the item genre:");
+    // String genre = scan.nextLine();
 
-        String response = " ";
-        boolean active = false;
-        while (!(response.equals("y") || response.equals("n"))) {
-            System.out.println("Is it in the inventory(n indicates its being ordered)? y/n");
-            response = scan.nextLine();
-            if (response.equals("y") || response.equals("Y"))
-                active = true;
-            if (!(response.equals("y") || response.equals("n") || response.equals("Y") || response.equals("N")))
-                System.out.println("Invalid input: enter y or n");
-        }
-        return new Item(title, year, genre, type, active);
-    }
+    // String response = " ";
+    // boolean active = false;
+    // while (!(response.equals("y") || response.equals("n"))) {
+    // System.out.println("Is it in the inventory(n indicates its being ordered)?
+    // y/n");
+    // response = scan.nextLine();
+    // if (response.equals("y") || response.equals("Y"))
+    // active = true;
+    // if (!(response.equals("y") || response.equals("n") || response.equals("Y") ||
+    // response.equals("N")))
+    // System.out.println("Invalid input: enter y or n");
+    // }
+    // return new Item(title, year, genre, type, active);
+    // }
 
-    public ArrayList<Item> addAlbum(Scanner scan) {
-        Item temp = getItemInfo("Track", scan);
+    // public ArrayList<Item> addAlbum(Scanner scan) {
+    // Item temp = getItemInfo("Track", scan);
 
-        System.out.println("Enter the number of tracks:");
-        int numSongs = Integer.valueOf(scan.nextLine());
-        System.out.println("Enter the number of minutes:");
-        int minutes = Integer.valueOf(scan.nextLine());
+    // System.out.println("Enter the number of tracks:");
+    // int numSongs = Integer.valueOf(scan.nextLine());
+    // System.out.println("Enter the number of minutes:");
+    // int minutes = Integer.valueOf(scan.nextLine());
 
-        Album albumToAdd = new Album(temp.title, temp.yearReleased, temp.genre, temp.active, numSongs, minutes);
-        // add the album to items
-        items.add(albumToAdd);
-        System.out.println(albumToAdd.title + " was added successfully");
-        return items;
-    }
+    // Album albumToAdd = new Album(temp.title, temp.yearReleased, temp.genre,
+    // temp.active, numSongs, minutes);
+    // // add the album to items
+    // items.add(albumToAdd);
+    // System.out.println(albumToAdd.title + " was added successfully");
+    // return items;
+    // }
 
-    public ArrayList<Item> addTrack(Scanner scan) {
-        Item temp = getItemInfo("Track", scan);
+    // public ArrayList<Item> addTrack(Scanner scan) {
+    // Item temp = getItemInfo("Track", scan);
 
-        System.out.println("Enter the number of minutes:");
-        int minutes = Integer.valueOf(scan.nextLine());
+    // System.out.println("Enter the number of minutes:");
+    // int minutes = Integer.valueOf(scan.nextLine());
 
-        Track newTrack = new Track(temp.title, temp.yearReleased, temp.genre, temp.active, minutes);
-        // add the album to items
-        items.add(newTrack);
-        System.out.println(newTrack.title + " was added successfully");
-        return items;
-    }
+    // Track newTrack = new Track(temp.title, temp.yearReleased, temp.genre,
+    // temp.active, minutes);
+    // // add the album to items
+    // items.add(newTrack);
+    // System.out.println(newTrack.title + " was added successfully");
+    // return items;
+    // }
 
-    public ArrayList<Item> addInterview(Scanner scan) {
-        Item temp = getItemInfo("Interview", scan);
+    // public ArrayList<Item> addInterview(Scanner scan) {
+    // Item temp = getItemInfo("Interview", scan);
 
-        System.out.println("Enter the number of minutes:");
-        int minutes = Integer.valueOf(scan.nextLine());
+    // System.out.println("Enter the number of minutes:");
+    // int minutes = Integer.valueOf(scan.nextLine());
 
-        Interview newInterview = new Interview(temp.title, temp.yearReleased, temp.genre, temp.active, minutes);
-        // add the album to items
-        items.add(newInterview);
-        System.out.println(newInterview.title + " was added successfully");
-        return items;
-    }
+    // Interview newInterview = new Interview(temp.title, temp.yearReleased,
+    // temp.genre, temp.active, minutes);
+    // // add the album to items
+    // items.add(newInterview);
+    // System.out.println(newInterview.title + " was added successfully");
+    // return items;
+    // }
 
-    public ArrayList<Item> addMovie(Scanner scan) {
-        Item temp = getItemInfo("Movie", scan);
+    // public ArrayList<Item> addMovie(Scanner scan) {
+    // Item temp = getItemInfo("Movie", scan);
 
-        System.out.println("Enter the runtime in minutes:");
-        int runtime = Integer.valueOf(scan.nextLine());
-        // TODO: add a while loop here for checking to make sure its valid rating
-        System.out.println("Enter the rating (PG, G, R, PG13, etc):");
-        ArrayList<String> ratings = new ArrayList<String>();
-        ratings.add("PG");
-        ratings.add("G");
-        ratings.add("PG13");
-        ratings.add("R");
-        ratings.add("NC-17");
-        String rating = scan.nextLine();
-        while (!ratings.contains(rating)) {
-            System.out.println("Rating not valid. Try again");
-            System.out.println("Enter the rating (PG, G, R, PG13, etc):");
-            rating = scan.nextLine();
-        }
+    // System.out.println("Enter the runtime in minutes:");
+    // int runtime = Integer.valueOf(scan.nextLine());
+    // // TODO: add a while loop here for checking to make sure its valid rating
+    // System.out.println("Enter the rating (PG, G, R, PG13, etc):");
+    // ArrayList<String> ratings = new ArrayList<String>();
+    // ratings.add("PG");
+    // ratings.add("G");
+    // ratings.add("PG13");
+    // ratings.add("R");
+    // ratings.add("NC-17");
+    // String rating = scan.nextLine();
+    // while (!ratings.contains(rating)) {
+    // System.out.println("Rating not valid. Try again");
+    // System.out.println("Enter the rating (PG, G, R, PG13, etc):");
+    // rating = scan.nextLine();
+    // }
 
-        Movie newMovie = new Movie(temp.title, temp.yearReleased, temp.genre, temp.active, runtime, rating);
-        // add the album to items
-        items.add(newMovie);
-        System.out.println(newMovie.title + " was added successfully");
-        return items;
-    }
+    // Movie newMovie = new Movie(temp.title, temp.yearReleased, temp.genre,
+    // temp.active, runtime, rating);
+    // // add the album to items
+    // items.add(newMovie);
+    // System.out.println(newMovie.title + " was added successfully");
+    // return items;
+    // }
 
-    public Audiobook addABChapters(Audiobook b, Scanner scan) {
-        int numChapters = b.numChapters;
-        for (int i = 1; i <= numChapters; i++) {
-            System.out.println("Enter chapter " + i + "'s title:");
-            String title = scan.nextLine();
-            System.out.println("Enter chapter " + i + "'s length in minutes:");
-            int length = Integer.valueOf(scan.nextLine());
-            // add the chapter to the book
-            b.chapters.add(new Chapter(title, length));
-        }
-        return b;
-    }
+    // public Audiobook addABChapters(Audiobook b, Scanner scan) {
+    // int numChapters = b.numChapters;
+    // for (int i = 1; i <= numChapters; i++) {
+    // System.out.println("Enter chapter " + i + "'s title:");
+    // String title = scan.nextLine();
+    // System.out.println("Enter chapter " + i + "'s length in minutes:");
+    // int length = Integer.valueOf(scan.nextLine());
+    // // add the chapter to the book
+    // b.chapters.add(new Chapter(title, length));
+    // }
+    // return b;
+    // }
 
-    public PhysicalBook addPBChapters(PhysicalBook b, Scanner scan) {
-        int numChapters = b.numChapters;
-        for (int i = 1; i <= numChapters; i++) {
-            System.out.println("Enter chapter " + i + "'s title:");
-            String title = scan.nextLine();
-            System.out.println("Enter chapter " + i + "'s length in pages:");
-            int length = Integer.valueOf(scan.nextLine());
-            // add the chapter to the book
-            b.chapters.add(new Chapter(title, length));
-        }
-        return b;
-    }
+    // public PhysicalBook addPBChapters(PhysicalBook b, Scanner scan) {
+    // int numChapters = b.numChapters;
+    // for (int i = 1; i <= numChapters; i++) {
+    // System.out.println("Enter chapter " + i + "'s title:");
+    // String title = scan.nextLine();
+    // System.out.println("Enter chapter " + i + "'s length in pages:");
+    // int length = Integer.valueOf(scan.nextLine());
+    // // add the chapter to the book
+    // b.chapters.add(new Chapter(title, length));
+    // }
+    // return b;
+    // }
 
-    public ArrayList<Item> addAudiobook(Scanner scan) {
-        Item temp = getItemInfo("Audiobook", scan);
+    // public ArrayList<Item> addAudiobook(Scanner scan) {
+    // Item temp = getItemInfo("Audiobook", scan);
 
-        System.out.println("Enter the number of chapters:");
-        int numChapters = Integer.valueOf(scan.nextLine());
-        System.out.println("Enter the number of minutes:");
-        int numMinutes = Integer.valueOf(scan.nextLine());
+    // System.out.println("Enter the number of chapters:");
+    // int numChapters = Integer.valueOf(scan.nextLine());
+    // System.out.println("Enter the number of minutes:");
+    // int numMinutes = Integer.valueOf(scan.nextLine());
 
-        Audiobook newAudiobook = new Audiobook(temp.title, temp.yearReleased, temp.genre, temp.active, numChapters,
-                numMinutes);
+    // Audiobook newAudiobook = new Audiobook(temp.title, temp.yearReleased,
+    // temp.genre, temp.active, numChapters,
+    // numMinutes);
 
-        // add all the chapters
-        newAudiobook = addABChapters(newAudiobook, scan);
+    // // add all the chapters
+    // newAudiobook = addABChapters(newAudiobook, scan);
 
-        // add the book to items
-        items.add(newAudiobook);
-        System.out.println(newAudiobook.title + " was added successfully");
-        return items;
-    }
+    // // add the book to items
+    // items.add(newAudiobook);
+    // System.out.println(newAudiobook.title + " was added successfully");
+    // return items;
+    // }
 
-    public ArrayList<Item> addPhysicalBook(Scanner scan) {
-        Item temp = getItemInfo("PhysicalBook", scan);
+    // public ArrayList<Item> addPhysicalBook(Scanner scan) {
+    // Item temp = getItemInfo("PhysicalBook", scan);
 
-        System.out.println("Enter the number of chapters:");
-        int numChapters = Integer.valueOf(scan.nextLine());
-        System.out.println("Enter the number of pages:");
-        int numPages = Integer.valueOf(scan.nextLine());
+    // System.out.println("Enter the number of chapters:");
+    // int numChapters = Integer.valueOf(scan.nextLine());
+    // System.out.println("Enter the number of pages:");
+    // int numPages = Integer.valueOf(scan.nextLine());
 
-        PhysicalBook newPhysicalBook = new PhysicalBook(temp.title, temp.yearReleased, temp.genre, temp.active,
-                numChapters, numPages);
+    // PhysicalBook newPhysicalBook = new PhysicalBook(temp.title,
+    // temp.yearReleased, temp.genre, temp.active,
+    // numChapters, numPages);
 
-        // add all the chapters
-        newPhysicalBook = addPBChapters(newPhysicalBook, scan);
+    // // add all the chapters
+    // newPhysicalBook = addPBChapters(newPhysicalBook, scan);
 
-        // add the book to items
-        items.add(newPhysicalBook);
-        System.out.println(newPhysicalBook.title + " was added successfully");
-        return items;
-    }
+    // // add the book to items
+    // items.add(newPhysicalBook);
+    // System.out.println(newPhysicalBook.title + " was added successfully");
+    // return items;
+    // }
 
-    public void addPerson() {
-        System.out.println("Enter the email:");
-        String email = scan.nextLine();
-        System.out.println("Enter the first name:");
-        String firstName = scan.nextLine();
-        System.out.println("Enter the last name:");
-        String lastName = scan.nextLine();
-        System.out.println("Enter the address:");
-        String address = scan.nextLine();
-        people.addPerson(email, firstName, lastName, address);
-    }
+    // public void addPerson() {
+    // System.out.println("Enter the email:");
+    // String email = scan.nextLine();
+    // System.out.println("Enter the first name:");
+    // String firstName = scan.nextLine();
+    // System.out.println("Enter the last name:");
+    // String lastName = scan.nextLine();
+    // System.out.println("Enter the address:");
+    // String address = scan.nextLine();
+    // people.addPerson(email, firstName, lastName, address);
+    // }
 
-    public void addCreator() {
-        System.out.println("Enter the name:");
-        String name = scan.nextLine();
-        System.out.println("Enter the dob:");
-        String dob = scan.nextLine();
-        System.out.println("Enter the type:");
-        String type = scan.nextLine();
-        creators.addCreator(name, dob, type);
-    }
+    // public void addCreator() {
+    // System.out.println("Enter the name:");
+    // String name = scan.nextLine();
+    // System.out.println("Enter the dob:");
+    // String dob = scan.nextLine();
+    // System.out.println("Enter the type:");
+    // String type = scan.nextLine();
+    // creators.addCreator(name, dob, type);
+    // }
 
     public void add() {
         // ask for which type of item to add
         System.out.println(
-                "What type of item would you like to add? (Album, Track, Interview, Movie, Audiobook, AudiobookChapter, PhysicalBook, PhysicalBookChapter, Person, Creator)");
+                "What would you like to add? (Album, Track, Interview, Movie, Audiobook, AudiobookChapter, PhysicalBook, PhysicalBookChapter, Actor, Artist, Director, or Writer)");
         // get the type
         String type = scan.nextLine().toLowerCase();
         // add depending on the type
         switch (type) {
             case "album":
-                addAlbum(scan);
-                break;
             case "track":
-                addTrack(scan);
-                break;
             case "interview":
-                addInterview(scan);
-                break;
             case "movie":
-                addMovie(scan);
-                break;
             case "audiobook":
-                addAudiobook(scan);
-                break;
             case "physicalbook":
-                addPhysicalBook(scan);
+                Adder.addItem(Util.changeToDBString(type), conn, scan);
                 break;
-            case "person":
-                addPerson();
+            case "audiobookchapter":
+            case "physicalbookchapter":
+                // TODO: add chapters as attributes
                 break;
-            case "creator":
-                addCreator();
+            case "actor":
+            case "director":
+            case "artist":
+            case "writer":
+                // TODO: add creator
                 break;
             default:
                 // print invalid
-                System.out.println("Invalid input: enter Album, Track, Interview, Movie, Audiobook, or PhysicalBook");
+                System.out.println(type + " is an Invalid input");
         }
     }
 
-    public void editPerson() {
-        System.out.println("Enter the name of a person to be edited: ");
-        String nameOfPerson = scan.nextLine();
-        people.editPerson(nameOfPerson);
-    }
+    // public void editMovie() {
+    // System.out.println("Enter the title of a movie to be edited: ");
+    // String nameOfMovie = scan.nextLine();
 
-    public void editMovie() {
-        System.out.println("Enter the title of a movie to be edited: ");
-        String nameOfMovie = scan.nextLine();
+    // Movie editedMovie = (Movie) editSearch(nameOfMovie);
+    // if (!(editedMovie == null)) {
+    // boolean doneChanging = false;
+    // while (!doneChanging) {
+    // System.out.println(
+    // "What part of the record should be changed: Press 1 for the title, 2 for the
+    // year released, 3 for the genre, 4 for the active in inventory status, 5 for
+    // the runtime, and 6 for the rating.");
+    // String userChoice = scan.nextLine();
+    // System.out.println(
+    // "What would you like the new field to be? Enter a title, year released,
+    // genre, y/n for active versus inactive, a number of minutes, or a rating (G,
+    // PG, PG-13, R, NC-17).");
+    // String newField = scan.nextLine();
+    // switch (userChoice) {
+    // case "1":
+    // editedMovie.title = newField;
+    // break;
+    // case "2":
+    // int newReleaseYear = Integer.parseInt(newField);
+    // editedMovie.yearReleased = newReleaseYear;
+    // break;
+    // case "3":
+    // editedMovie.genre = newField;
+    // break;
+    // case "4":
+    // if (newField.equals("y")) {
+    // editedMovie.active = true;
+    // } else if (newField.equals("n")) {
+    // editedMovie.active = false;
+    // } else {
+    // System.out.println(
+    // "Please enter only 'y' if the item should be active, or 'n' if it should be
+    // inactive.");
+    // }
+    // break;
+    // case "5":
+    // int newRuntime = Integer.parseInt(newField);
+    // editedMovie.runTime = newRuntime;
+    // break;
+    // case "6":
+    // if (!(newField.equals("G") || newField.equals("PG") ||
+    // newField.equals("PG-13")
+    // || newField.equals("R") || newField.equals("NC-17"))) {
+    // System.out.println("Please only enter one of 'G', 'PG', 'PG-13', 'R', or
+    // 'NC-17'.");
+    // } else {
+    // editedMovie.rating = newField;
+    // }
+    // break;
+    // default:
+    // System.out.println("Please only enter a number between 1 and 6.");
+    // }
+    // System.out.println("The new movie in the record is: ");
+    // System.out.println("Title: " + editedMovie.title + "\nYear Released: " +
+    // editedMovie.yearReleased
+    // + "\nGenre: " + editedMovie.genre
+    // + "\nType: " + editedMovie.type + "\nActive: " + editedMovie.active +
+    // "\nItemID: "
+    // + editedMovie.itemID + "\nRuntime: " + editedMovie.runTime + "\nRating: " +
+    // editedMovie.rating);
+    // System.out.println(
+    // "If you are done changing, press q. If you are not done changing, press
+    // anything else.");
+    // userChoice = scan.nextLine();
+    // if (userChoice.equals("q")) {
+    // doneChanging = true;
+    // }
+    // }
+    // }
+    // }
 
-        Movie editedMovie = (Movie) editSearch(nameOfMovie);
-        if (!(editedMovie == null)) {
-            boolean doneChanging = false;
-            while (!doneChanging) {
-                System.out.println(
-                        "What part of the record should be changed: Press 1 for the title, 2 for the year released, 3 for the genre, 4 for the active in inventory status, 5 for the runtime, and 6 for the rating.");
-                String userChoice = scan.nextLine();
-                System.out.println(
-                        "What would you like the new field to be? Enter a title, year released, genre, y/n for active versus inactive, a number of minutes, or a rating (G, PG, PG-13, R, NC-17).");
-                String newField = scan.nextLine();
-                switch (userChoice) {
-                    case "1":
-                        editedMovie.title = newField;
-                        break;
-                    case "2":
-                        int newReleaseYear = Integer.parseInt(newField);
-                        editedMovie.yearReleased = newReleaseYear;
-                        break;
-                    case "3":
-                        editedMovie.genre = newField;
-                        break;
-                    case "4":
-                        if (newField.equals("y")) {
-                            editedMovie.active = true;
-                        } else if (newField.equals("n")) {
-                            editedMovie.active = false;
-                        } else {
-                            System.out.println(
-                                    "Please enter only 'y' if the item should be active, or 'n' if it should be inactive.");
-                        }
-                        break;
-                    case "5":
-                        int newRuntime = Integer.parseInt(newField);
-                        editedMovie.runTime = newRuntime;
-                        break;
-                    case "6":
-                        if (!(newField.equals("G") || newField.equals("PG") || newField.equals("PG-13")
-                                || newField.equals("R") || newField.equals("NC-17"))) {
-                            System.out.println("Please only enter one of 'G', 'PG', 'PG-13', 'R', or 'NC-17'.");
-                        } else {
-                            editedMovie.rating = newField;
-                        }
-                        break;
-                    default:
-                        System.out.println("Please only enter a number between 1 and 6.");
-                }
-                System.out.println("The new movie in the record is: ");
-                System.out.println("Title: " + editedMovie.title + "\nYear Released: " + editedMovie.yearReleased
-                        + "\nGenre: " + editedMovie.genre
-                        + "\nType: " + editedMovie.type + "\nActive: " + editedMovie.active + "\nItemID: "
-                        + editedMovie.itemID + "\nRuntime: " + editedMovie.runTime + "\nRating: " + editedMovie.rating);
-                System.out.println(
-                        "If you are done changing, press q. If you are not done changing, press anything else.");
-                userChoice = scan.nextLine();
-                if (userChoice.equals("q")) {
-                    doneChanging = true;
-                }
-            }
-        }
-    }
+    // public void editAudiobook() {
+    // System.out.println("Enter the title of an Audiobook to be edited: ");
+    // String nameOfAudiobook = scan.nextLine();
 
-    public void editAudiobook() {
-        System.out.println("Enter the title of an Audiobook to be edited: ");
-        String nameOfAudiobook = scan.nextLine();
+    // Audiobook editedAudiobook = (Audiobook) editSearch(nameOfAudiobook);
+    // if (!(editedAudiobook == null)) {
+    // boolean doneChanging = false;
+    // while (!doneChanging) {
+    // System.out.println(
+    // "What part of the record should be changed: Press 1 for the title, 2 for the
+    // year released, 3 for the genre, 4 for the active in inventory status, 5 for
+    // the number of minutes, and 6 for the number of chapters.");
+    // String userChoice = scan.nextLine();
+    // System.out.println(
+    // "What would you like the new field to be? Enter a title, year released,
+    // genre, y/n for active versus inactive, a number of minutes, or a number of
+    // chapters.");
+    // String newField = scan.nextLine();
+    // switch (userChoice) {
+    // case "1":
+    // editedAudiobook.title = newField;
+    // break;
+    // case "2":
+    // int newReleaseYear = Integer.parseInt(newField);
+    // editedAudiobook.yearReleased = newReleaseYear;
+    // break;
+    // case "3":
+    // editedAudiobook.genre = newField;
+    // break;
+    // case "4":
+    // if (newField.equals("y")) {
+    // editedAudiobook.active = true;
+    // } else if (newField.equals("n")) {
+    // editedAudiobook.active = false;
+    // } else {
+    // System.out.println(
+    // "Please enter only 'y' if the item should be active, or 'n' if it should be
+    // inactive.");
+    // }
+    // break;
+    // case "5":
+    // int newNumMin = Integer.parseInt(newField);
+    // editedAudiobook.numMinutes = newNumMin;
+    // break;
+    // case "6":
+    // int newNumChapters = Integer.parseInt(newField);
+    // editedAudiobook.numChapters = newNumChapters;
+    // break;
+    // default:
+    // System.out.println("Please only enter a number between 1 and 6.");
+    // }
+    // System.out.println("The new Audiobook in the record is: ");
+    // System.out.println("Title: " + editedAudiobook.title + "\nYear Released: "
+    // + editedAudiobook.yearReleased + "\nGenre: " + editedAudiobook.genre
+    // + "\nType: " + editedAudiobook.type + "\nActive: " + editedAudiobook.active +
+    // "\nItemID: "
+    // + editedAudiobook.itemID + "\nNumber of Minutes: " +
+    // editedAudiobook.numMinutes
+    // + "\nNumber of Chapters: " + editedAudiobook.numChapters);
+    // System.out.println(
+    // "If you are done changing, press q. If you are not done changing, press
+    // anything else.");
+    // userChoice = scan.nextLine();
+    // if (userChoice.equals("q")) {
+    // doneChanging = true;
+    // }
+    // }
+    // }
+    // }
 
-        Audiobook editedAudiobook = (Audiobook) editSearch(nameOfAudiobook);
-        if (!(editedAudiobook == null)) {
-            boolean doneChanging = false;
-            while (!doneChanging) {
-                System.out.println(
-                        "What part of the record should be changed: Press 1 for the title, 2 for the year released, 3 for the genre, 4 for the active in inventory status, 5 for the number of minutes, and 6 for the number of chapters.");
-                String userChoice = scan.nextLine();
-                System.out.println(
-                        "What would you like the new field to be? Enter a title, year released, genre, y/n for active versus inactive, a number of minutes, or a number of chapters.");
-                String newField = scan.nextLine();
-                switch (userChoice) {
-                    case "1":
-                        editedAudiobook.title = newField;
-                        break;
-                    case "2":
-                        int newReleaseYear = Integer.parseInt(newField);
-                        editedAudiobook.yearReleased = newReleaseYear;
-                        break;
-                    case "3":
-                        editedAudiobook.genre = newField;
-                        break;
-                    case "4":
-                        if (newField.equals("y")) {
-                            editedAudiobook.active = true;
-                        } else if (newField.equals("n")) {
-                            editedAudiobook.active = false;
-                        } else {
-                            System.out.println(
-                                    "Please enter only 'y' if the item should be active, or 'n' if it should be inactive.");
-                        }
-                        break;
-                    case "5":
-                        int newNumMin = Integer.parseInt(newField);
-                        editedAudiobook.numMinutes = newNumMin;
-                        break;
-                    case "6":
-                        int newNumChapters = Integer.parseInt(newField);
-                        editedAudiobook.numChapters = newNumChapters;
-                        break;
-                    default:
-                        System.out.println("Please only enter a number between 1 and 6.");
-                }
-                System.out.println("The new Audiobook in the record is: ");
-                System.out.println("Title: " + editedAudiobook.title + "\nYear Released: "
-                        + editedAudiobook.yearReleased + "\nGenre: " + editedAudiobook.genre
-                        + "\nType: " + editedAudiobook.type + "\nActive: " + editedAudiobook.active + "\nItemID: "
-                        + editedAudiobook.itemID + "\nNumber of Minutes: " + editedAudiobook.numMinutes
-                        + "\nNumber of Chapters: " + editedAudiobook.numChapters);
-                System.out.println(
-                        "If you are done changing, press q. If you are not done changing, press anything else.");
-                userChoice = scan.nextLine();
-                if (userChoice.equals("q")) {
-                    doneChanging = true;
-                }
-            }
-        }
-    }
+    // public void editAlbum() {
+    // System.out.println("Enter the name of the album that you want to edit: ");
+    // String nameOfAlbum = scan.nextLine();
 
-    public void editCreator() {
-        System.out.println("Enter the name of a creator to be edited: ");
-        String nameOfCreator = scan.nextLine();
-        creators.editCreator(nameOfCreator);
-    }
+    // // get the album that they need
+    // Album albumToEdit = (Album) editSearch(nameOfAlbum);
+    // if (albumToEdit == null)
+    // return;
 
-    public void editAlbum() {
-        System.out.println("Enter the name of the album that you want to edit: ");
-        String nameOfAlbum = scan.nextLine();
+    // // loop editing until theyre done
+    // char input = 'x';
+    // while (input != 'q') {
+    // // ask what part they want to edit String title, int yearReleased, String
+    // genre,
+    // // boolean active, int numSongs, int numMinutes
+    // System.out.println(
+    // "Enter t to edit title, y for year released, g for genre, a for active, s for
+    // number of songs, m for number of minutes, and q to quit: ");
+    // input = scan.nextLine().charAt(0);
 
-        // get the album that they need
-        Album albumToEdit = (Album) editSearch(nameOfAlbum);
-        if (albumToEdit == null)
-            return;
+    // switch (input) {
+    // case 't':
+    // System.out.println("Enter the new title:");
+    // String title = scan.nextLine();
+    // albumToEdit.title = title;
+    // break;
+    // case 'y':
+    // System.out.println("Enter the new release year:");
+    // scan.nextLine();
+    // int year;
+    // try {
+    // year = Integer.parseInt(scan.nextLine());
+    // albumToEdit.yearReleased = year;
+    // } catch (Exception e) {
+    // System.out.println("Invalid year, try again");
+    // }
+    // break;
+    // case 'g':
+    // System.out.println("Enter the new genre:");
+    // scan.nextLine();
+    // String genre = scan.nextLine();
+    // albumToEdit.genre = genre;
+    // break;
+    // case 'a':
+    // boolean active = false;
+    // String response = " ";
+    // while (!(response.equals("y") || response.equals("n"))) {
+    // System.out.println("Enter new active status: y/n");
+    // scan.nextLine();
+    // response = scan.nextLine();
+    // if (response.equals("y")) {
+    // active = true;
+    // } else if (!(response.equals("y") || response.equals("n"))) {
+    // System.out.println("Invalid input: enter y or n");
+    // }
+    // }
+    // albumToEdit.active = active;
+    // break;
+    // case 's':
+    // System.out.println("Enter the new number of songs:");
+    // scan.nextLine();
+    // int songs;
+    // try {
+    // songs = Integer.parseInt(scan.nextLine());
+    // albumToEdit.numSongs = songs;
+    // } catch (Exception e) {
+    // System.out.println("Invalid number, try again");
+    // }
+    // break;
+    // case 'm':
+    // System.out.println("Enter the new number of minutes:");
+    // scan.nextLine();
+    // int minutes;
+    // try {
+    // minutes = Integer.parseInt(scan.nextLine());
+    // albumToEdit.numMinutes = minutes;
+    // } catch (Exception e) {
+    // System.out.println("Invalid number, try again");
+    // }
+    // break;
+    // case 'q':
+    // // quit the program
+    // break;
+    // default:
+    // // print invalid
+    // System.out.println("Invalid input");
+    // }
+    // }
 
-        // loop editing until theyre done
-        char input = 'x';
-        while (input != 'q') {
-            // ask what part they want to edit String title, int yearReleased, String genre,
-            // boolean active, int numSongs, int numMinutes
-            System.out.println(
-                    "Enter t to edit title, y for year released, g for genre, a for active, s for number of songs, m for number of minutes, and q to quit: ");
-            input = scan.nextLine().charAt(0);
+    // }
 
-            switch (input) {
-                case 't':
-                    System.out.println("Enter the new title:");
-                    String title = scan.nextLine();
-                    albumToEdit.title = title;
-                    break;
-                case 'y':
-                    System.out.println("Enter the new release year:");
-                    scan.nextLine();
-                    int year;
-                    try {
-                        year = Integer.parseInt(scan.nextLine());
-                        albumToEdit.yearReleased = year;
-                    } catch (Exception e) {
-                        System.out.println("Invalid year, try again");
-                    }
-                    break;
-                case 'g':
-                    System.out.println("Enter the new genre:");
-                    scan.nextLine();
-                    String genre = scan.nextLine();
-                    albumToEdit.genre = genre;
-                    break;
-                case 'a':
-                    boolean active = false;
-                    String response = " ";
-                    while (!(response.equals("y") || response.equals("n"))) {
-                        System.out.println("Enter new active status: y/n");
-                        scan.nextLine();
-                        response = scan.nextLine();
-                        if (response.equals("y")) {
-                            active = true;
-                        } else if (!(response.equals("y") || response.equals("n"))) {
-                            System.out.println("Invalid input: enter y or n");
-                        }
-                    }
-                    albumToEdit.active = active;
-                    break;
-                case 's':
-                    System.out.println("Enter the new number of songs:");
-                    scan.nextLine();
-                    int songs;
-                    try {
-                        songs = Integer.parseInt(scan.nextLine());
-                        albumToEdit.numSongs = songs;
-                    } catch (Exception e) {
-                        System.out.println("Invalid number, try again");
-                    }
-                    break;
-                case 'm':
-                    System.out.println("Enter the new number of minutes:");
-                    scan.nextLine();
-                    int minutes;
-                    try {
-                        minutes = Integer.parseInt(scan.nextLine());
-                        albumToEdit.numMinutes = minutes;
-                    } catch (Exception e) {
-                        System.out.println("Invalid number, try again");
-                    }
-                    break;
-                case 'q':
-                    // quit the program
-                    break;
-                default:
-                    // print invalid
-                    System.out.println("Invalid input");
-            }
-        }
+    // public void editTrack() {
+    // System.out.println("Enter the name of the track that you want to edit: ");
+    // scan.nextLine();
+    // String nameOfTrack = scan.nextLine();
 
-    }
+    // // get the album that they need
+    // Track trackToEdit = (Track) editSearch(nameOfTrack);
+    // if (trackToEdit == null)
+    // return;
 
-    public void editTrack() {
-        System.out.println("Enter the name of the track that you want to edit: ");
-        scan.nextLine();
-        String nameOfTrack = scan.nextLine();
+    // // loop editing until theyre done
+    // char input = 'x';
+    // while (input != 'q') {
+    // // ask what part they want to edit (String title, int yearReleased, String
+    // // genre, boolean active, int numMinutes
+    // System.out.println(
+    // "Enter t to edit title, y for year released, g for genre, a for active, m for
+    // number of minutes, and q to quit: ");
+    // input = scan.next().charAt(0);
 
-        // get the album that they need
-        Track trackToEdit = (Track) editSearch(nameOfTrack);
-        if (trackToEdit == null)
-            return;
+    // switch (input) {
+    // case 't':
+    // System.out.println("Enter the new title:");
+    // String title = scan.nextLine();
+    // trackToEdit.title = title;
+    // break;
+    // case 'y':
+    // System.out.println("Enter the new release year:");
+    // scan.nextLine();
+    // int year;
+    // try {
+    // year = Integer.parseInt(scan.next());
+    // trackToEdit.yearReleased = year;
+    // } catch (Exception e) {
+    // System.out.println("Invalid year, try again");
+    // }
+    // break;
+    // case 'g':
+    // System.out.println("Enter the new genre:");
+    // scan.nextLine();
+    // String genre = scan.nextLine();
+    // trackToEdit.genre = genre;
+    // break;
+    // case 'a':
+    // boolean active = false;
+    // String response = " ";
+    // while (!(response.equals("y") || response.equals("n"))) {
+    // System.out.println("Enter new active status: y/n");
+    // scan.nextLine();
+    // response = scan.nextLine();
+    // if (response.equals("y")) {
+    // active = true;
+    // } else if (!(response.equals("y") || response.equals("n"))) {
+    // System.out.println("Invalid input: enter y or n");
+    // }
+    // }
+    // trackToEdit.active = active;
+    // break;
+    // case 'm':
+    // System.out.println("Enter the new number of minutes:");
+    // scan.nextLine();
+    // int minutes;
+    // try {
+    // minutes = Integer.parseInt(scan.next());
+    // trackToEdit.numMinutes = minutes;
+    // } catch (Exception e) {
+    // System.out.println("Invalid number, try again");
+    // }
+    // break;
+    // case 'q':
+    // // quit the program
+    // break;
+    // default:
+    // // print invalid
+    // System.out.println("Invalid input");
+    // }
+    // }
 
-        // loop editing until theyre done
-        char input = 'x';
-        while (input != 'q') {
-            // ask what part they want to edit (String title, int yearReleased, String
-            // genre, boolean active, int numMinutes
-            System.out.println(
-                    "Enter t to edit title, y for year released, g for genre, a for active, m for number of minutes, and q to quit: ");
-            input = scan.next().charAt(0);
-
-            switch (input) {
-                case 't':
-                    System.out.println("Enter the new title:");
-                    String title = scan.nextLine();
-                    trackToEdit.title = title;
-                    break;
-                case 'y':
-                    System.out.println("Enter the new release year:");
-                    scan.nextLine();
-                    int year;
-                    try {
-                        year = Integer.parseInt(scan.next());
-                        trackToEdit.yearReleased = year;
-                    } catch (Exception e) {
-                        System.out.println("Invalid year, try again");
-                    }
-                    break;
-                case 'g':
-                    System.out.println("Enter the new genre:");
-                    scan.nextLine();
-                    String genre = scan.nextLine();
-                    trackToEdit.genre = genre;
-                    break;
-                case 'a':
-                    boolean active = false;
-                    String response = " ";
-                    while (!(response.equals("y") || response.equals("n"))) {
-                        System.out.println("Enter new active status: y/n");
-                        scan.nextLine();
-                        response = scan.nextLine();
-                        if (response.equals("y")) {
-                            active = true;
-                        } else if (!(response.equals("y") || response.equals("n"))) {
-                            System.out.println("Invalid input: enter y or n");
-                        }
-                    }
-                    trackToEdit.active = active;
-                    break;
-                case 'm':
-                    System.out.println("Enter the new number of minutes:");
-                    scan.nextLine();
-                    int minutes;
-                    try {
-                        minutes = Integer.parseInt(scan.next());
-                        trackToEdit.numMinutes = minutes;
-                    } catch (Exception e) {
-                        System.out.println("Invalid number, try again");
-                    }
-                    break;
-                case 'q':
-                    // quit the program
-                    break;
-                default:
-                    // print invalid
-                    System.out.println("Invalid input");
-            }
-        }
-
-    }
+    // }
 
     public void edit() {
         // Ask the user which record they want to edit
         System.out.println(
-                "Enter the type of the record to be edited (Album, Track, Interview, Movie, Audiobook, PhysicalBook, Person, or Creator): ");
-        String itemType = scan.nextLine().toLowerCase();
+                "Enter the type of the record to be edited (Album, Track, Interview, Movie, Audiobook, AudiobookChapter, PhysicalBook, PhysicalBookChapter, Actor, Artist, Director, or Writer): ");
+        String type = scan.nextLine().toLowerCase();
 
-        switch (itemType) {
+        switch (type) {
             case "album":
-                editAlbum();
-                break;
             case "track":
-                editTrack();
-                break;
             case "interview":
-                break;
             case "movie":
-                editMovie();
-                break;
             case "audiobook":
-                editAudiobook();
-                break;
+            case "audiobookchapter":
+            case "physicalbookchapter":
             case "physicalbook":
+                // TODO: edit item
                 break;
-            case "person":
-                editPerson();
-                break;
-            case "creator":
-                editCreator();
+            case "actor":
+            case "director":
+            case "artist":
+            case "writer":
+                // TODO: edit creator
                 break;
             default:
                 // print invalid
-                System.out.println(
-                        "Invalid type: not Album, Track, Interview, Movie, Audiobook, PhysicalBook, Person, or Creator");
-
+                System.out.println(type + " is an Invalid input");
         }
     }
 
-    public void editInterview() {
-        System.out.println("Enter the name of the Interview you would like to edit");
-        String title = scan.nextLine();
-        Interview interviewToEdit = (Interview) editSearch(title);
-        if (interviewToEdit == null)
-            return;
-        char input = 's';
-        while (input != 'q') {
-            System.out.println(
-                    "Enter t to edit title, y for year released, g for genre, a for active, n for number of minutes, and q to quit");
-            input = scan.nextLine().charAt(0);
-            switch (input) {
-                case 't':
-                    // edit title
-                    System.out.println("Enter new title: ");
-                    interviewToEdit.title = scan.nextLine();
-                    break;
-                case 'y':
-                    // edit year
-                    System.out.println("Enter new year: ");
-                    try {
-                        interviewToEdit.yearReleased = Integer.parseInt(scan.nextLine());
-                    } catch (Exception e) {
-                        System.out.println("Invalid year, try again");
-                    }
-                    break;
-                case 'g':
-                    // edit genre
-                    System.out.println("Enter new genre: ");
-                    interviewToEdit.genre = scan.nextLine();
-                    break;
-                case 'a':
-                    // edit active
-                    System.out.println("Item active? y/n");
-                    char activeInput = scan.nextLine().charAt(0);
-                    switch (activeInput) {
-                        case 'y':
-                            interviewToEdit.active = true;
-                            break;
-                        case 'n':
-                            interviewToEdit.active = false;
-                            break;
-                        default:
-                            System.out.println("Invalid input, try again");
-                    }
-                    break;
-                case 'n':
-                    // edit number of minutes
-                    System.out.println("Enter new number of minutes: ");
-                    try {
-                        interviewToEdit.numMinutes = Integer.parseInt(scan.nextLine());
-                    } catch (Exception e) {
-                        System.out.println("Invalid year, try again");
-                    }
-                    break;
-                case 'q':
-                    break;
-                default:
-                    System.out.println("Invalid input");
-            }
-        }
-    }
+    // public void editInterview() {
+    // System.out.println("Enter the name of the Interview you would like to edit");
+    // String title = scan.nextLine();
+    // Interview interviewToEdit = (Interview) editSearch(title);
+    // if (interviewToEdit == null)
+    // return;
+    // char input = 's';
+    // while (input != 'q') {
+    // System.out.println(
+    // "Enter t to edit title, y for year released, g for genre, a for active, n for
+    // number of minutes, and q to quit");
+    // input = scan.nextLine().charAt(0);
+    // switch (input) {
+    // case 't':
+    // // edit title
+    // System.out.println("Enter new title: ");
+    // interviewToEdit.title = scan.nextLine();
+    // break;
+    // case 'y':
+    // // edit year
+    // System.out.println("Enter new year: ");
+    // try {
+    // interviewToEdit.yearReleased = Integer.parseInt(scan.nextLine());
+    // } catch (Exception e) {
+    // System.out.println("Invalid year, try again");
+    // }
+    // break;
+    // case 'g':
+    // // edit genre
+    // System.out.println("Enter new genre: ");
+    // interviewToEdit.genre = scan.nextLine();
+    // break;
+    // case 'a':
+    // // edit active
+    // System.out.println("Item active? y/n");
+    // char activeInput = scan.nextLine().charAt(0);
+    // switch (activeInput) {
+    // case 'y':
+    // interviewToEdit.active = true;
+    // break;
+    // case 'n':
+    // interviewToEdit.active = false;
+    // break;
+    // default:
+    // System.out.println("Invalid input, try again");
+    // }
+    // break;
+    // case 'n':
+    // // edit number of minutes
+    // System.out.println("Enter new number of minutes: ");
+    // try {
+    // interviewToEdit.numMinutes = Integer.parseInt(scan.nextLine());
+    // } catch (Exception e) {
+    // System.out.println("Invalid year, try again");
+    // }
+    // break;
+    // case 'q':
+    // break;
+    // default:
+    // System.out.println("Invalid input");
+    // }
+    // }
+    // }
 
-    public void editPhysicalBook() {
-        System.out.println("Enter the name of the PhysicalBook you would like to edit");
-        String title = scan.nextLine();
-        PhysicalBook bookToEdit = (PhysicalBook) editSearch(title);
-        if (bookToEdit == null)
-            return;
-        char input = 's';
-        while (input != 'q') {
-            System.out.println(
-                    "Enter t to edit title, y for year released, g for genre, a for active, n for number of pages, and q to quit");
-            input = scan.nextLine().charAt(0);
-            switch (input) {
-                case 't':
-                    // edit title
-                    System.out.println("Enter new title: ");
-                    bookToEdit.title = scan.nextLine();
-                    break;
-                case 'y':
-                    // edit year
-                    System.out.println("Enter new year: ");
-                    try {
-                        bookToEdit.yearReleased = Integer.parseInt(scan.nextLine());
-                    } catch (Exception e) {
-                        System.out.println("Invalid year, try again");
-                    }
-                    break;
-                case 'g':
-                    // edit genre
-                    System.out.println("Enter new genre: ");
-                    bookToEdit.genre = scan.nextLine();
-                    break;
-                case 'a':
-                    // edit active
-                    System.out.println("Item active? y/n");
-                    char activeInput = scan.nextLine().charAt(0);
-                    switch (activeInput) {
-                        case 'y':
-                            bookToEdit.active = true;
-                            break;
-                        case 'n':
-                            bookToEdit.active = false;
-                            break;
-                        default:
-                            System.out.println("Invalid input, try again");
-                    }
-                    break;
-                case 'n':
-                    // edit number of minutes
-                    System.out.println("Enter new number of chapters: ");
-                    try {
-                        bookToEdit.numChapters = Integer.parseInt(scan.nextLine());
-                    } catch (Exception e) {
-                        System.out.println("Invalid year, try again");
-                    }
-                    break;
-                case 'q':
-                    break;
-                default:
-                    System.out.println("Invalid input");
-            }
-        }
-    }
+    // public void editPhysicalBook() {
+    // System.out.println("Enter the name of the PhysicalBook you would like to
+    // edit");
+    // String title = scan.nextLine();
+    // PhysicalBook bookToEdit = (PhysicalBook) editSearch(title);
+    // if (bookToEdit == null)
+    // return;
+    // char input = 's';
+    // while (input != 'q') {
+    // System.out.println(
+    // "Enter t to edit title, y for year released, g for genre, a for active, n for
+    // number of pages, and q to quit");
+    // input = scan.nextLine().charAt(0);
+    // switch (input) {
+    // case 't':
+    // // edit title
+    // System.out.println("Enter new title: ");
+    // bookToEdit.title = scan.nextLine();
+    // break;
+    // case 'y':
+    // // edit year
+    // System.out.println("Enter new year: ");
+    // try {
+    // bookToEdit.yearReleased = Integer.parseInt(scan.nextLine());
+    // } catch (Exception e) {
+    // System.out.println("Invalid year, try again");
+    // }
+    // break;
+    // case 'g':
+    // // edit genre
+    // System.out.println("Enter new genre: ");
+    // bookToEdit.genre = scan.nextLine();
+    // break;
+    // case 'a':
+    // // edit active
+    // System.out.println("Item active? y/n");
+    // char activeInput = scan.nextLine().charAt(0);
+    // switch (activeInput) {
+    // case 'y':
+    // bookToEdit.active = true;
+    // break;
+    // case 'n':
+    // bookToEdit.active = false;
+    // break;
+    // default:
+    // System.out.println("Invalid input, try again");
+    // }
+    // break;
+    // case 'n':
+    // // edit number of minutes
+    // System.out.println("Enter new number of chapters: ");
+    // try {
+    // bookToEdit.numChapters = Integer.parseInt(scan.nextLine());
+    // } catch (Exception e) {
+    // System.out.println("Invalid year, try again");
+    // }
+    // break;
+    // case 'q':
+    // break;
+    // default:
+    // System.out.println("Invalid input");
+    // }
+    // }
+    // }
 
     private void execute() {
         char input = 'h';
         while (input != 'q') {
             // ask the user for input
             System.out.println(
-                    "Enter 'a' to add new records/order them, 'b' to edit a record, 'c' to search for a record, and 'q' to quit.");
+                    "Enter 'a' to add new records, 'e' to edit a record, 's' to search for a record, 'd' to delete a record, 'c' to check out a record, 'o' to manage orders, 'p' to manage library cards/patrons, and 'q' to quit.");
 
             // get user input
             input = scan.nextLine().charAt(0);
@@ -1239,13 +1251,25 @@ public class DBApp {
                     // ask the user for a record to add and add it to the list
                     add();
                     break;
-                case 'b':
+                case 'e':
                     // ask the user which record to edit and change it in the list
                     edit();
                     break;
-                case 'c':
+                case 's':
                     // search for a record and print it
                     search();
+                    break;
+                case 'c':
+                    // TODO: implement checkout
+                    break;
+                case 'd':
+                    // TODO: delete func
+                    break;
+                case 'o':
+                    // TODO: order/edit/delete records
+                    break;
+                case 'p':
+                    // TODO: manage people func
                     break;
                 case 'q':
                     // quit the program
@@ -1259,29 +1283,13 @@ public class DBApp {
     }
 
     private void getConnection() throws SQLException {
-        connection = DriverManager.getConnection(CONNECTIONPATH);
-        statement = connection.createStatement();
-        statement.setQueryTimeout(45); // 45 second time out
+        conn = DriverManager.getConnection(CONNECTIONPATH);
     }
 
     private void cleanUp() {
         try {
-            if (connection != null)
-                connection.close();
-        } catch (SQLException e) {
-            // connection close failed.
-            System.err.println(e.getMessage());
-        }
-        try {
-            if (statement != null)
-                statement.close();
-        } catch (SQLException e) {
-            // connection close failed.
-            System.err.println(e.getMessage());
-        }
-        try {
-            if (rSet != null)
-                rSet.close();
+            if (conn != null)
+                conn.close();
         } catch (SQLException e) {
             // connection close failed.
             System.err.println(e.getMessage());
@@ -1293,8 +1301,12 @@ public class DBApp {
         try {
             // create a database connection
             app.getConnection();
+            // These can be uncommented to perform a sanity check that you're connecting to
+            // the db correctly
+            // System.out.println(Util.nextIDFrom("Item", app.conn));
+            // System.out.println(Util.nextIDFrom("creator", app.conn));
+            // System.out.println(Util.nextIDFrom("library_card", app.conn));
             app.execute();
-
         } catch (SQLException e) {
             System.err.println(e.getMessage());
         } finally {
