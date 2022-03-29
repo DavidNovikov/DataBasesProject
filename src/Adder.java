@@ -263,4 +263,77 @@ public class Adder {
     // Util.closeStmt(stmt);
     // }
     // }
+
+    public static void addCreator(String creatorType, Connection conn, Scanner scan) {
+        int newCreatorID;
+        try {
+            newCreatorID = addCreatorBase(creatorType, conn, scan);
+            addCreatorSuper(creatorType, conn, scan, newCreatorID);
+            
+        } catch (Exception e) {
+            System.out.println("failed to insert");
+        }
+    }
+
+    private static int addCreatorBase(String creatorType, Connection conn, Scanner scan) throws Exception {
+        PreparedStatement stmt = null;
+
+        int creatorID = Util.nextIDFrom("creator", conn);
+
+        try {
+
+            String query = "insert into creator values (?);";
+            stmt = conn.prepareStatement(query);
+
+            stmt.setInt(1, creatorID);
+
+            stmt.executeUpdate();
+        } catch (SQLException | NumberFormatException e) {
+            System.out.println(e.getMessage());
+            throw e;
+        } finally {
+            Util.closeStmt(stmt);
+        }
+        return creatorID;
+    }
+
+    private static void addCreatorSuper(String creatorType, Connection conn, Scanner scan, int newCreatorID) throws Exception {
+
+        switch (creatorType) {
+            case "artist":
+            case "actor":
+            case "director":
+            case "writer":
+                addCreatorNameDOB(creatorType, conn, scan, newCreatorID);
+                break;
+            default:
+                System.err.println(creatorType + " isn't a valid new item insert type");
+        }
+
+    }
+
+    private static void addCreatorNameDOB(String creatorType, Connection conn, Scanner scan, int newCreatorID) throws Exception {
+        PreparedStatement stmt = null;
+
+        try {
+            System.out.println("Please enter the "+creatorType+" name");
+            String name = scan.nextLine();
+            
+            String dateOfBirth = Util.getDate(scan, "date of birth");
+
+            String query = "insert into "+creatorType+" values (?,?,?);";
+            stmt = conn.prepareStatement(query);
+
+            stmt.setString(1, name);
+            stmt.setString(2, dateOfBirth);
+            stmt.setInt(3, newCreatorID);
+
+            stmt.executeUpdate();
+        } catch (SQLException | NumberFormatException e) {
+            System.out.println(e.getMessage());
+            throw e;
+        } finally {
+            Util.closeStmt(stmt);
+        }
+    }
 }

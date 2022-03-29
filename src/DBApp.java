@@ -429,7 +429,9 @@ class Chapter {
 
 public class DBApp {
 
-    final String CONNECTIONPATH = "jdbc:sqlite:/Users/davidnovikov/Desktop/LIBRARY.db";
+    //final String CONNECTIONPATH = "jdbc:sqlite:/Users/davidnovikov/Desktop/LIBRARY.db";
+    final String CONNECTIONPATH = "jdbc:sqlite:/Users/djcje/Documents/Databases/Library.db";
+    
     // use a scanner to read input
     private Scanner scan;
 
@@ -752,7 +754,7 @@ public class DBApp {
             case "director":
             case "artist":
             case "writer":
-                // TODO: add creator
+                Adder.addCreator(Util.changeToDBString(type), conn, scan);
                 break;
             default:
                 // print invalid
