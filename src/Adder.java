@@ -313,12 +313,16 @@ public class Adder {
         PreparedStatement stmt = null;
 
         try {
+            System.out.println("Please enter the artist name");
+            String name = scan.nextLine();
+            
             String dateOfBirth = Util.getDate(scan, "date of birth");
 
-            String query = "insert into artist values (?,?);";
+            String query = "insert into artist values (?,?,?);";
             stmt = conn.prepareStatement(query);
 
-            stmt.setString(1, dateOfBirth);
+            stmt.setString(1, name);
+            stmt.setString(2, dateOfBirth);
             stmt.setInt(3, newCreatorID);
 
             stmt.executeUpdate();
