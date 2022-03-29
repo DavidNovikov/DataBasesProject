@@ -39,11 +39,8 @@ public class Util {
 		type = type.toLowerCase();
 		switch (type) {
 			case "artist":
-				return "Ar_Name";
 			case "actor":
-				return "Ar_Name";
 			case "director":
-				return "Ar_Name";
 			case "writer":
 				return "Ar_Name";
 			default:
