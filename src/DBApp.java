@@ -1089,10 +1089,12 @@ public class DBApp {
             case "interview":
             case "movie":
             case "audiobook":
-            case "audiobookchapter":
-            case "physicalbookchapter":
             case "physicalbook":
                 // TODO: edit item
+                break;
+            case "audiobookchapter":
+            case "physicalbookchapter":
+                // TODO: edit chapter
                 break;
             case "actor":
             case "director":
