@@ -462,7 +462,7 @@ public class DBApp {
             case "director":
             case "artist":
             case "writer":
-                // TODO: search for creator
+                Searcher.pickCreator(type, conn, scan);
                 break;
             default:
                 // print invalid
@@ -1303,9 +1303,9 @@ public class DBApp {
             app.getConnection();
             // These can be uncommented to perform a sanity check that you're connecting to
             // the db correctly
-            // System.out.println(Util.nextIDFrom("Item", app.conn));
-            // System.out.println(Util.nextIDFrom("creator", app.conn));
-            // System.out.println(Util.nextIDFrom("library_card", app.conn));
+            System.out.println(Util.nextIDFrom("Item", app.conn));
+            System.out.println(Util.nextIDFrom("creator", app.conn));
+            System.out.println(Util.nextIDFrom("library_card", app.conn));
             app.execute();
         } catch (SQLException e) {
             System.err.println(e.getMessage());

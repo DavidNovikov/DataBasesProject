@@ -35,6 +35,24 @@ public class Util {
 		return null;
 	}
 
+	public static String creatorNameString(String type) {
+		type = type.toLowerCase();
+		switch (type) {
+			case "artist":
+				return "Ar_Name";
+			case "actor":
+				return "Ar_Name";
+			case "director":
+				return "Ar_Name";
+			case "writer":
+				return "Ar_Name";
+			default:
+				// print invalid
+				System.err.println(type + " isn't a creator type");
+		}
+		return null;
+	}
+
 	public static void closeStmt(PreparedStatement stmt) {
 
 		if (stmt != null) {
