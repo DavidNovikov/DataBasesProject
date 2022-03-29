@@ -130,4 +130,21 @@ public class Util {
 		}
 		return active;
 	}
+
+	public static String getEmail(Scanner scan){
+		boolean successful = false;
+		String response = "";
+		while(!successful){
+			System.out.println("Enter the email:");
+			response = scan.nextLine();
+			int atIndex = response.indexOf("@");
+			int dotIndex = response.lastIndexOf(".");
+			if(atIndex !=-1 && dotIndex != -1 && atIndex<dotIndex){
+				successful = true;
+			}else{
+				System.out.println("Invalid email!");
+			}
+		}
+		return response;
+	}
 }

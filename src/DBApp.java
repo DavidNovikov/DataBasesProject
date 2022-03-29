@@ -429,7 +429,8 @@ class Chapter {
 
 public class DBApp {
 
-    final String CONNECTIONPATH = "jdbc:sqlite:/Users/davidnovikov/Desktop/LIBRARY.db";
+    //final String CONNECTIONPATH = "jdbc:sqlite:/Users/davidnovikov/Desktop/LIBRARY.db";
+    final String CONNECTIONPATH = "jdbc:sqlite:/Users/djcje/Documents/Databases/Library.db";
     // use a scanner to read input
     private Scanner scan;
 
@@ -731,7 +732,7 @@ public class DBApp {
     public void add() {
         // ask for which type of item to add
         System.out.println(
-                "What would you like to add? (Album, Track, Interview, Movie, Audiobook, AudiobookChapter, PhysicalBook, PhysicalBookChapter, Actor, Artist, Director, or Writer)");
+                "What would you like to add? (Album, Track, Interview, Movie, Audiobook, AudiobookChapter, PhysicalBook, PhysicalBookChapter, Actor, Artist, Director, Writer, or Person)");
         // get the type
         String type = scan.nextLine().toLowerCase();
         // add depending on the type
@@ -753,6 +754,9 @@ public class DBApp {
             case "artist":
             case "writer":
                 // TODO: add creator
+                break;
+            case "person":
+                Adder.addPersonAndCard(conn, scan);
                 break;
             default:
                 // print invalid
@@ -1240,7 +1244,7 @@ public class DBApp {
         while (input != 'q') {
             // ask the user for input
             System.out.println(
-                    "Enter 'a' to add new records, 'e' to edit a record, 's' to search for a record, 'd' to delete a record, 'c' to check out a record, 'o' to manage orders, 'p' to manage library cards/patrons, and 'q' to quit.");
+                    "Enter 'a' to add new records, 'e' to edit a record, 's' to search for a record, 'd' to delete a record, and 'q' to quit.");
 
             // get user input
             input = scan.nextLine().charAt(0);
