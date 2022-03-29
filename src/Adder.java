@@ -301,7 +301,10 @@ public class Adder {
 
         switch (creatorType) {
             case "artist":
-                addArtist(conn, scan, newCreatorID);
+            case "actor":
+            case "director":
+            case "writer":
+                addCreatorNameDOB(creatorType, conn, scan, newCreatorID);
                 break;
             default:
                 System.err.println(creatorType + " isn't a valid new item insert type");
@@ -309,16 +312,16 @@ public class Adder {
 
     }
 
-    private static void addArtist(Connection conn, Scanner scan, int newCreatorID) throws Exception {
+    private static void addCreatorNameDOB(String creatorType, Connection conn, Scanner scan, int newCreatorID) throws Exception {
         PreparedStatement stmt = null;
 
         try {
-            System.out.println("Please enter the artist name");
+            System.out.println("Please enter the "+creatorType+" name");
             String name = scan.nextLine();
             
             String dateOfBirth = Util.getDate(scan, "date of birth");
 
-            String query = "insert into artist values (?,?,?);";
+            String query = "insert into "+creatorType+" values (?,?,?);";
             stmt = conn.prepareStatement(query);
 
             stmt.setString(1, name);
@@ -333,5 +336,4 @@ public class Adder {
             Util.closeStmt(stmt);
         }
     }
-
 }
