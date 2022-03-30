@@ -8,7 +8,7 @@ public class Editor {
         try {
             int editing = whatToEditCreator(scan);
 
-            stmt = conn.prepareStatement(Maps.creatorEditMap.get(type)[editing - 1]);
+            stmt = conn.prepareStatement(Maps.creatorEditorMap.get(type)[editing - 1]);
 
             switch (editing) {
                 case 1:

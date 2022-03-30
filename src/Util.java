@@ -7,9 +7,10 @@ public class Util {
 		ResultSet rSet = null;
 		int nextID = -1;
 		try {
-			stmt = conn.prepareStatement("SELECT Max(" + idName(tableType) + ") FROM " + tableType + ";");
+			tableType = tableType.toLowerCase();
+			stmt = conn.prepareStatement(Maps.nextIDMap.get(tableType));
 			rSet = stmt.executeQuery();
-			nextID = rSet.getInt("Max(" + idName(tableType) + ")") + 1;
+			nextID = rSet.getInt(Maps.nextIDColumnMap.get(tableType)) + 1;
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
 		} finally {
