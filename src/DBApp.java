@@ -430,7 +430,9 @@ class Chapter {
 public class DBApp {
 
     //final String CONNECTIONPATH = "jdbc:sqlite:/Users/davidnovikov/Desktop/LIBRARY.db";
+
     final String CONNECTIONPATH = "jdbc:sqlite:/Users/Bryce/AppData/Local/SQLiteStudio/Checkpoint.db";
+
     // use a scanner to read input
     private Scanner scan;
 
@@ -463,7 +465,7 @@ public class DBApp {
             case "director":
             case "artist":
             case "writer":
-                // TODO: search for creator
+                Searcher.pickCreator(type, conn, scan);
                 break;
             default:
                 // print invalid
@@ -753,7 +755,7 @@ public class DBApp {
             case "director":
             case "artist":
             case "writer":
-                // TODO: add creator
+                Adder.addCreator(Util.changeToDBString(type), conn, scan);
                 break;
             default:
                 // print invalid
@@ -1304,9 +1306,9 @@ public class DBApp {
             app.getConnection();
             // These can be uncommented to perform a sanity check that you're connecting to
             // the db correctly
-            // System.out.println(Util.nextIDFrom("Item", app.conn));
-            // System.out.println(Util.nextIDFrom("creator", app.conn));
-            // System.out.println(Util.nextIDFrom("library_card", app.conn));
+            System.out.println(Util.nextIDFrom("Item", app.conn));
+            System.out.println(Util.nextIDFrom("creator", app.conn));
+            System.out.println(Util.nextIDFrom("library_card", app.conn));
             app.execute();
         } catch (SQLException e) {
             System.err.println(e.getMessage());
