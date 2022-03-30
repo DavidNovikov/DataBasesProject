@@ -27,8 +27,7 @@ public class Adder {
             System.out.println("Please enter the year released");
             int year = Integer.valueOf(scan.nextLine());
 
-            String query = "insert into item values (?,?,?,?,?);";
-            stmt = conn.prepareStatement(query);
+            stmt = conn.prepareStatement(Maps.itemAdderMap.get("item"));
 
             stmt.setInt(1, itemID);
             stmt.setString(2, title);
@@ -83,8 +82,7 @@ public class Adder {
             System.out.println("Please enter the length in minutes");
             int lenInMin = Integer.valueOf(scan.nextLine());
 
-            String query = "insert into album values (?,?,?);";
-            stmt = conn.prepareStatement(query);
+            stmt = conn.prepareStatement(Maps.itemAdderMap.get("album"));
 
             stmt.setInt(1, numSongs);
             stmt.setInt(2, lenInMin);
@@ -109,8 +107,7 @@ public class Adder {
             System.out.println("Please enter the length in seconds");
             int lenInSec = Integer.valueOf(scan.nextLine());
 
-            String query = "insert into track values (?,?,?);";
-            stmt = conn.prepareStatement(query);
+            stmt = conn.prepareStatement(Maps.itemAdderMap.get("track"));
 
             stmt.setInt(1, lenInSec);
             stmt.setInt(2, albumID);
@@ -134,8 +131,7 @@ public class Adder {
             System.out.println("Please enter the length in minutes");
             int lenInMin = Integer.valueOf(scan.nextLine());
 
-            String query = "insert into interview values (?,?);";
-            stmt = conn.prepareStatement(query);
+            stmt = conn.prepareStatement(Maps.itemAdderMap.get("interview"));
 
             stmt.setInt(1, lenInMin);
             stmt.setInt(2, newItemID);
@@ -159,8 +155,7 @@ public class Adder {
             System.out.println("Please enter the rating");
             String rating = scan.nextLine();
 
-            String query = "insert into movie values (?,?,?);";
-            stmt = conn.prepareStatement(query);
+            stmt = conn.prepareStatement(Maps.itemAdderMap.get("movie"));
 
             stmt.setInt(1, runtime);
             stmt.setString(2, rating);
@@ -186,8 +181,7 @@ public class Adder {
             System.out.println("Please enter the length in minutes");
             int lenInMin = Integer.valueOf(scan.nextLine());
 
-            String query = "insert into audiobook values (?,?,?);";
-            stmt = conn.prepareStatement(query);
+            stmt = conn.prepareStatement(Maps.itemAdderMap.get("audiobook"));
 
             stmt.setInt(1, numChapters);
             stmt.setInt(2, lenInMin);
@@ -212,8 +206,7 @@ public class Adder {
             System.out.println("Please enter the number of pages");
             int pages = Integer.valueOf(scan.nextLine());
 
-            String query = "insert into PHYSICAL_BOOK values (?,?,?);";
-            stmt = conn.prepareStatement(query);
+            stmt = conn.prepareStatement(Maps.itemAdderMap.get("physical_book"));
 
             stmt.setInt(1, numChapters);
             stmt.setInt(2, pages);
@@ -263,7 +256,7 @@ public class Adder {
         try {
             newCreatorID = addCreatorBase(creatorType, conn, scan);
             addCreatorSuper(creatorType, conn, scan, newCreatorID);
-            
+
         } catch (Exception e) {
             System.out.println("failed to insert");
         }
@@ -276,8 +269,7 @@ public class Adder {
 
         try {
 
-            String query = "insert into creator values (?);";
-            stmt = conn.prepareStatement(query);
+            stmt = conn.prepareStatement(Maps.creatorAdderMap.get("creator"));
 
             stmt.setInt(1, creatorID);
 
@@ -291,7 +283,8 @@ public class Adder {
         return creatorID;
     }
 
-    private static void addCreatorSuper(String creatorType, Connection conn, Scanner scan, int newCreatorID) throws Exception {
+    private static void addCreatorSuper(String creatorType, Connection conn, Scanner scan, int newCreatorID)
+            throws Exception {
 
         switch (creatorType) {
             case "artist":
@@ -306,17 +299,17 @@ public class Adder {
 
     }
 
-    private static void addCreatorNameDOB(String creatorType, Connection conn, Scanner scan, int newCreatorID) throws Exception {
+    private static void addCreatorNameDOB(String creatorType, Connection conn, Scanner scan, int newCreatorID)
+            throws Exception {
         PreparedStatement stmt = null;
 
         try {
-            System.out.println("Please enter the "+creatorType+" name");
+            System.out.println("Please enter the " + creatorType + " name");
             String name = scan.nextLine();
-            
+
             String dateOfBirth = Util.getDate(scan, "date of birth");
 
-            String query = "insert into "+creatorType+" values (?,?,?);";
-            stmt = conn.prepareStatement(query);
+            stmt = conn.prepareStatement(Maps.creatorAdderMap.get(creatorType));
 
             stmt.setString(1, name);
             stmt.setString(2, dateOfBirth);
