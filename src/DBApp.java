@@ -454,6 +454,9 @@ public class DBApp {
 
         switch (type) {
             case "album":
+                //test
+                Searcher.pickItem(type, conn, scan);
+                break;
             case "track":
             case "interview":
             case "movie":
