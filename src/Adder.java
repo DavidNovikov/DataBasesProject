@@ -277,6 +277,8 @@ public class Adder {
         System.out.println("Enter the type of relationship you are adding: (stars, writes, interviewed, performs, or directs)");
         String relationshipType = scan.nextLine().toLowerCase();
 
+        try{
+
         switch (relationshipType) {
             case "stars":
                 addStarsRelationship(conn, scan);
@@ -285,10 +287,13 @@ public class Adder {
             case "interviewed":
             case "performs":
             case "directs":
-                addOtherRelationships(conn, scan, relationshipType);
+                addGenericRelationships(conn, scan, relationshipType);
                 break;
             default:
                 System.err.println(relationshipType + " isn't a valid new relationship insert type");
+        }
+        }catch(Exception e){
+            System.out.println("Unable to create relationship. Exception:" +e );
         }
     }
 
@@ -297,10 +302,10 @@ public class Adder {
         
         try {
             System.out.println("Please enter the creator ID");
-            int CID = Integer.valueOf(scan.nextLine());
+            int creatorID = Integer.valueOf(scan.nextLine());
 
             System.out.println("Please enter the item ID");
-            int IID = Integer.valueOf(scan.nextLine());
+            int itemID = Integer.valueOf(scan.nextLine());
 
             System.out.println("Please enter the role");
             String role = scan.nextLine();
@@ -308,9 +313,9 @@ public class Adder {
             String query = "insert into stars values (?,?,?);";
             stmt = conn.prepareStatement(query);
 
-            stmt.setInt(1, CID);
+            stmt.setInt(1, creatorID);
             stmt.setString(2, role);
-            stmt.setInt(3, IID);
+            stmt.setInt(3, itemID);
 
             stmt.executeUpdate();
         } catch (SQLException | NumberFormatException e) {
@@ -321,21 +326,21 @@ public class Adder {
         }
     }
 
-    public static void addOtherRelationship(Connection conn, Scanner scan, String relationshipType) throws Exception{
+    public static void addGenericRelationships(Connection conn, Scanner scan, String relationshipType) throws Exception{
         PreparedStatement stmt = null;
         
         try {
             System.out.println("Please enter the creator ID");
-            int CID = Integer.valueOf(scan.nextLine());
+            int creatorID = Integer.valueOf(scan.nextLine());
 
             System.out.println("Please enter the item ID");
-            int IID = Integer.valueOf(scan.nextLine());
+            int itemID = Integer.valueOf(scan.nextLine());
 
             String query = "insert into "+relationshipType+" values (?,?);";
             stmt = conn.prepareStatement(query);
 
-            stmt.setInt(1, CID);
-            stmt.setInt(3, IID);
+            stmt.setInt(1, creatorID);
+            stmt.setInt(3, itemID);
 
             stmt.executeUpdate();
         } catch (SQLException | NumberFormatException e) {
