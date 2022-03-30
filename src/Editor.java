@@ -5,28 +5,23 @@ public class Editor {
     public static void editCreator(String type, Connection conn, Scanner scan) {
         int creatorID = Searcher.pickCreator(type, conn, scan);
         PreparedStatement stmt = null;
-        String update = "UPDATE ? SET ? = ? WHERE creator_id = ?;";
         try {
-
             int editing = whatToEditCreator(scan);
 
-            stmt = conn.prepareStatement(update);
-            stmt.setString(1, type);
+            stmt = conn.prepareStatement(Maps.creatorEditMap.get(type)[editing - 1]);
 
             switch (editing) {
                 case 1:
                     System.out.println("enter the new value");
                     String newName = scan.nextLine();
-                    stmt.setString(2, "ar_name");
-                    stmt.setString(3, newName);
+                    stmt.setString(1, newName);
                     break;
                 case 2:
                     String dateOfBirth = Util.getDate(scan, "date of birth");
-                    stmt.setString(2, "Date_Of_Birth");
-                    stmt.setString(3, dateOfBirth);
+                    stmt.setString(1, dateOfBirth);
                     break;
             }
-            stmt.setInt(4, creatorID);
+            stmt.setInt(2, creatorID);
             stmt.executeUpdate();
         } catch (SQLException | NumberFormatException e) {
             System.out.println(e.getMessage());
