@@ -134,7 +134,7 @@ public class Adder {
             System.out.println("Please enter the length in minutes");
             int lenInMin = Integer.valueOf(scan.nextLine());
 
-            String query = "insert into album values (?,?);";
+            String query = "insert into interview values (?,?);";
             stmt = conn.prepareStatement(query);
 
             stmt.setInt(1, lenInMin);
@@ -159,7 +159,7 @@ public class Adder {
             System.out.println("Please enter the rating");
             String rating = scan.nextLine();
 
-            String query = "insert into album values (?,?,?);";
+            String query = "insert into movie values (?,?,?);";
             stmt = conn.prepareStatement(query);
 
             stmt.setInt(1, runtime);
@@ -186,7 +186,7 @@ public class Adder {
             System.out.println("Please enter the length in minutes");
             int lenInMin = Integer.valueOf(scan.nextLine());
 
-            String query = "insert into album values (?,?,?);";
+            String query = "insert into audiobook values (?,?,?);";
             stmt = conn.prepareStatement(query);
 
             stmt.setInt(1, numChapters);
@@ -212,7 +212,7 @@ public class Adder {
             System.out.println("Please enter the number of pages");
             int pages = Integer.valueOf(scan.nextLine());
 
-            String query = "insert into album values (?,?,?);";
+            String query = "insert into physical_book values (?,?,?);";
             stmt = conn.prepareStatement(query);
 
             stmt.setInt(1, numChapters);
