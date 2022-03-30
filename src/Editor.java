@@ -10,33 +10,26 @@ public class Editor {
 
             int editing = whatToEditCreator(scan);
 
-            System.out.println("enter the new value");
-            String newVal = scan.nextLine();
-
             stmt = conn.prepareStatement(update);
             stmt.setString(1, type);
 
             switch (editing) {
                 case 1:
+                    System.out.println("enter the new value");
+                    String newName = scan.nextLine();
                     stmt.setString(2, "ar_name");
+                    stmt.setString(3, newName);
                     break;
                 case 2:
-                    stmt.setString(2, "ar_name");
+                    String dateOfBirth = Util.getDate(scan, "date of birth");
+                    stmt.setString(2, "Date_Of_Birth");
+                    stmt.setString(3, dateOfBirth);
                     break;
             }
-
-            stmt = conn.prepareStatement(update);
-
-            // stmt.setInt(1, itemID);
-            // stmt.setString(2, title);
-            // stmt.setInt(3, year);
-            // stmt.setString(4, Util.getTypeForInsert(item));
-            // stmt.setBoolean(5, Util.getStatus(scan));
-
+            stmt.setInt(4, creatorID);
             stmt.executeUpdate();
         } catch (SQLException | NumberFormatException e) {
             System.out.println(e.getMessage());
-            throw e;
         } finally {
             Util.closeStmt(stmt);
         }
