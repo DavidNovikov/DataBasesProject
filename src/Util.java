@@ -82,7 +82,7 @@ public class Util {
 				request = "chapter_pb";
 				break;
 			case "physicalbook":
-				request = "physical_book";
+				request = "physicalbook";
 				break;
 		}
 		return request;
