@@ -429,7 +429,9 @@ class Chapter {
 
 public class DBApp {
 
-    final String CONNECTIONPATH = "jdbc:sqlite:/Users/davidnovikov/Desktop/LIBRARY.db";
+    //final String CONNECTIONPATH = "jdbc:sqlite:/Users/davidnovikov/Desktop/LIBRARY.db";
+    final String CONNECTIONPATH = "jdbc:sqlite:/Users/djcje/Documents/Databases/Library.db";
+    
     // use a scanner to read input
     private Scanner scan;
 

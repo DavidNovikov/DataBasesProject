@@ -340,7 +340,7 @@ public class Adder {
             stmt = conn.prepareStatement(query);
 
             stmt.setInt(1, creatorID);
-            stmt.setInt(3, itemID);
+            stmt.setInt(2, itemID);
 
             stmt.executeUpdate();
         } catch (SQLException | NumberFormatException e) {
