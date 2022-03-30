@@ -212,7 +212,7 @@ public class Adder {
             System.out.println("Please enter the number of pages");
             int pages = Integer.valueOf(scan.nextLine());
 
-            String query = "insert into physical_book values (?,?,?);";
+            String query = "insert into PHYSICAL_BOOK values (?,?,?);";
             stmt = conn.prepareStatement(query);
 
             stmt.setInt(1, numChapters);
