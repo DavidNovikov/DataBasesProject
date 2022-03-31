@@ -429,11 +429,7 @@ class Chapter {
 
 public class DBApp {
 
-    final String CONNECTIONPATH = "jdbc:sqlite:/Users/davidnovikov/Desktop/LIBRARY.db";
-    // final String CONNECTIONPATH =
-    // "jdbc:sqlite:/Users/djcje/Documents/Databases/Library.db";
-    // final String CONNECTIONPATH =
-    // "jdbc:sqlite:/Users/Bryce/AppData/Local/SQLiteStudio/Checkpoint.db";
+    final String CONNECTIONPATH = "jdbc:sqlite:LIBRARY.db";
 
     // use a scanner to read input
     private Scanner scan;
@@ -454,7 +450,7 @@ public class DBApp {
 
         switch (type) {
             case "album":
-                //test
+                // test
                 Searcher.pickItem(type, conn, scan);
                 break;
             case "track":
