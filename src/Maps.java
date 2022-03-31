@@ -1,10 +1,11 @@
 import java.util.*;
 
 public class Maps {
-    public static Map<String, String[]> creatorEditorMap;
     public static Map<String, String> itemAdderMap;
     public static Map<String, String> creatorAdderMap;
     public static Map<String, String> creatorSearcherMap;
+    public static Map<String, String[]> creatorEditorMap;
+    public static Map<String, String> creatorDeleteMap;
     public static Map<String, String> nextIDMap;
     public static Map<String, String> nextIDColumnMap;
 
@@ -14,6 +15,7 @@ public class Maps {
         itemAdderMap = new HashMap<>();
         creatorAdderMap = new HashMap<>();
         creatorSearcherMap = new HashMap<>();
+        creatorDeleteMap = new HashMap<>();
         nextIDMap = new HashMap<>();
         nextIDColumnMap = new HashMap<>();
 
@@ -38,7 +40,7 @@ public class Maps {
         itemAdderMap.put("audiobook", "insert into audiobook values (?,?,?);");
         itemAdderMap.put("physical_book", "insert into physical_book values (?,?,?);");
 
-        creatorAdderMap.put("creator ", "insert into creator values (?);");
+        creatorAdderMap.put("creator", "insert into creator values (?);");
         creatorAdderMap.put("artist", "insert into artist values (?,?,?);");
         creatorAdderMap.put("actor", "insert into actor values (?,?,?);");
         creatorAdderMap.put("director", "insert into director values (?,?,?);");
@@ -47,6 +49,13 @@ public class Maps {
         creatorSearcherMap.put("artist", "SELECT * FROM artist where ar_name = ?;");
         creatorSearcherMap.put("actor", "SELECT * FROM actor where ar_name = ?;");
         creatorSearcherMap.put("director", "SELECT * FROM director where ar_name = ?;");
+        creatorSearcherMap.put("writer", "SELECT * FROM writer where ar_name = ?;");
+
+        creatorDeleteMap.put("creator", "delete from creator where Creator_ID = ?;");
+        creatorDeleteMap.put("artist", "delete from artist where Creator_ID = ?;");
+        creatorDeleteMap.put("actor", "delete from actor where Creator_ID = ?;");
+        creatorDeleteMap.put("director", "delete from director where Creator_ID = ?;");
+        creatorDeleteMap.put("writer", "delete from writer where Creator_ID = ?;");
 
         nextIDMap.put("item", "SELECT Max(Item_ID) FROM item;");
         nextIDMap.put("creator", "SELECT Max(creator_ID) FROM creator;");
@@ -55,7 +64,6 @@ public class Maps {
         nextIDColumnMap.put("item", "Max(Item_ID)");
         nextIDColumnMap.put("creator", "Max(creator_ID)");
         nextIDColumnMap.put("library_card", "Max(cardID)");
-
     }
 
 }
