@@ -1094,7 +1094,7 @@ public class DBApp {
             case "movie":
             case "audiobook":
             case "physicalbook":
-                // TODO: edit item
+                Editor.editItem(type, conn, scan);
                 break;
             case "audiobookchapter":
             case "physicalbookchapter":
@@ -1103,7 +1103,7 @@ public class DBApp {
             case "actor":
             case "director":
             case "artist":
-            case "writer":
+            case "writeer":
                 Editor.editCreator(type, conn, scan);
                 break;
             default:
