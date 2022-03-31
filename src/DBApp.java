@@ -1241,13 +1241,48 @@ public class DBApp {
     // }
     // }
     // }
+    
+    public void checkout() {
+        // Ask the user what type of record they want to check out
+        System.out.println(
+                "Enter the type of the record to be checked out (Album, Track, Interview, Movie, Audiobook, or PhysicalBook): ");
+        String type = scan.nextLine().toLowerCase();
+        try {
+        	switch (type) {
+        	case "album":
+        		Checkout.checkoutItem(type,conn,scan);
+        		break;
+        	case "track":
+        		Checkout.checkoutItem(type,conn,scan);
+        		break;
+        	case "interview":
+        		Checkout.checkoutItem(type,conn,scan);
+        		break;
+        	case "movie":
+        		Checkout.checkoutItem(type,conn,scan);
+        		break;
+        	case "audiobook":
+        		Checkout.checkoutItem(type,conn,scan);
+        		break;
+        	case "physicalbook":
+        		Checkout.checkoutItem(type,conn,scan);
+        		break;
+        	default:
+        		// print invalid
+        		System.out.println(type + " is an Invalid input");
+        	}
+        } catch (Exception e) {
+            System.out.println("failed to insert");
+        }
+        
+    }
 
     private void execute() {
         char input = 'h';
         while (input != 'q') {
             // ask the user for input
             System.out.println(
-                    "Enter 'a' to add new records, 'e' to edit a record, 's' to search for a record, 'd' to delete a record, 'c' to check out a record, 'o' to manage orders, 'p' to manage library cards/patrons, and 'q' to quit.");
+                    "Enter 'a' to add new records, 'e' to edit a record, 's' to search for a record, 'd' to delete a record, 'c' to check out a record, 'o' to manage orders, 'r' to show reports, 'p' to manage library cards/patrons, and 'q' to quit.");
 
             // get user input
             input = scan.nextLine().charAt(0);
@@ -1267,7 +1302,7 @@ public class DBApp {
                     search();
                     break;
                 case 'c':
-                    // TODO: implement checkout
+                    checkout();
                     break;
                 case 'd':
                     // TODO: delete func
@@ -1275,6 +1310,8 @@ public class DBApp {
                 case 'o':
                     // TODO: order/edit/delete records
                     break;
+                case 'r':
+                	//TODO: Generate reports
                 case 'p':
                     // TODO: manage people func
                     break;
