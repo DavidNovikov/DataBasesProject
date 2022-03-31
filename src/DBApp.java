@@ -429,6 +429,8 @@ class Chapter {
 
 public class DBApp {
 
+    //final String CONNECTIONPATH = "jdbc:sqlite:/Users/davidnovikov/Desktop/LIBRARY.db";
+    //final String CONNECTIONPATH = "jdbc:sqlite:/Users/djcje/Documents/Databases/Library.db";
     final String CONNECTIONPATH = "jdbc:sqlite:LIBRARY.db";
 
     // use a scanner to read input
@@ -736,7 +738,7 @@ public class DBApp {
     public void add() {
         // ask for which type of item to add
         System.out.println(
-                "What would you like to add? (Album, Track, Interview, Movie, Audiobook, AudiobookChapter, PhysicalBook, PhysicalBookChapter, Actor, Artist, Director, or Writer)");
+                "What would you like to add? (Album, Track, Interview, Movie, Audiobook, AudiobookChapter, PhysicalBook, PhysicalBookChapter, Actor, Artist, Director, Writer, or Relationship)");
         // get the type
         String type = scan.nextLine().toLowerCase();
         // add depending on the type
@@ -758,6 +760,9 @@ public class DBApp {
             case "artist":
             case "writer":
                 Adder.addCreator(Util.changeToDBString(type), conn, scan);
+                break;
+            case "relationship":
+                Adder.addRelationship(conn, scan);
                 break;
             default:
                 // print invalid
