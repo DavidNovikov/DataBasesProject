@@ -7,9 +7,10 @@ public class Util {
 		ResultSet rSet = null;
 		int nextID = -1;
 		try {
-			stmt = conn.prepareStatement("SELECT Max(" + idName(tableType) + ") FROM " + tableType + ";");
+			tableType = tableType.toLowerCase();
+			stmt = conn.prepareStatement(Maps.nextIDMap.get(tableType));
 			rSet = stmt.executeQuery();
-			nextID = rSet.getInt("Max(" + idName(tableType) + ")") + 1;
+			nextID = rSet.getInt(Maps.nextIDColumnMap.get(tableType)) + 1;
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
 		} finally {
@@ -82,7 +83,7 @@ public class Util {
 				request = "chapter_pb";
 				break;
 			case "physicalbook":
-				request = "physical_book";
+				request = "physicalbook";
 				break;
 		}
 		return request;
@@ -129,5 +130,35 @@ public class Util {
 			}
 		}
 		return active;
+	}
+
+	public static String getDate(Scanner scan, String dateName) {
+		boolean successful = false;
+		String response = "";
+		while (!successful) {
+			System.out.println("Enter the " + dateName + " in the form YYYY-MM-DD:");
+			response = scan.nextLine();
+			String[] date = response.split("-");
+			if (date.length != 3) {
+				System.out.println("Date does not have a year, month, and day");
+			} else if (date[0].length() != 4) {
+				System.out.println("Year needs to be 4 digits");
+			} else if (date[1].length() != 2) {
+				System.out.println("Month needs to be 4 digits");
+			} else if (date[2].length() != 2) {
+				System.out.println("Day needs to be 2 digits");
+			} else {
+				try {
+					int year = Integer.parseInt(date[0]);
+					int month = Integer.parseInt(date[1]);
+					int day = Integer.parseInt(date[2]);
+					// if these all work, it is successful
+					successful = true;
+				} catch (NumberFormatException e) {
+					System.out.println("Either the year, month, or day is not a valid number.");
+				}
+			}
+		}
+		return response;
 	}
 }

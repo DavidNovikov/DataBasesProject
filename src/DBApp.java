@@ -430,8 +430,9 @@ class Chapter {
 public class DBApp {
 
     //final String CONNECTIONPATH = "jdbc:sqlite:/Users/davidnovikov/Desktop/LIBRARY.db";
-    final String CONNECTIONPATH = "jdbc:sqlite:/Users/djcje/Documents/Databases/Library.db";
-    
+    //final String CONNECTIONPATH = "jdbc:sqlite:/Users/djcje/Documents/Databases/Library.db";
+    final String CONNECTIONPATH = "jdbc:sqlite:LIBRARY.db";
+
     // use a scanner to read input
     private Scanner scan;
 
@@ -446,7 +447,7 @@ public class DBApp {
     public void search() {
         // Ask the user which record they want to edit
         System.out.println(
-                "Enter the type of the record to be searched for (Album, Track, Interview, Movie, Audiobook, AudiobookChapter, PhysicalBook, PhysicalBookChapter, Actor, Artist, Director, or Writer): ");
+                "Enter the type of the record to be searched for (Album, Track, Interview, Movie, Audiobook, AudiobookChapter, PhysicalBook, PhysicalBookChapter, Actor, Artist, Director, Writer, or Person): ");
         String type = scan.nextLine().toLowerCase();
 
         switch (type) {
@@ -459,12 +460,16 @@ public class DBApp {
             case "physicalbookchapter":
             case "physicalbook":
                 // TODO: search for item
+                Searcher.pickItem(type, conn, scan);
                 break;
             case "actor":
             case "director":
             case "artist":
             case "writer":
                 Searcher.pickCreator(type, conn, scan);
+                break;
+            case "person":
+                Searcher.pickPerson(conn, scan);
                 break;
             default:
                 // print invalid
@@ -754,7 +759,7 @@ public class DBApp {
             case "director":
             case "artist":
             case "writer":
-                // TODO: add creator
+                Adder.addCreator(Util.changeToDBString(type), conn, scan);
                 break;
             case "relationship":
                 Adder.addRelationship(conn, scan);
@@ -1094,16 +1099,18 @@ public class DBApp {
             case "interview":
             case "movie":
             case "audiobook":
+            case "physicalbook":
+                Editor.editItem(type, conn, scan);
+                break;
             case "audiobookchapter":
             case "physicalbookchapter":
-            case "physicalbook":
-                // TODO: edit item
+                // TODO: edit chapter
                 break;
             case "actor":
             case "director":
             case "artist":
-            case "writer":
-                // TODO: edit creator
+            case "writeer":
+                Editor.editCreator(type, conn, scan);
                 break;
             default:
                 // print invalid
