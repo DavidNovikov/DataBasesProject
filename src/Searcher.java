@@ -47,6 +47,9 @@ public class Searcher {
             String itemName = scan.nextLine();
 
             try {
+                if(type.equals("physicalbook")) {
+                    type = "physical_book";
+                }
                 String elem1 = "SELECT * FROM ITEM," + type + " WHERE title = ?";
                 String elem2 = " AND " + "ITEM.Item_ID=" + type + ".ItemID;";
                 String sql = elem1+elem2;
