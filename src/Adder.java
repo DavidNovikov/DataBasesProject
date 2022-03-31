@@ -304,6 +304,14 @@ public class Adder {
             stmt.setInt(1, creatorID);
             stmt.setString(2, role);
             stmt.setInt(3, itemID);
+            stmt.executeUpdate();
+        } catch (SQLException | NumberFormatException e) {
+            System.out.println(e.getMessage());
+            throw e;
+        } finally {
+            Util.closeStmt(stmt);
+        }
+    }
     public static void addCreator(String creatorType, Connection conn, Scanner scan) {
         int newCreatorID;
         try {
@@ -333,6 +341,7 @@ public class Adder {
         } finally {
             Util.closeStmt(stmt);
         }
+        return creatorID;
     }
 
     public static void addGenericRelationships(Connection conn, Scanner scan, String relationshipType) throws Exception{
@@ -350,8 +359,15 @@ public class Adder {
 
             stmt.setInt(1, creatorID);
             stmt.setInt(2, itemID);
-        return creatorID;
+            stmt.executeUpdate();
+        } catch (SQLException | NumberFormatException e) {
+            System.out.println(e.getMessage());
+            throw e;
+        } finally {
+            Util.closeStmt(stmt);
+        }
     }
+
 
     private static void addCreatorSuper(String creatorType, Connection conn, Scanner scan, int newCreatorID)
             throws Exception {
