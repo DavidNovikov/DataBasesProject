@@ -447,7 +447,7 @@ public class DBApp {
     public void search() {
         // Ask the user which record they want to edit
         System.out.println(
-                "Enter the type of the record to be searched for (Album, Track, Interview, Movie, Audiobook, AudiobookChapter, PhysicalBook, PhysicalBookChapter, Actor, Artist, Director, or Writer): ");
+                "Enter the type of the record to be searched for (Album, Track, Interview, Movie, Audiobook, AudiobookChapter, PhysicalBook, PhysicalBookChapter, Actor, Artist, Director, Writer, or Person): ");
         String type = scan.nextLine().toLowerCase();
 
         switch (type) {
@@ -467,6 +467,9 @@ public class DBApp {
             case "artist":
             case "writer":
                 Searcher.pickCreator(type, conn, scan);
+                break;
+            case "person":
+                Searcher.pickPerson(conn, scan);
                 break;
             default:
                 // print invalid
