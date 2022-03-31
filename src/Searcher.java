@@ -12,7 +12,7 @@ public class Searcher {
             String cName = scan.nextLine();
 
             try {
-                stmt = conn.prepareStatement("SELECT * FROM " + type + " where ar_name = ?;");
+                stmt = conn.prepareStatement(Maps.creatorSearcherMap.get(type));
                 stmt.setString(1, cName);
 
                 rSet = stmt.executeQuery();
