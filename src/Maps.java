@@ -9,6 +9,7 @@ public class Maps {
     public static Map<String, String> creatorDeleteMap;
     public static Map<String, String> nextIDMap;
     public static Map<String, String> nextIDColumnMap;
+    public static Map<String, String>  itemSearcherMap;
 
     // Instantiating the static maps
     static {
@@ -20,6 +21,7 @@ public class Maps {
         nextIDMap = new HashMap<>();
         nextIDColumnMap = new HashMap<>();
         itemEditorMap = new HashMap<>();
+        itemSearcherMap = new HashMap<>();
 
         String[] albumList = { "UPDATE album SET NumberSongs = ? WHERE ItemID = ?;",
                 "UPDATE album SET NumberMinutes = ? WHERE ItemID = ?;" };
@@ -84,6 +86,14 @@ public class Maps {
         nextIDColumnMap.put("item", "Max(Item_ID)");
         nextIDColumnMap.put("creator", "Max(creator_ID)");
         nextIDColumnMap.put("library_card", "Max(cardID)");
+        
+        itemSearcherMap.put("album", "SELECT * FROM ITEM ,ALBUM WHERE title = ? AND ITEM.Item_ID = ALBUM.ItemID ");
+        itemSearcherMap.put("track", "SELECT * FROM ITEM ,TRACK WHERE title = ? AND ITEM.Item_ID = TRACK.ItemID ");
+        itemSearcherMap.put("interview", "SELECT * FROM ITEM ,interview WHERE title = ? AND ITEM.Item_ID = interview.ItemID ");
+        itemSearcherMap.put("movie", "SELECT * FROM ITEM ,movie WHERE title = ? AND ITEM.Item_ID = movie.ItemID ");
+        itemSearcherMap.put("audiobook", "SELECT * FROM ITEM ,audiobook WHERE title = ? AND ITEM.Item_ID = audiobook.ItemID ");
+        itemSearcherMap.put("physicalbook", "SELECT * FROM ITEM ,physicalbook WHERE title = ? AND ITEM.Item_ID = physicalbook.ItemID ");
+        
     }
 
 }
