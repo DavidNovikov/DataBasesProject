@@ -20,37 +20,6 @@ public class Util {
 		return nextID;
 	}
 
-	private static String idName(String type) {
-		type = type.toLowerCase();
-		switch (type) {
-			case "item":
-				return "Item_ID";
-			case "creator":
-				return "creator_ID";
-			case "library_card":
-				return "cardID";
-			default:
-				// print invalid
-				System.err.println(type + " isn't a table type");
-		}
-		return null;
-	}
-
-	public static String creatorNameString(String type) {
-		type = type.toLowerCase();
-		switch (type) {
-			case "artist":
-			case "actor":
-			case "director":
-			case "writer":
-				return "Ar_Name";
-			default:
-				// print invalid
-				System.err.println(type + " isn't a creator type");
-		}
-		return null;
-	}
-
 	public static void closeStmt(PreparedStatement stmt) {
 
 		if (stmt != null) {
@@ -87,34 +56,6 @@ public class Util {
 				break;
 		}
 		return request;
-	}
-
-	public static String getTypeForInsert(String type) {
-		type = type.toLowerCase();
-		// add depending on the type
-		switch (type) {
-			case "album":
-				type = "ALBUM";
-				break;
-			case "track":
-				type = "Track";
-				break;
-			case "interview":
-				type = "interview";
-				break;
-			case "movie":
-				type = "MOVIE";
-				break;
-			case "audiobook":
-				type = "ABook";
-				break;
-			case "physicalbook":
-				type = "PBook";
-				break;
-			default:
-				System.err.println(type + " isn't a type");
-		}
-		return type;
 	}
 
 	public static boolean getStatus(Scanner scan) {
