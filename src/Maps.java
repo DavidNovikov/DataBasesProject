@@ -1,6 +1,7 @@
 import java.util.*;
 
 public class Maps {
+    public static Map<String, String[]> itemEditorMap;
     public static Map<String, String> itemAdderMap;
     public static Map<String, String> creatorAdderMap;
     public static Map<String, String> creatorSearcherMap;
@@ -18,6 +19,25 @@ public class Maps {
         creatorDeleteMap = new HashMap<>();
         nextIDMap = new HashMap<>();
         nextIDColumnMap = new HashMap<>();
+        itemEditorMap = new HashMap<>();
+
+        String[] albumList = { "UPDATE album SET NumberSongs = ? WHERE ItemID = ?;",
+                "UPDATE album SET NumberMinutes = ? WHERE ItemID = ?;" };
+        String[] trackList = { "UPDATE track SET NumberSeconds = ? WHERE ItemID = ?;",
+                "UPDATE track SET AlbumID = ? WHERE ItemID = ?;" };
+        String[] interviewList = { "UPDATE interview SET NumberMinutes = ? WHERE ItemID = ?;" };
+        String[] movieList = { "UPDATE movie SET Runtime = ? WHERE ItemID = ?;",
+                "UPDATE movie SET Rating = ? WHERE ItemID = ?;" };
+        String[] audiobookList = { "UPDATE audiobook SET NumberChapters = ? WHERE ItemID = ?;",
+                "UPDATE audiobook SET NumberMinutes = ? WHERE ItemID = ?;" };
+        String[] physicalbookList = { "UPDATE physical_book SET NumberChapters = ? WHERE ItemID = ?;",
+                "UPDATE physical_book SET NumberPages = ? WHERE ItemID = ?;" };
+        itemEditorMap.put("album", albumList);
+        itemEditorMap.put("track", trackList);
+        itemEditorMap.put("interview", interviewList);
+        itemEditorMap.put("movie", movieList);
+        itemEditorMap.put("audiobook", audiobookList);
+        itemEditorMap.put("physicalbook", physicalbookList);
 
         String[] actorList = { "UPDATE actor SET ar_name = ? WHERE creator_id = ?;",
                 "UPDATE actor SET Date_Of_Birth = ? WHERE creator_id = ?;" };

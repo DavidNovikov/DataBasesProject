@@ -47,6 +47,9 @@ public class Searcher {
             String itemName = scan.nextLine();
 
             try {
+                if(type.equals("physicalbook")) {
+                    type = "physical_book";
+                }
                 String elem1 = "SELECT * FROM ITEM," + type + " WHERE title = ?";
                 String elem2 = " AND " + "ITEM.Item_ID=" + type + ".ItemID;";
                 String sql = elem1 + elem2;
@@ -86,5 +89,53 @@ public class Searcher {
             }
         }
         return ItemID;
+    }
+
+    public static int pickPerson(Connection conn, Scanner scan) {
+        int CardID = -1;
+        while (CardID == -1) {
+            PreparedStatement stmt = null;
+            ResultSet rSet = null;
+
+            System.out.println("Please enter the Person's email");
+            String email = scan.nextLine();
+
+            try {
+                
+                String sql = "SELECT * FROM PERSON WHERE email = ?;";
+                stmt = conn.prepareStatement(sql);
+                stmt.setString(1, email);
+                //stmt.setString(2, type);
+
+                rSet = stmt.executeQuery();
+                ResultSetMetaData rSetmd = rSet.getMetaData();
+                int columnCount = rSetmd.getColumnCount();
+                for (int i = 1; i <= columnCount; i++){
+                    String value = rSetmd.getColumnName(i);
+                    System.out.print(value);
+                    if (i < columnCount) System.out.print(",  ");
+                }
+                System.out.print("\n");
+                while (rSet.next() && CardID == -1) {
+                    for (int i = 1; i <= columnCount; i++){
+                        String columnValue = rSet.getString(i);
+                        System.out.print(columnValue);
+                        CardID = rSet.getInt("CardID");
+                        if (i < columnCount) System.out.print(",  ");
+                    }
+                    System.out.print("\n");
+                }
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+            } finally {
+                Util.closeStmt(stmt);
+                Util.closeRSet(rSet);
+            }
+
+            if (CardID == -1) {
+                System.out.println(email + " CardID not found");
+            }
+        }
+        return CardID;
     }
 }
