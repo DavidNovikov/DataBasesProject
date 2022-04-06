@@ -1087,6 +1087,37 @@ public class DBApp {
 
     // }
 
+    public void delete() {
+        // Ask the user which record they want to delete
+        System.out.println(
+                "Enter the type of the record to be deleted (Album, Track, Interview, Movie, Audiobook, AudiobookChapter, PhysicalBook, PhysicalBookChapter, Actor, Artist, Director, or Writer): ");
+        String type = scan.nextLine().toLowerCase();
+
+        switch (type) {
+            case "album":
+            case "track":
+            case "interview":
+            case "movie":
+            case "audiobook":
+            case "physicalbook":
+                // TODO: delete item
+                break;
+            case "audiobookchapter":
+            case "physicalbookchapter":
+                // TODO: delete chapter
+                break;
+            case "actor":
+            case "director":
+            case "artist":
+            case "writer":
+                Deleter.deleteCreator(type, conn, scan);
+                break;
+            default:
+                // print invalid
+                System.out.println(type + " is an Invalid input");
+        }
+    }
+
     public void edit() {
         // Ask the user which record they want to edit
         System.out.println(
@@ -1275,7 +1306,7 @@ public class DBApp {
                     // TODO: implement checkout
                     break;
                 case 'd':
-                    // TODO: delete func
+                    delete();
                     break;
                 case 'o':
                     // TODO: order/edit/delete records
