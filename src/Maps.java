@@ -10,6 +10,9 @@ public class Maps {
     public static Map<String, String> nextIDMap;
     public static Map<String, String> nextIDColumnMap;
     public static Map<String, String>  itemSearcherMap;
+    public static Map<String, String[]> personEditorMap;
+    public static Map<String, String[]> relationshipEditorMap;
+    public static Map<String, String[]> relationshipOptionMap;
 
     // Instantiating the static maps
     static {
@@ -20,8 +23,46 @@ public class Maps {
         creatorDeleteMap = new HashMap<>();
         nextIDMap = new HashMap<>();
         nextIDColumnMap = new HashMap<>();
+        personEditorMap = new HashMap<>();
+        relationshipEditorMap = new HashMap<>();
+        relationshipOptionMap = new HashMap<>();
         itemEditorMap = new HashMap<>();
         itemSearcherMap = new HashMap<>();
+
+        String[] starsOptionList = {"actor","movie"};
+        String[] writesOptionList = {"writer","audiobook","physicalbook"};
+        String[] interviewedOptionList = {"actor","interview"};
+        String[] performsOptionList = {"artist","album","track"};
+        String[] directsOptionList = {"director","movie"};
+        relationshipOptionMap.put("stars", starsOptionList);
+        relationshipOptionMap.put("writes", writesOptionList);
+        relationshipOptionMap.put("interviewed", interviewedOptionList);
+        relationshipOptionMap.put("performs", performsOptionList);
+        relationshipOptionMap.put("directs", directsOptionList);
+
+        String[] starsList = {"UPDATE stars SET Creator_ID = ? WHERE Creator_ID = ? AND Item_ID = ?;",
+                                "UPDATE stars SET Item_ID = ? WHERE Creator_ID = ? AND Item_ID = ?;",
+                                "UPDATE stars SET Role = ? WHERE Creator_ID = ? AND Item_ID = ?;"};
+        String[] writesList = {"UPDATE writes SET Creator_ID = ? WHERE Creator_ID = ? AND Item_ID = ?;",
+                                "UPDATE writes SET Item_ID = ? WHERE Creator_ID = ? AND Item_ID = ?;"};
+        String[] interviewedList = {"UPDATE interviewed SET Creator_ID = ? WHERE Creator_ID = ? AND Item_ID = ?;",
+                                "UPDATE interviewed SET Item_ID = ? WHERE Creator_ID = ? AND Item_ID = ?;"};
+        String[] performsList = {"UPDATE performs SET Creator_ID = ? WHERE Creator_ID = ? AND Item_ID = ?;",
+                                "UPDATE performs SET Item_ID = ? WHERE Creator_ID = ? AND Item_ID = ?;"};
+        String[] directsList = {"UPDATE directs SET Creator_ID = ? WHERE Creator_ID = ? AND Item_ID = ?;",
+                                "UPDATE directs SET Item_ID = ? WHERE Creator_ID = ? AND Item_ID = ?;"};
+        relationshipEditorMap.put("stars", starsList);
+        relationshipEditorMap.put("writes", writesList);
+        relationshipEditorMap.put("interviewed", interviewedList);
+        relationshipEditorMap.put("performs", performsList);
+        relationshipEditorMap.put("directs", directsList);
+
+        String[] personList = {"UPDATE person SET Email = ? WHERE CardID = ?;",
+                                "UPDATE person SET Fname = ? WHERE CardID = ?;", 
+                                "UPDATE person SET Lname = ? WHERE CardID = ?;",
+                                "UPDATE person SET Address = ? WHERE CardID = ?;"};
+        personEditorMap.put("person", personList);
+        
 
         String[] albumList = { "UPDATE album SET NumberSongs = ? WHERE ItemID = ?;",
                 "UPDATE album SET NumberMinutes = ? WHERE ItemID = ?;" };
