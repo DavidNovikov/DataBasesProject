@@ -71,7 +71,7 @@ public class Searcher {
         
         return ItemID;
     }
-
+    
     public static int pickPerson(Connection conn, Scanner scan) {
         int CardID = -1;
         while (CardID == -1) {
@@ -119,4 +119,24 @@ public class Searcher {
         }
         return CardID;
     }
+    
+    public static ArrayList<Integer> pickGenre(Connection conn, Scanner scan){
+    	ArrayList<Integer> genreList = new ArrayList<Integer>();
+    	PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        
+        System.out.println("Enter the name of the genre you would like to search for, or 1 to list all genres:");
+        String genre = scan.nextLine();
+        int listTest = Integer.parseInt(genre);
+        
+        if (listTest == 1) {
+        	
+        }else {
+        	
+        }
+    	
+    	return genreList;
+    }
+    
+
 }
