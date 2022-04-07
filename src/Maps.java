@@ -84,6 +84,7 @@ public class Maps {
         nextIDColumnMap.put("item", "Max(Item_ID)");
         nextIDColumnMap.put("creator", "Max(creator_ID)");
         nextIDColumnMap.put("library_card", "Max(cardID)");
+
     }
 
 }

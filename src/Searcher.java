@@ -47,7 +47,7 @@ public class Searcher {
             String itemName = scan.nextLine();
 
             try {
-                if(type.equals("physicalbook")) {
+                if (type.equals("physicalbook")) {
                     type = "physical_book";
                 }
                 String elem1 = "SELECT * FROM ITEM," + type + " WHERE title = ?";
@@ -101,27 +101,29 @@ public class Searcher {
             String email = scan.nextLine();
 
             try {
-                
+
                 String sql = "SELECT * FROM PERSON WHERE email = ?;";
                 stmt = conn.prepareStatement(sql);
                 stmt.setString(1, email);
-                //stmt.setString(2, type);
+                // stmt.setString(2, type);
 
                 rSet = stmt.executeQuery();
                 ResultSetMetaData rSetmd = rSet.getMetaData();
                 int columnCount = rSetmd.getColumnCount();
-                for (int i = 1; i <= columnCount; i++){
+                for (int i = 1; i <= columnCount; i++) {
                     String value = rSetmd.getColumnName(i);
                     System.out.print(value);
-                    if (i < columnCount) System.out.print(",  ");
+                    if (i < columnCount)
+                        System.out.print(",  ");
                 }
                 System.out.print("\n");
                 while (rSet.next() && CardID == -1) {
-                    for (int i = 1; i <= columnCount; i++){
+                    for (int i = 1; i <= columnCount; i++) {
                         String columnValue = rSet.getString(i);
                         System.out.print(columnValue);
                         CardID = rSet.getInt("CardID");
-                        if (i < columnCount) System.out.print(",  ");
+                        if (i < columnCount)
+                            System.out.print(",  ");
                     }
                     System.out.print("\n");
                 }
@@ -137,5 +139,12 @@ public class Searcher {
             }
         }
         return CardID;
+    }
+
+    public static Relationship pickRelationship(String type, Connection conn, Scanner scan) {
+        Relationship relationship = new Relationship();
+        int creator_id = pickCreator(type, conn, scan);
+
+        return relationship;
     }
 }
