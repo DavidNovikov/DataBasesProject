@@ -429,6 +429,8 @@ class Chapter {
 
 public class DBApp {
 
+    //final String CONNECTIONPATH = "jdbc:sqlite:/Users/davidnovikov/Desktop/LIBRARY.db";
+    //final String CONNECTIONPATH = "jdbc:sqlite:/Users/djcje/Documents/Databases/Library.db";
     final String CONNECTIONPATH = "jdbc:sqlite:LIBRARY.db";
 
     // use a scanner to read input
@@ -736,7 +738,7 @@ public class DBApp {
     public void add() {
         // ask for which type of item to add
         System.out.println(
-                "What would you like to add? (Album, Track, Interview, Movie, Audiobook, AudiobookChapter, PhysicalBook, PhysicalBookChapter, Actor, Artist, Director, or Writer)");
+                "What would you like to add? (Album, Track, Interview, Movie, Audiobook, AudiobookChapter, PhysicalBook, PhysicalBookChapter, Actor, Artist, Director, Writer, or Relationship)");
         // get the type
         String type = scan.nextLine().toLowerCase();
         // add depending on the type
@@ -758,6 +760,9 @@ public class DBApp {
             case "artist":
             case "writer":
                 Adder.addCreator(Util.changeToDBString(type), conn, scan);
+                break;
+            case "relationship":
+                Adder.addRelationship(conn, scan);
                 break;
             default:
                 // print invalid
@@ -1082,6 +1087,37 @@ public class DBApp {
 
     // }
 
+    public void delete() {
+        // Ask the user which record they want to delete
+        System.out.println(
+                "Enter the type of the record to be deleted (Album, Track, Interview, Movie, Audiobook, AudiobookChapter, PhysicalBook, PhysicalBookChapter, Actor, Artist, Director, or Writer): ");
+        String type = scan.nextLine().toLowerCase();
+
+        switch (type) {
+            case "album":
+            case "track":
+            case "interview":
+            case "movie":
+            case "audiobook":
+            case "physicalbook":
+                // TODO: delete item
+                break;
+            case "audiobookchapter":
+            case "physicalbookchapter":
+                // TODO: delete chapter
+                break;
+            case "actor":
+            case "director":
+            case "artist":
+            case "writer":
+                Deleter.deleteCreator(type, conn, scan);
+                break;
+            default:
+                // print invalid
+                System.out.println(type + " is an Invalid input");
+        }
+    }
+
     public void edit() {
         // Ask the user which record they want to edit
         System.out.println(
@@ -1095,7 +1131,7 @@ public class DBApp {
             case "movie":
             case "audiobook":
             case "physicalbook":
-                // TODO: edit item
+                Editor.editItem(type, conn, scan);
                 break;
             case "audiobookchapter":
             case "physicalbookchapter":
@@ -1104,7 +1140,7 @@ public class DBApp {
             case "actor":
             case "director":
             case "artist":
-            case "writer":
+            case "writeer":
                 Editor.editCreator(type, conn, scan);
                 break;
             case "person":
@@ -1280,7 +1316,7 @@ public class DBApp {
                     // TODO: implement checkout
                     break;
                 case 'd':
-                    // TODO: delete func
+                    delete();
                     break;
                 case 'o':
                     // TODO: order/edit/delete records
