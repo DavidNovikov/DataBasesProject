@@ -47,36 +47,16 @@ public class Searcher {
             String itemName = scan.nextLine();
 
             try {
-                if (type.equals("physicalbook")) {
-                    type = "physical_book";
-                }
-                String elem1 = "SELECT * FROM ITEM," + type + " WHERE title = ?";
-                String elem2 = " AND " + "ITEM.Item_ID=" + type + ".ItemID;";
-                String sql = elem1 + elem2;
-                stmt = conn.prepareStatement(sql);
+                stmt = conn.prepareStatement(Maps.itemSearcherMap.get(type));
                 stmt.setString(1, itemName);
-                // stmt.setString(2, type);
 
                 rSet = stmt.executeQuery();
-                ResultSetMetaData rSetmd = rSet.getMetaData();
-                int columnCount = rSetmd.getColumnCount();
-                for (int i = 1; i <= columnCount; i++) {
-                    String value = rSetmd.getColumnName(i);
-                    System.out.print(value);
-                    if (i < columnCount)
-                        System.out.print(",  ");
-                }
-                System.out.print("\n");
-                while (rSet.next() && ItemID == -1) {
-                    for (int i = 1; i <= columnCount; i++) {
-                        String columnValue = rSet.getString(i);
-                        System.out.print(columnValue);
-                        ItemID = rSet.getInt("Item_ID");
-                        if (i < columnCount)
-                            System.out.print(",  ");
-                    }
-                    System.out.print("\n");
-                }
+                ArrayList<Integer> potentialIDs = Util.searchPrint(rSet, "Item_ID");
+
+                System.out.println(
+                        "What entry would you like to select? enter the number before the entry (1, 2, 3... etc): ");
+                int entry = Integer.parseInt(scan.nextLine());
+                ItemID = potentialIDs.get(entry - 1);
             } catch (SQLException e) {
                 System.out.println(e.getMessage());
             } finally {
@@ -84,10 +64,8 @@ public class Searcher {
                 Util.closeRSet(rSet);
             }
 
-            if (ItemID == -1) {
-                System.out.println(ItemID + " not found");
-            }
         }
+
         return ItemID;
     }
 
@@ -143,8 +121,64 @@ public class Searcher {
 
     public static Relationship pickRelationship(String type, Connection conn, Scanner scan) {
         Relationship relationship = new Relationship();
-        int creator_id = pickCreator(type, conn, scan);
+        boolean found = false;
+        while (!found) {
+            String itemType = getRelationshipItemType(type, scan);
+            String creatorType = getRelationshipCreatorType(type);
+
+            int itemID = Searcher.pickItem(itemType, conn, scan);
+            int creatorID = Searcher.pickCreator(creatorType, conn, scan);
+
+            relationship.setCreatorID(creatorID);
+            relationship.setItemID(itemID);
+
+            PreparedStatement stmt = null;
+            ResultSet rSet = null;
+            try {
+                stmt = conn.prepareStatement(Maps.relationshipSearcherMap.get(type));
+                stmt.setInt(1, relationship.getCreatorID());
+                stmt.setInt(2, relationship.getItemID());
+                rSet = stmt.executeQuery();
+
+                ArrayList<Integer> potentialIDs = Util.searchPrint(rSet, "Item_ID");
+                if (potentialIDs.size() == 1) { // we have found the unique id
+                    found = true;
+                } else {
+                    System.out.println("relationship not found try again");
+                }
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+            } finally {
+                Util.closeStmt(stmt);
+                Util.closeRSet(rSet);
+            }
+        }
 
         return relationship;
+    }
+
+    private static String getRelationshipCreatorType(String relationshipType) {
+        return Maps.relationshipOptionMap.get(relationshipType)[0];
+    }
+
+    private static String getRelationshipItemType(String relationshipType, Scanner scan) {
+        if (Maps.relationshipOptionMap.get(relationshipType).length > 2) {
+            // there are multiple options for item type
+            String[] optionArray = Maps.relationshipOptionMap.get(relationshipType);
+            int option = 0;
+            while (option == 0) {
+                for (int i = 1; i < optionArray.length; i++) {
+                    System.out.println("Enter " + i + " if the item type is " + optionArray[i]);
+                }
+                option = Integer.valueOf(scan.nextLine());
+                if (!(option == 1 || option == 2)) {
+                    option = 0;
+                }
+            }
+            return Maps.relationshipOptionMap.get(relationshipType)[option];
+        } else {
+            // there is just one item type
+            return Maps.relationshipOptionMap.get(relationshipType)[1];
+        }
     }
 }

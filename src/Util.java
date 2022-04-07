@@ -161,4 +161,36 @@ public class Util {
 		}
 		return response;
 	}
+	
+	public static ArrayList<Integer> searchPrint(ResultSet rSet, String columnName) throws SQLException {
+		ResultSetMetaData rSetmd = rSet.getMetaData();
+        int columnCount = rSetmd.getColumnCount();
+        ArrayList<Integer> IDmap = new ArrayList<Integer>();
+        for (int i = 1; i <= columnCount; i++) {
+            String value = rSetmd.getColumnName(i);
+            System.out.print(value);
+            if (i < columnCount)
+                System.out.print(",  ");
+        }
+        System.out.print("\n");
+        int rsetCount = 0;
+        while (rSet.next()) {
+        	rsetCount++;
+            for (int i = 1; i <= columnCount; i++) {
+                String columnValue = rSet.getString(i);
+                if(i ==  1) {
+                	System.out.print("(" + rsetCount + ")");
+                }
+                System.out.print(columnValue);
+                int newID = rSet.getInt(columnName);
+                if (!IDmap.contains(newID)){
+                	IDmap.add(newID);
+                }
+                if (i < columnCount)
+                    System.out.print(",  ");
+            }
+            System.out.print("\n");
+        }
+        return IDmap;
+	}
 }
