@@ -56,18 +56,19 @@ public class Searcher {
 
                 rSet = stmt.executeQuery();
                 ArrayList<Integer> potentialIDs = Util.searchPrint(rSet, "Item_ID");
-                int flag = 1;
-                while(flag == 1) {
-	                System.out.println("What entry would you like to select? enter the number before the entry (1, 2, 3... etc): ");
-	    	        int entry = Integer.parseInt(scan.nextLine());
-	    	        if (entry < 1 || entry > potentialIDs.size()) {
-	    	        	System.out.println("Invalid choice, try again");
-	    	        	
-	    	        } else {
-	    	        	flag = 0;
-	    	        	ItemID = potentialIDs.get(entry-1);
-	    	        }
-                }
+                ItemID = Util.itemListPick(potentialIDs, scan);
+//                int flag = 1;
+//                while(flag == 1) {
+//	                System.out.println("What entry would you like to select? enter the number before the entry (1, 2, 3... etc): ");
+//	    	        int entry = Integer.parseInt(scan.nextLine());
+//	    	        if (entry < 1 || entry > potentialIDs.size()) {
+//	    	        	System.out.println("Invalid choice, try again");
+//	    	        	
+//	    	        } else {
+//	    	        	flag = 0;
+//	    	        	ItemID = potentialIDs.get(entry-1);
+//	    	        }
+//                }
             } catch (SQLException e) {
                 System.out.println(e.getMessage());
             } finally {
