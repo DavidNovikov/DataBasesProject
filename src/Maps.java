@@ -13,6 +13,9 @@ public class Maps {
     public static Map<String, String[]> personEditorMap;
     public static Map<String, String[]> relationshipEditorMap;
     public static Map<String, String[]> relationshipOptionMap;
+    public static String addPersonString = "insert into person values (?,?,?,?,?);";
+    public static String searchPersonString = "SELECT * FROM PERSON WHERE email = ?;";
+    public static String deletePersonString = "DELETE FROM PERSON WHERE CardID = ?;";
 
     // Instantiating the static maps
     static {
@@ -60,7 +63,7 @@ public class Maps {
         String[] personList = { "UPDATE person SET Email = ? WHERE CardID = ?;",
                 "UPDATE person SET Fname = ? WHERE CardID = ?;",
                 "UPDATE person SET Lname = ? WHERE CardID = ?;",
-                "UPDATE person SET Address = ? WHERE CardID = ?;" };
+                "UPDATE person SET Address = ? WHERE CardID = ?;", "UPDATE person SET CardID = ? WHERE CardID = ?;" };
         personEditorMap.put("person", personList);
 
         String[] albumList = { "UPDATE album SET NumberSongs = ? WHERE ItemID = ?;",

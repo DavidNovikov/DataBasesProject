@@ -738,7 +738,7 @@ public class DBApp {
     public void add() {
         // ask for which type of item to add
         System.out.println(
-                "What would you like to add? (Album, Track, Interview, Movie, Audiobook, AudiobookChapter, PhysicalBook, PhysicalBookChapter, Actor, Artist, Director, Writer, or Relationship)");
+                "What would you like to add? (Album, Track, Interview, Movie, Audiobook, AudiobookChapter, PhysicalBook, PhysicalBookChapter, Actor, Artist, Director, Writer, Person, or Relationship)");
         // get the type
         String type = scan.nextLine().toLowerCase();
         // add depending on the type
@@ -763,6 +763,9 @@ public class DBApp {
                 break;
             case "relationship":
                 Adder.addRelationship(conn, scan);
+                break;
+            case "person":
+                Adder.addPerson(conn, scan);
                 break;
             default:
                 // print invalid
@@ -1090,7 +1093,7 @@ public class DBApp {
     public void delete() {
         // Ask the user which record they want to delete
         System.out.println(
-                "Enter the type of the record to be deleted (Album, Track, Interview, Movie, Audiobook, AudiobookChapter, PhysicalBook, PhysicalBookChapter, Actor, Artist, Director, or Writer): ");
+                "Enter the type of the record to be deleted (Album, Track, Interview, Movie, Audiobook, AudiobookChapter, PhysicalBook, PhysicalBookChapter, Actor, Artist, Director, Writer, or Person): ");
         String type = scan.nextLine().toLowerCase();
 
         switch (type) {
@@ -1111,6 +1114,9 @@ public class DBApp {
             case "artist":
             case "writer":
                 Deleter.deleteCreator(type, conn, scan);
+                break;
+            case "person":
+                Deleter.deletePerson(conn, scan);
                 break;
             default:
                 // print invalid
