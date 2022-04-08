@@ -73,32 +73,19 @@ public class Util {
 		return request;
 	}
 
-	public static String getTypeForInsert(String type) {
-		type = type.toLowerCase();
-		// add depending on the type
-		switch (type) {
-			case "album":
-				type = "ALBUM";
-				break;
-			case "track":
-				type = "Track";
-				break;
-			case "interview":
-				type = "interview";
-				break;
-			case "movie":
-				type = "MOVIE";
-				break;
-			case "audiobook":
-				type = "ABook";
-				break;
-			case "physicalbook":
-				type = "PBook";
-				break;
-			default:
-				System.err.println(type + " isn't a type");
+	public static boolean getStatus(Scanner scan) {
+		boolean active = false;
+		String response = " ";
+		while (!(response.equals("y") || response.equals("n"))) {
+			System.out.println("is the item active? y/n");
+			response = scan.nextLine();
+			if (response.equals("y")) {
+				active = true;
+			} else if (!(response.equals("y") || response.equals("n"))) {
+				System.out.println("Invalid input: enter y or n");
+			}
 		}
-		return type;
+		return active;
 	}
 
 	public static String getDate(Scanner scan, String dateName) {
@@ -163,17 +150,17 @@ public class Util {
 		return IDmap;
 	}
 
-	public static String getEmail(Scanner scan){
+	public static String getEmail(Scanner scan) {
 		boolean successful = false;
 		String response = "";
-		while(!successful){
+		while (!successful) {
 			System.out.println("Enter the email:");
 			response = scan.nextLine();
 			int atIndex = response.indexOf("@");
 			int dotIndex = response.lastIndexOf(".");
-			if(atIndex !=-1 && dotIndex != -1 && atIndex<dotIndex){
+			if (atIndex != -1 && dotIndex != -1 && atIndex < dotIndex) {
 				successful = true;
-			}else{
+			} else {
 				System.out.println("Invalid email!");
 			}
 		}

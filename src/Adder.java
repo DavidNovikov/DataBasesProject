@@ -3,11 +3,11 @@ import java.util.*;
 
 public class Adder {
 
-    public static void addPerson(Connection conn, Scanner scan){
+    public static void addPerson(Connection conn, Scanner scan) {
         int cardID = Util.nextIDFrom("library_card", conn);
         PreparedStatement stmt = null;
         try {
-            //get the email
+            // get the email
             String email = Util.getEmail(scan);
 
             System.out.println("Please enter the first name");
@@ -34,7 +34,7 @@ public class Adder {
             Util.closeStmt(stmt);
         }
     }
-    
+
     public static void addItem(String item, Connection conn, Scanner scan) {
         int newItemID;
         try {
@@ -64,7 +64,7 @@ public class Adder {
             stmt.setInt(1, itemID);
             stmt.setString(2, title);
             stmt.setInt(3, year);
-            stmt.setString(4, Util.getTypeForInsert(item));
+            stmt.setString(4, Maps.itemInsertType.get(item));
 
             stmt.executeUpdate();
         } catch (SQLException | NumberFormatException e) {

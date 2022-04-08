@@ -9,6 +9,8 @@ public class Maps {
     public static Map<String, String> creatorDeleteMap;
     public static Map<String, String> nextIDMap;
     public static Map<String, String> nextIDColumnMap;
+    public static Map<String, String> creatorNameMap;
+    public static Map<String, String> itemInsertType;
     public static Map<String, String> itemSearcherMap;
     public static Map<String, String[]> personEditorMap;
     public static Map<String, String[]> relationshipEditorMap;
@@ -30,6 +32,8 @@ public class Maps {
         relationshipEditorMap = new HashMap<>();
         relationshipOptionMap = new HashMap<>();
         itemEditorMap = new HashMap<>();
+        creatorNameMap = new HashMap<>();
+        itemInsertType = new HashMap<>();
         itemSearcherMap = new HashMap<>();
 
         String[] starsOptionList = { "actor", "movie" };
@@ -120,6 +124,11 @@ public class Maps {
         creatorDeleteMap.put("director", "delete from director where Creator_ID = ?;");
         creatorDeleteMap.put("writer", "delete from writer where Creator_ID = ?;");
 
+        creatorNameMap.put("artist", "Ar_Name");
+        creatorNameMap.put("actor", "Ar_Name");
+        creatorNameMap.put("director", "Ar_Name");
+        creatorNameMap.put("writer", "Ar_Name");
+
         nextIDMap.put("item", "SELECT Max(Item_ID) FROM item;");
         nextIDMap.put("creator", "SELECT Max(creator_ID) FROM creator;");
         nextIDMap.put("library_card", "SELECT Max(cardID) FROM person;");
@@ -128,6 +137,12 @@ public class Maps {
         nextIDColumnMap.put("creator", "Max(creator_ID)");
         nextIDColumnMap.put("library_card", "Max(cardID)");
 
+        itemInsertType.put("album", "ALBUM");
+        itemInsertType.put("track", "Track");
+        itemInsertType.put("interview", "interview");
+        itemInsertType.put("movie", "MOVIE");
+        itemInsertType.put("audiobook", "ABook");
+        itemInsertType.put("physicalbook", "PBook");
         itemSearcherMap.put("album", "SELECT * FROM ITEM ,ALBUM WHERE title = ? AND ITEM.Item_ID = ALBUM.ItemID ");
         itemSearcherMap.put("track", "SELECT * FROM ITEM ,TRACK WHERE title = ? AND ITEM.Item_ID = TRACK.ItemID ");
         itemSearcherMap.put("interview",
