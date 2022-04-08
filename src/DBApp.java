@@ -15,7 +15,7 @@ public class DBApp {
         conn = null;
     }
 
-    public void search() {
+    public void search() throws Exception {
         // Ask the user which record they want to edit
         System.out.println(
                 "Enter the type of the record to be searched for (Album, Track, Interview, Movie, Audiobook, AudiobookChapter, PhysicalBook, PhysicalBookChapter, Actor, Artist, Director, Writer, or Person): ");
@@ -48,7 +48,7 @@ public class DBApp {
         }
     }
 
-    public void add() {
+    public void add() throws Exception {
         // ask for which type of item to add
         System.out.println(
                 "What would you like to add? (Album, Track, Interview, Movie, Audiobook, AudiobookChapter, PhysicalBook, PhysicalBookChapter, Actor, Artist, Director, Writer, Person, or Relationship)");
@@ -86,7 +86,7 @@ public class DBApp {
         }
     }
 
-    public void delete() {
+    public void delete() throws Exception {
         // Ask the user which record they want to delete
         System.out.println(
                 "Enter the type of the record to be deleted (Album, Track, Interview, Movie, Audiobook, AudiobookChapter, PhysicalBook, PhysicalBookChapter, Actor, Artist, Director, Writer, or Person): ");
@@ -120,7 +120,7 @@ public class DBApp {
         }
     }
 
-    public void edit() {
+    public void edit() throws Exception {
         // Ask the user which record they want to edit
         System.out.println(
                 "Enter the type of the record to be edited (Album, Track, Interview, Movie, Audiobook, AudiobookChapter, PhysicalBook, PhysicalBookChapter, Actor, Artist, Director, Writer, Person, Stars, Writes, Interviewed, Performs, or Directs): ");
@@ -172,40 +172,45 @@ public class DBApp {
             input = scan.nextLine().charAt(0);
 
             // do the input based on what they put in
-            switch (input) {
-                case 'a':
-                    // ask the user for a record to add and add it to the list
-                    add();
-                    break;
-                case 'e':
-                    // ask the user which record to edit and change it in the list
-                    edit();
-                    break;
-                case 's':
-                    // search for a record and print it
-                    search();
-                    break;
-                case 'c':
-                    // TODO: implement checkout
-                    break;
-                case 'd':
-                    delete();
-                    break;
-                case 'o':
-                    // TODO: order/edit/delete records
-                    break;
-                case 'p':
-                    // TODO: manage people func
-                    break;
-                case 'q':
-                    // quit the program
-                    break;
-                default:
-                    // print invalid
-                    System.out.println(input + " is Invalid input");
+            if (Util.startTransaction(conn) == 0) {
+                try {
+                    switch (input) {
+                        case 'a':
+                            // ask the user for a record to add and add it to the list
+                            add();
+                            break;
+                        case 'e':
+                            // ask the user which record to edit and change it in the list
+                            edit();
+                            break;
+                        case 's':
+                            // search for a record and print it
+                            search();
+                        case 'c':
+                            // TODO: implement checkout
+                            break;
+                        case 'd':
+                            delete();
+                            break;
+                        case 'o':
+                            // TODO: order/edit/delete records
+                            break;
+                        case 'p':
+                            // TODO: manage people func
+                            break;
+                        case 'q':
+                            // quit the program
+                            break;
+                        default:
+                            // print invalid
+                            System.out.println(input + " is Invalid input");
+                    }
+                    Util.endTransaction(conn);
+                } catch (Exception e) {
+                    Util.forceRollBack(conn);
+                }
             }
         }
-
     }
 
     private void getConnection() throws SQLException {
@@ -229,9 +234,13 @@ public class DBApp {
             app.getConnection();
             // These can be uncommented to perform a sanity check that you're connecting to
             // the db correctly
-            System.out.println(Util.nextIDFrom("Item", app.conn));
-            System.out.println(Util.nextIDFrom("creator", app.conn));
-            System.out.println(Util.nextIDFrom("library_card", app.conn));
+            try {
+                System.out.println(Util.nextIDFrom("Item", app.conn));
+                System.out.println(Util.nextIDFrom("creator", app.conn));
+                System.out.println(Util.nextIDFrom("library_card", app.conn));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             app.execute();
         } catch (SQLException e) {
             System.err.println(e.getMessage());

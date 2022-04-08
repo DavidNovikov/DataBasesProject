@@ -2,7 +2,47 @@ import java.sql.*;
 import java.util.*;
 
 public class Util {
-	public static int nextIDFrom(String tableType, Connection conn) {
+
+	public static int startTransaction(Connection conn) {
+		PreparedStatement stmt = null;
+		int status = 0;
+		try {
+			stmt = conn.prepareStatement(Maps.startTransactionString);
+			stmt.execute();
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+			status = -1;
+		} finally {
+			closeStmt(stmt);
+		}
+		return status;
+	}
+
+	public static void endTransaction(Connection conn) {
+		PreparedStatement stmt = null;
+		try {
+			stmt = conn.prepareStatement(Maps.endTransactionString);
+			stmt.execute();
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		} finally {
+			closeStmt(stmt);
+		}
+	}
+
+	public static void forceRollBack(Connection conn) {
+		PreparedStatement stmt = null;
+		try {
+			stmt = conn.prepareStatement(Maps.forceRollBackString);
+			stmt.execute();
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		} finally {
+			closeStmt(stmt);
+		}
+	}
+
+	public static int nextIDFrom(String tableType, Connection conn) throws Exception {
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
 		int nextID = -1;
@@ -11,8 +51,9 @@ public class Util {
 			stmt = conn.prepareStatement(Maps.nextIDMap.get(tableType));
 			rSet = stmt.executeQuery();
 			nextID = rSet.getInt(Maps.nextIDColumnMap.get(tableType)) + 1;
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			System.out.println(e.getMessage());
+			throw e;
 		} finally {
 			closeStmt(stmt);
 			closeRSet(rSet);
@@ -88,7 +129,7 @@ public class Util {
 		return active;
 	}
 
-	public static String getDate(Scanner scan, String dateName) {
+	public static String getDate(Scanner scan, String dateName) throws Exception {
 		boolean successful = false;
 		String response = "";
 		while (!successful) {
@@ -112,6 +153,7 @@ public class Util {
 					successful = true;
 				} catch (NumberFormatException e) {
 					System.out.println("Either the year, month, or day is not a valid number.");
+					throw e;
 				}
 			}
 		}
