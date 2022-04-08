@@ -120,22 +120,39 @@ public class Searcher {
         return CardID;
     }
     
-    public static ArrayList<Integer> pickGenre(Connection conn, Scanner scan){
+    public static int pickGenre(Connection conn, Scanner scan){
     	ArrayList<Integer> genreList = new ArrayList<Integer>();
     	PreparedStatement stmt = null;
         ResultSet rSet = null;
+        int genreID = -1;
         
         System.out.println("Enter the name of the genre you would like to search for, or 1 to list all genres:");
         String genre = scan.nextLine();
-        int listTest = Integer.parseInt(genre);
         
-        if (listTest == 1) {
-        	
-        }else {
-        	
+        try {
+	        if (genre.equals("1")) {
+	        	stmt = conn.prepareStatement(Maps.genreSearcherMap.get("genres"));
+	        	rSet = stmt.executeQuery();
+	        	Util.searchPrintNoRet(rSet);
+	        }else {
+	        	stmt = conn.prepareStatement(Maps.genreSearcherMap.get("search"));
+	        	stmt.setString(1, genre);
+	        	rSet = stmt.executeQuery();
+	        	genreList = Util.searchPrint(rSet, "Item_ID");
+	        	System.out.println("What entry would you like to select? enter the number before the entry (1, 2, 3... etc): ");
+    	        int entry = Integer.parseInt(scan.nextLine());
+    	        genreID = genreList.get(entry-1);
+	        }
+	        
+	        
+        }catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            Util.closeStmt(stmt);
+            Util.closeRSet(rSet);
         }
     	
-    	return genreList;
+    	return genreID;
     }
     
 

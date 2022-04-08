@@ -447,7 +447,7 @@ public class DBApp {
     public void search() {
         // Ask the user which record they want to edit
         System.out.println(
-                "Enter the type of the record to be searched for (Album, Track, Interview, Movie, Audiobook, AudiobookChapter, PhysicalBook, PhysicalBookChapter, Actor, Artist, Director, Writer, or Person): ");
+                "Enter the type of the record to be searched for (Album, Track, Interview, Movie, Audiobook, AudiobookChapter, PhysicalBook, PhysicalBookChapter, Actor, Artist, Director, Writer, Person or Genre): ");
         String type = scan.nextLine().toLowerCase();
 
         switch (type) {
@@ -471,6 +471,9 @@ public class DBApp {
             case "person":
                 Searcher.pickPerson(conn, scan);
                 break;
+            case "genre":
+            	Searcher.pickGenre(conn, scan);
+            	break;
             default:
                 // print invalid
                 System.out.println(type + " is an Invalid input");

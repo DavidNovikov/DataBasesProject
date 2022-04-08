@@ -13,6 +13,7 @@ public class Maps {
     public static Map<String, String[]> personEditorMap;
     public static Map<String, String[]> relationshipEditorMap;
     public static Map<String, String[]> relationshipOptionMap;
+    public static Map<String, String> genreSearcherMap;
 
     // Instantiating the static maps
     static {
@@ -28,6 +29,7 @@ public class Maps {
         relationshipOptionMap = new HashMap<>();
         itemEditorMap = new HashMap<>();
         itemSearcherMap = new HashMap<>();
+        genreSearcherMap = new HashMap<>();
 
         String[] starsOptionList = {"actor","movie"};
         String[] writesOptionList = {"writer","audiobook","physicalbook"};
@@ -134,6 +136,8 @@ public class Maps {
         itemSearcherMap.put("movie", "SELECT * FROM ITEM ,movie WHERE title = ? AND ITEM.Item_ID = movie.ItemID ");
         itemSearcherMap.put("audiobook", "SELECT * FROM ITEM ,audiobook WHERE title = ? AND ITEM.Item_ID = audiobook.ItemID ");
         itemSearcherMap.put("physicalbook", "SELECT * FROM ITEM ,physicalbook WHERE title = ? AND ITEM.Item_ID = physicalbook.ItemID ");
+        genreSearcherMap.put("genres", "SELECT DISTINCT GENRE FROM ITEM_GENRE");
+        genreSearcherMap.put("search", "SELECT * FROM ITEM_GENRE, ITEM WHERE ITEM_GENRE.Item_ID = ITEM.Item_ID AND ITEM_GENRE.Genre = ?");
         
     }
 
