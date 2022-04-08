@@ -3,6 +3,38 @@ import java.util.*;
 
 public class Adder {
 
+    public static void addPerson(Connection conn, Scanner scan){
+        int cardID = Util.nextIDFrom("library_card", conn);
+        PreparedStatement stmt = null;
+        try {
+            //get the email
+            String email = Util.getEmail(scan);
+
+            System.out.println("Please enter the first name");
+            String fname = scan.nextLine();
+
+            System.out.println("Please enter the last name");
+            String lname = scan.nextLine();
+
+            System.out.println("Please enter the address");
+            String address = scan.nextLine();
+
+            String query = Maps.addPersonString;
+            stmt = conn.prepareStatement(query);
+
+            stmt.setString(1, email);
+            stmt.setString(2, fname);
+            stmt.setString(3, lname);
+            stmt.setString(4, address);
+            stmt.setInt(5, cardID);
+            stmt.executeUpdate();
+        } catch (SQLException | NumberFormatException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            Util.closeStmt(stmt);
+        }
+    }
+    
     public static void addItem(String item, Connection conn, Scanner scan) {
         int newItemID;
         try {

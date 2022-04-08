@@ -80,7 +80,7 @@ public class Searcher {
 
             try {
 
-                String sql = "SELECT * FROM PERSON WHERE email = ?;";
+                String sql = Maps.searchPersonString;
                 stmt = conn.prepareStatement(sql);
                 stmt.setString(1, email);
                 // stmt.setString(2, type);
