@@ -20,22 +20,6 @@ public class Util {
 		return nextID;
 	}
 
-	private static String idName(String type) {
-		type = type.toLowerCase();
-		switch (type) {
-			case "item":
-				return "Item_ID";
-			case "creator":
-				return "creator_ID";
-			case "library_card":
-				return "cardID";
-			default:
-				// print invalid
-				System.err.println(type + " isn't a table type");
-		}
-		return null;
-	}
-
 	public static String creatorNameString(String type) {
 		type = type.toLowerCase();
 		switch (type) {
@@ -117,21 +101,6 @@ public class Util {
 		return type;
 	}
 
-	public static boolean getStatus(Scanner scan) {
-		boolean active = false;
-		String response = " ";
-		while (!(response.equals("y") || response.equals("n"))) {
-			System.out.println("is the item active? y/n");
-			response = scan.nextLine();
-			if (response.equals("y")) {
-				active = true;
-			} else if (!(response.equals("y") || response.equals("n"))) {
-				System.out.println("Invalid input: enter y or n");
-			}
-		}
-		return active;
-	}
-
 	public static String getDate(Scanner scan, String dateName) {
 		boolean successful = false;
 		String response = "";
@@ -161,36 +130,36 @@ public class Util {
 		}
 		return response;
 	}
-	
+
 	public static ArrayList<Integer> searchPrint(ResultSet rSet, String columnName) throws SQLException {
 		ResultSetMetaData rSetmd = rSet.getMetaData();
-        int columnCount = rSetmd.getColumnCount();
-        ArrayList<Integer> IDmap = new ArrayList<Integer>();
-        for (int i = 1; i <= columnCount; i++) {
-            String value = rSetmd.getColumnName(i);
-            System.out.print(value);
-            if (i < columnCount)
-                System.out.print(",  ");
-        }
-        System.out.print("\n");
-        int rsetCount = 0;
-        while (rSet.next()) {
-        	rsetCount++;
-            for (int i = 1; i <= columnCount; i++) {
-                String columnValue = rSet.getString(i);
-                if(i ==  1) {
-                	System.out.print("(" + rsetCount + ")");
-                }
-                System.out.print(columnValue);
-                int newID = rSet.getInt(columnName);
-                if (!IDmap.contains(newID)){
-                	IDmap.add(newID);
-                }
-                if (i < columnCount)
-                    System.out.print(",  ");
-            }
-            System.out.print("\n");
-        }
-        return IDmap;
+		int columnCount = rSetmd.getColumnCount();
+		ArrayList<Integer> IDmap = new ArrayList<Integer>();
+		for (int i = 1; i <= columnCount; i++) {
+			String value = rSetmd.getColumnName(i);
+			System.out.print(value);
+			if (i < columnCount)
+				System.out.print(",  ");
+		}
+		System.out.print("\n");
+		int rsetCount = 0;
+		while (rSet.next()) {
+			rsetCount++;
+			for (int i = 1; i <= columnCount; i++) {
+				String columnValue = rSet.getString(i);
+				if (i == 1) {
+					System.out.print("(" + rsetCount + ")");
+				}
+				System.out.print(columnValue);
+				int newID = rSet.getInt(columnName);
+				if (!IDmap.contains(newID)) {
+					IDmap.add(newID);
+				}
+				if (i < columnCount)
+					System.out.print(",  ");
+			}
+			System.out.print("\n");
+		}
+		return IDmap;
 	}
 }

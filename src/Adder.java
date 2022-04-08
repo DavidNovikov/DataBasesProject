@@ -33,7 +33,6 @@ public class Adder {
             stmt.setString(2, title);
             stmt.setInt(3, year);
             stmt.setString(4, Util.getTypeForInsert(item));
-            stmt.setBoolean(5, Util.getStatus(scan));
 
             stmt.executeUpdate();
         } catch (SQLException | NumberFormatException e) {
@@ -175,17 +174,14 @@ public class Adder {
         PreparedStatement stmt = null;
 
         try {
-            System.out.println("Please enter the number of chapters");
-            int numChapters = Integer.valueOf(scan.nextLine());
 
             System.out.println("Please enter the length in minutes");
             int lenInMin = Integer.valueOf(scan.nextLine());
 
             stmt = conn.prepareStatement(Maps.itemAdderMap.get("audiobook"));
 
-            stmt.setInt(1, numChapters);
-            stmt.setInt(2, lenInMin);
-            stmt.setInt(3, newItemID);
+            stmt.setInt(1, lenInMin);
+            stmt.setInt(2, newItemID);
 
             stmt.executeUpdate();
         } catch (SQLException | NumberFormatException e) {
@@ -200,17 +196,14 @@ public class Adder {
         PreparedStatement stmt = null;
 
         try {
-            System.out.println("Please enter the number of chapters");
-            int numChapters = Integer.valueOf(scan.nextLine());
 
             System.out.println("Please enter the number of pages");
             int pages = Integer.valueOf(scan.nextLine());
 
             stmt = conn.prepareStatement(Maps.itemAdderMap.get("physical_book"));
 
-            stmt.setInt(1, numChapters);
-            stmt.setInt(2, pages);
-            stmt.setInt(3, newItemID);
+            stmt.setInt(1, pages);
+            stmt.setInt(2, newItemID);
 
             stmt.executeUpdate();
         } catch (SQLException | NumberFormatException e) {
@@ -251,43 +244,42 @@ public class Adder {
     // }
     // }
 
-
     public static void addRelationship(Connection conn, Scanner scan) {
-        
 
         System.out.println("Do you know the creator ID and the item ID? y/n");
         char response = scan.nextLine().charAt(0);
-        if(response != 'y'){
+        if (response != 'y') {
             System.out.println("Use the search function to find the creator and item IDs to establish a relationship.");
             return;
         }
 
-        System.out.println("Enter the type of relationship you are adding: (stars, writes, interviewed, performs, or directs)");
+        System.out.println(
+                "Enter the type of relationship you are adding: (stars, writes, interviewed, performs, or directs)");
         String relationshipType = scan.nextLine().toLowerCase();
 
-        try{
+        try {
 
-        switch (relationshipType) {
-            case "stars":
-                addStarsRelationship(conn, scan);
-                break;
-            case "writes":
-            case "interviewed":
-            case "performs":
-            case "directs":
-                addGenericRelationships(conn, scan, relationshipType);
-                break;
-            default:
-                System.err.println(relationshipType + " isn't a valid new relationship insert type");
-        }
-        }catch(Exception e){
-            System.out.println("Unable to create relationship. Exception:" +e );
+            switch (relationshipType) {
+                case "stars":
+                    addStarsRelationship(conn, scan);
+                    break;
+                case "writes":
+                case "interviewed":
+                case "performs":
+                case "directs":
+                    addGenericRelationships(conn, scan, relationshipType);
+                    break;
+                default:
+                    System.err.println(relationshipType + " isn't a valid new relationship insert type");
+            }
+        } catch (Exception e) {
+            System.out.println("Unable to create relationship. Exception:" + e);
         }
     }
 
-    public static void addStarsRelationship(Connection conn, Scanner scan) throws Exception{
+    public static void addStarsRelationship(Connection conn, Scanner scan) throws Exception {
         PreparedStatement stmt = null;
-        
+
         try {
             System.out.println("Please enter the creator ID");
             int creatorID = Integer.valueOf(scan.nextLine());
@@ -312,6 +304,7 @@ public class Adder {
             Util.closeStmt(stmt);
         }
     }
+
     public static void addCreator(String creatorType, Connection conn, Scanner scan) {
         int newCreatorID;
         try {
@@ -344,9 +337,10 @@ public class Adder {
         return creatorID;
     }
 
-    public static void addGenericRelationships(Connection conn, Scanner scan, String relationshipType) throws Exception{
+    public static void addGenericRelationships(Connection conn, Scanner scan, String relationshipType)
+            throws Exception {
         PreparedStatement stmt = null;
-        
+
         try {
             System.out.println("Please enter the creator ID");
             int creatorID = Integer.valueOf(scan.nextLine());
@@ -354,7 +348,7 @@ public class Adder {
             System.out.println("Please enter the item ID");
             int itemID = Integer.valueOf(scan.nextLine());
 
-            String query = "insert into "+relationshipType+" values (?,?);";
+            String query = "insert into " + relationshipType + " values (?,?);";
             stmt = conn.prepareStatement(query);
 
             stmt.setInt(1, creatorID);
@@ -367,7 +361,6 @@ public class Adder {
             Util.closeStmt(stmt);
         }
     }
-
 
     private static void addCreatorSuper(String creatorType, Connection conn, Scanner scan, int newCreatorID)
             throws Exception {
@@ -400,7 +393,6 @@ public class Adder {
             stmt.setString(1, name);
             stmt.setString(2, dateOfBirth);
             stmt.setInt(3, newCreatorID);
-
 
             stmt.executeUpdate();
         } catch (SQLException | NumberFormatException e) {
