@@ -47,19 +47,16 @@ public class Searcher {
             String itemName = scan.nextLine();
 
             try {
-                if(type.equals("physicalbook")) {
-                    type = "physical_book";
-                }
                 stmt = conn.prepareStatement(Maps.itemSearcherMap.get(type));
                 stmt.setString(1, itemName);
-                
 
                 rSet = stmt.executeQuery();
                 ArrayList<Integer> potentialIDs = Util.searchPrint(rSet, "Item_ID");
-                
-                System.out.println("What entry would you like to select? enter the number before the entry (1, 2, 3... etc): ");
-    	        int entry = Integer.parseInt(scan.nextLine());
-    	        ItemID = potentialIDs.get(entry-1);
+
+                System.out.println(
+                        "What entry would you like to select? enter the number before the entry (1, 2, 3... etc): ");
+                int entry = Integer.parseInt(scan.nextLine());
+                ItemID = potentialIDs.get(entry - 1);
             } catch (SQLException e) {
                 System.out.println(e.getMessage());
             } finally {
@@ -68,7 +65,7 @@ public class Searcher {
             }
 
         }
-        
+
         return ItemID;
     }
 
@@ -82,27 +79,29 @@ public class Searcher {
             String email = scan.nextLine();
 
             try {
-                
+
                 String sql = "SELECT * FROM PERSON WHERE email = ?;";
                 stmt = conn.prepareStatement(sql);
                 stmt.setString(1, email);
-                //stmt.setString(2, type);
+                // stmt.setString(2, type);
 
                 rSet = stmt.executeQuery();
                 ResultSetMetaData rSetmd = rSet.getMetaData();
                 int columnCount = rSetmd.getColumnCount();
-                for (int i = 1; i <= columnCount; i++){
+                for (int i = 1; i <= columnCount; i++) {
                     String value = rSetmd.getColumnName(i);
                     System.out.print(value);
-                    if (i < columnCount) System.out.print(",  ");
+                    if (i < columnCount)
+                        System.out.print(",  ");
                 }
                 System.out.print("\n");
                 while (rSet.next() && CardID == -1) {
-                    for (int i = 1; i <= columnCount; i++){
+                    for (int i = 1; i <= columnCount; i++) {
                         String columnValue = rSet.getString(i);
                         System.out.print(columnValue);
                         CardID = rSet.getInt("CardID");
-                        if (i < columnCount) System.out.print(",  ");
+                        if (i < columnCount)
+                            System.out.print(",  ");
                     }
                     System.out.print("\n");
                 }
