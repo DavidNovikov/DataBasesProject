@@ -11,6 +11,13 @@ public class Maps {
     public static Map<String, String> nextIDColumnMap;
     public static Map<String, String> creatorNameMap;
     public static Map<String, String> itemInsertType;
+    public static Map<String, String> itemSearcherMap;
+    public static Map<String, String[]> personEditorMap;
+    public static Map<String, String[]> relationshipEditorMap;
+    public static Map<String, String[]> relationshipOptionMap;
+    public static String addPersonString = "insert into person values (?,?,?,?,?);";
+    public static String searchPersonString = "SELECT * FROM PERSON WHERE email = ?;";
+    public static String deletePersonString = "DELETE FROM PERSON WHERE CardID = ?;";
 
     // Instantiating the static maps
     static {
@@ -21,9 +28,47 @@ public class Maps {
         creatorDeleteMap = new HashMap<>();
         nextIDMap = new HashMap<>();
         nextIDColumnMap = new HashMap<>();
+        personEditorMap = new HashMap<>();
+        relationshipEditorMap = new HashMap<>();
+        relationshipOptionMap = new HashMap<>();
         itemEditorMap = new HashMap<>();
         creatorNameMap = new HashMap<>();
         itemInsertType = new HashMap<>();
+        itemSearcherMap = new HashMap<>();
+
+        String[] starsOptionList = { "actor", "movie" };
+        String[] writesOptionList = { "writer", "audiobook", "physicalbook" };
+        String[] interviewedOptionList = { "actor", "interview" };
+        String[] performsOptionList = { "artist", "album", "track" };
+        String[] directsOptionList = { "director", "movie" };
+        relationshipOptionMap.put("stars", starsOptionList);
+        relationshipOptionMap.put("writes", writesOptionList);
+        relationshipOptionMap.put("interviewed", interviewedOptionList);
+        relationshipOptionMap.put("performs", performsOptionList);
+        relationshipOptionMap.put("directs", directsOptionList);
+
+        String[] starsList = { "UPDATE stars SET Creator_ID = ? WHERE Creator_ID = ? AND Item_ID = ?;",
+                "UPDATE stars SET Item_ID = ? WHERE Creator_ID = ? AND Item_ID = ?;",
+                "UPDATE stars SET Role = ? WHERE Creator_ID = ? AND Item_ID = ?;" };
+        String[] writesList = { "UPDATE writes SET Creator_ID = ? WHERE Creator_ID = ? AND Item_ID = ?;",
+                "UPDATE writes SET Item_ID = ? WHERE Creator_ID = ? AND Item_ID = ?;" };
+        String[] interviewedList = { "UPDATE interviewed SET Creator_ID = ? WHERE Creator_ID = ? AND Item_ID = ?;",
+                "UPDATE interviewed SET Item_ID = ? WHERE Creator_ID = ? AND Item_ID = ?;" };
+        String[] performsList = { "UPDATE performs SET Creator_ID = ? WHERE Creator_ID = ? AND Item_ID = ?;",
+                "UPDATE performs SET Item_ID = ? WHERE Creator_ID = ? AND Item_ID = ?;" };
+        String[] directsList = { "UPDATE directs SET Creator_ID = ? WHERE Creator_ID = ? AND Item_ID = ?;",
+                "UPDATE directs SET Item_ID = ? WHERE Creator_ID = ? AND Item_ID = ?;" };
+        relationshipEditorMap.put("stars", starsList);
+        relationshipEditorMap.put("writes", writesList);
+        relationshipEditorMap.put("interviewed", interviewedList);
+        relationshipEditorMap.put("performs", performsList);
+        relationshipEditorMap.put("directs", directsList);
+
+        String[] personList = { "UPDATE person SET Email = ? WHERE CardID = ?;",
+                "UPDATE person SET Fname = ? WHERE CardID = ?;",
+                "UPDATE person SET Lname = ? WHERE CardID = ?;",
+                "UPDATE person SET Address = ? WHERE CardID = ?;", "UPDATE person SET CardID = ? WHERE CardID = ?;" };
+        personEditorMap.put("person", personList);
 
         String[] albumList = { "UPDATE album SET NumberSongs = ? WHERE ItemID = ?;",
                 "UPDATE album SET NumberMinutes = ? WHERE ItemID = ?;" };
@@ -32,10 +77,8 @@ public class Maps {
         String[] interviewList = { "UPDATE interview SET NumberMinutes = ? WHERE ItemID = ?;" };
         String[] movieList = { "UPDATE movie SET Runtime = ? WHERE ItemID = ?;",
                 "UPDATE movie SET Rating = ? WHERE ItemID = ?;" };
-        String[] audiobookList = { "UPDATE audiobook SET NumberChapters = ? WHERE ItemID = ?;",
-                "UPDATE audiobook SET NumberMinutes = ? WHERE ItemID = ?;" };
-        String[] physicalbookList = { "UPDATE physical_book SET NumberChapters = ? WHERE ItemID = ?;",
-                "UPDATE physical_book SET NumberPages = ? WHERE ItemID = ?;" };
+        String[] audiobookList = { "UPDATE audiobook SET NumberMinutes = ? WHERE ItemID = ?;" };
+        String[] physicalbookList = { "UPDATE physical_book SET NumberPages = ? WHERE ItemID = ?;" };
         itemEditorMap.put("album", albumList);
         itemEditorMap.put("track", trackList);
         itemEditorMap.put("interview", interviewList);
@@ -56,13 +99,13 @@ public class Maps {
         creatorEditorMap.put("director", directorList);
         creatorEditorMap.put("writer", writerList);
 
-        itemAdderMap.put("item", "insert into item values (?,?,?,?,?);");
+        itemAdderMap.put("item", "insert into item values (?,?,?,?);");
         itemAdderMap.put("album", "insert into album values (?,?,?);");
         itemAdderMap.put("track", "insert into track values (?,?,?);");
         itemAdderMap.put("interview", "insert into interview values (?,?);");
         itemAdderMap.put("movie", "insert into movie values (?,?,?);");
-        itemAdderMap.put("audiobook", "insert into audiobook values (?,?,?);");
-        itemAdderMap.put("physical_book", "insert into physical_book values (?,?,?);");
+        itemAdderMap.put("audiobook", "insert into audiobook values (?,?);");
+        itemAdderMap.put("physical_book", "insert into physical_book values (?,?);");
 
         creatorAdderMap.put("creator", "insert into creator values (?);");
         creatorAdderMap.put("artist", "insert into artist values (?,?,?);");
@@ -88,7 +131,7 @@ public class Maps {
 
         nextIDMap.put("item", "SELECT Max(Item_ID) FROM item;");
         nextIDMap.put("creator", "SELECT Max(creator_ID) FROM creator;");
-        nextIDMap.put("library_card", "SELECT Max(cardID) FROM library_card;");
+        nextIDMap.put("library_card", "SELECT Max(cardID) FROM person;");
 
         nextIDColumnMap.put("item", "Max(Item_ID)");
         nextIDColumnMap.put("creator", "Max(creator_ID)");
@@ -100,6 +143,16 @@ public class Maps {
         itemInsertType.put("movie", "MOVIE");
         itemInsertType.put("audiobook", "ABook");
         itemInsertType.put("physicalbook", "PBook");
+        itemSearcherMap.put("album", "SELECT * FROM ITEM ,ALBUM WHERE title = ? AND ITEM.Item_ID = ALBUM.ItemID ");
+        itemSearcherMap.put("track", "SELECT * FROM ITEM ,TRACK WHERE title = ? AND ITEM.Item_ID = TRACK.ItemID ");
+        itemSearcherMap.put("interview",
+                "SELECT * FROM ITEM ,interview WHERE title = ? AND ITEM.Item_ID = interview.ItemID ");
+        itemSearcherMap.put("movie", "SELECT * FROM ITEM ,movie WHERE title = ? AND ITEM.Item_ID = movie.ItemID ");
+        itemSearcherMap.put("audiobook",
+                "SELECT * FROM ITEM ,audiobook WHERE title = ? AND ITEM.Item_ID = audiobook.ItemID ");
+        itemSearcherMap.put("physicalbook",
+                "SELECT * FROM ITEM ,physical_book WHERE title = ? AND ITEM.Item_ID = physical_book.ItemID ");
+
     }
 
 }

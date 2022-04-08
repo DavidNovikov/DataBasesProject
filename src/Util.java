@@ -20,6 +20,21 @@ public class Util {
 		return nextID;
 	}
 
+	public static String creatorNameString(String type) {
+		type = type.toLowerCase();
+		switch (type) {
+			case "artist":
+			case "actor":
+			case "director":
+			case "writer":
+				return "Ar_Name";
+			default:
+				// print invalid
+				System.err.println(type + " isn't a creator type");
+		}
+		return null;
+	}
+
 	public static void closeStmt(PreparedStatement stmt) {
 
 		if (stmt != null) {
@@ -98,6 +113,55 @@ public class Util {
 				} catch (NumberFormatException e) {
 					System.out.println("Either the year, month, or day is not a valid number.");
 				}
+			}
+		}
+		return response;
+	}
+
+	public static ArrayList<Integer> searchPrint(ResultSet rSet, String columnName) throws SQLException {
+		ResultSetMetaData rSetmd = rSet.getMetaData();
+		int columnCount = rSetmd.getColumnCount();
+		ArrayList<Integer> IDmap = new ArrayList<Integer>();
+		for (int i = 1; i <= columnCount; i++) {
+			String value = rSetmd.getColumnName(i);
+			System.out.print(value);
+			if (i < columnCount)
+				System.out.print(",  ");
+		}
+		System.out.print("\n");
+		int rsetCount = 0;
+		while (rSet.next()) {
+			rsetCount++;
+			for (int i = 1; i <= columnCount; i++) {
+				String columnValue = rSet.getString(i);
+				if (i == 1) {
+					System.out.print("(" + rsetCount + ")");
+				}
+				System.out.print(columnValue);
+				int newID = rSet.getInt(columnName);
+				if (!IDmap.contains(newID)) {
+					IDmap.add(newID);
+				}
+				if (i < columnCount)
+					System.out.print(",  ");
+			}
+			System.out.print("\n");
+		}
+		return IDmap;
+	}
+
+	public static String getEmail(Scanner scan) {
+		boolean successful = false;
+		String response = "";
+		while (!successful) {
+			System.out.println("Enter the email:");
+			response = scan.nextLine();
+			int atIndex = response.indexOf("@");
+			int dotIndex = response.lastIndexOf(".");
+			if (atIndex != -1 && dotIndex != -1 && atIndex < dotIndex) {
+				successful = true;
+			} else {
+				System.out.println("Invalid email!");
 			}
 		}
 		return response;
