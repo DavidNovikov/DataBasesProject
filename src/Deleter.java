@@ -8,6 +8,21 @@ public class Deleter {
         deleteCreatorBase(cID, type, conn, scan);
     }
 
+    public static void deleteRelationship(String type, Connection conn, Scanner scan) {
+        Relationship rel = Searcher.pickRelationship(type, conn, scan);
+        PreparedStatement stmt = null;
+        try {
+            stmt = conn.prepareStatement(Maps.relationshipDeleterMap.get(type));
+            stmt.setInt(1, rel.getCreatorID());
+            stmt.setInt(2, rel.getItemID());
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            Util.closeStmt(stmt);
+        }
+    }
+
     private static void deleteCreatorBase(int cID, String type, Connection conn, Scanner scan) {
         PreparedStatement stmt = null;
         try {

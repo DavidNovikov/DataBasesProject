@@ -15,6 +15,7 @@ public class Maps {
     public static Map<String, String[]> relationshipOptionMap;
     public static Map<String, String> relationshipAdderMap;
     public static Map<String, String> relationshipSearcherMap;
+    public static Map<String, String> relationshipDeleterMap;
 
     // Instantiating the static maps
     static {
@@ -32,6 +33,7 @@ public class Maps {
         itemSearcherMap = new HashMap<>();
         relationshipAdderMap = new HashMap<>();
         relationshipSearcherMap = new HashMap<>();
+        relationshipDeleterMap = new HashMap<>();
 
         String[] starsOptionList = { "actor", "movie" };
         String[] writesOptionList = { "writer", "audiobook", "physicalbook" };
@@ -73,6 +75,11 @@ public class Maps {
         relationshipSearcherMap.put("interviewed", "select * from interviewed where Creator_ID = ? and Item_ID = ?;");
         relationshipSearcherMap.put("performs", "select * from performs where Creator_ID = ? and Item_ID = ?;");
         relationshipSearcherMap.put("directs", "select * from directs where Creator_ID = ? and Item_ID = ?;");
+        relationshipDeleterMap.put("stars", "delete from stars where Creator_ID = ? and Item_ID = ?;");
+        relationshipDeleterMap.put("writes", "delete from writes where Creator_ID = ? and Item_ID = ?;");
+        relationshipDeleterMap.put("interviewed", "delete from interviewed where Creator_ID = ? and Item_ID = ?;");
+        relationshipDeleterMap.put("performs", "delete from performs where Creator_ID = ? and Item_ID = ?;");
+        relationshipDeleterMap.put("directs", "delete from directs where Creator_ID = ? and Item_ID = ?;");
 
         String[] personList = { "UPDATE person SET Email = ? WHERE CardID = ?;",
                 "UPDATE person SET Fname = ? WHERE CardID = ?;",
