@@ -160,6 +160,31 @@ public class DBApp {
                 System.out.println(type + " is an Invalid input");
         }
     }
+    
+    public void checkout() {
+        // Ask the user what type of record they want to check out
+        System.out.println(
+                "Enter the type of the record to be checked out (Album, Track, Interview, Movie, Audiobook, or PhysicalBook): ");
+        String type = scan.nextLine().toLowerCase();
+        try {
+            switch (type) {
+            case "album":
+            case "track":
+            case "interview":
+            case "movie":
+            case "audiobook":
+            case "physicalbook":
+                Checkout.checkoutItem(type,conn,scan);
+                break;
+            default:
+                // print invalid
+                System.out.println(type + " is an Invalid input");
+            }
+        } catch (Exception e) {
+            System.out.println("failed to insert");
+        }
+        
+    }
 
     private void execute() {
         char input = 'h';
@@ -186,7 +211,7 @@ public class DBApp {
                     search();
                     break;
                 case 'c':
-                    // TODO: implement checkout
+                    checkout();
                     break;
                 case 'd':
                     delete();
