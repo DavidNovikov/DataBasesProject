@@ -1250,20 +1250,10 @@ public class DBApp {
         try {
         	switch (type) {
         	case "album":
-        		Checkout.checkoutItem(type,conn,scan);
-        		break;
         	case "track":
-        		Checkout.checkoutItem(type,conn,scan);
-        		break;
         	case "interview":
-        		Checkout.checkoutItem(type,conn,scan);
-        		break;
         	case "movie":
-        		Checkout.checkoutItem(type,conn,scan);
-        		break;
         	case "audiobook":
-        		Checkout.checkoutItem(type,conn,scan);
-        		break;
         	case "physicalbook":
         		Checkout.checkoutItem(type,conn,scan);
         		break;
@@ -1282,7 +1272,7 @@ public class DBApp {
         while (input != 'q') {
             // ask the user for input
             System.out.println(
-                    "Enter 'a' to add new records, 'e' to edit a record, 's' to search for a record, 'd' to delete a record, 'c' to check out a record, 'o' to manage orders, 'r' to show reports, 'p' to manage library cards/patrons, and 'q' to quit.");
+                    "Enter 'a' to add new records, 'e' to edit a record, 's' to search for a record, 'd' to delete a record, 'c' to check out a record, 'o' to manage orders, 'p' to manage library cards/patrons, and 'q' to quit.");
 
             // get user input
             input = scan.nextLine().charAt(0);
@@ -1310,8 +1300,6 @@ public class DBApp {
                 case 'o':
                     // TODO: order/edit/delete records
                     break;
-                case 'r':
-                	//TODO: Generate reports
                 case 'p':
                     // TODO: manage people func
                     break;
