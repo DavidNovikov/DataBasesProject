@@ -287,6 +287,22 @@ public class Editor {
             Util.closeStmt(stmt);
         }
     }
+    
+    public static void editGenre(String type, Connection conn, Scanner scan) {
+    	int itemID = Searcher.pickGenre(conn, scan);
+    	PreparedStatement stmt = null;
+        try {
+	        System.out.println("What is the new genre?");
+	        String newGenre = scan.nextLine();
+	        stmt = conn.prepareStatement(Maps.genreEditorMap.get("item"));
+	        stmt.setString(1, newGenre);
+	        stmt.setInt(2, itemID);
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            Util.closeStmt(stmt);
+        }
+    }
 
     private static int whatToEditItemGeneric(Scanner scan, String option1, String option2) {
         int option = 0;
@@ -359,5 +375,5 @@ public class Editor {
             return null;
         }      
     }
-
+   
 }

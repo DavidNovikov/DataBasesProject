@@ -1124,7 +1124,7 @@ public class DBApp {
     public void edit() {
         // Ask the user which record they want to edit
         System.out.println(
-                "Enter the type of the record to be edited (Album, Track, Interview, Movie, Audiobook, AudiobookChapter, PhysicalBook, PhysicalBookChapter, Actor, Artist, Director, Writer, Person, Stars, Writes, Interviewed, Performs, or Directs): ");
+                "Enter the type of the record to be edited (Album, Track, Interview, Movie, Audiobook, AudiobookChapter, PhysicalBook, PhysicalBookChapter, Actor, Artist, Director, Writer, Person, Stars, Writes, Interviewed, Performs, Directs or Genre): ");
         String type = scan.nextLine().toLowerCase();
 
         switch (type) {
@@ -1156,6 +1156,9 @@ public class DBApp {
             case "directs":
                 Editor.editRelationship(type, conn, scan);
                 break;
+            case "genre":
+            	Editor.editGenre(type, conn, scan);
+            	break;
             default:
                 // print invalid
                 System.out.println(type + " is an Invalid input");
