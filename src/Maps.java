@@ -84,8 +84,7 @@ public class Maps {
 
         relationshipDeleterMap.put("stars", "delete from stars where Creator_ID = ? and Item_ID = ?;");
         relationshipDeleterMap.put("writes", "delete from writes where Creator_ID = ? and Item_ID = ?;");
-        relationshipDeleterMap.put("interviewed",
-                "delete from interviewed where Creator_ID = ? and Item_ID = ?;");
+        relationshipDeleterMap.put("interviewed", "delete from interviewed where Creator_ID = ? and Item_ID = ?;");
         relationshipDeleterMap.put("performs", "delete from performs where Creator_ID = ? and Item_ID = ?;");
         relationshipDeleterMap.put("directs", "delete from directs where Creator_ID = ? and Item_ID = ?;");
 

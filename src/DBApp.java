@@ -96,7 +96,7 @@ public class DBApp {
     public void delete() {
         // Ask the user which record they want to delete
         System.out.println(
-                "Enter the type of the record to be deleted (Album, Track, Interview, Movie, Audiobook, AudiobookChapter, PhysicalBook, PhysicalBookChapter, Actor, Artist, Director, Writer, or Person): ");
+                "Enter the type of the record to be deleted (Album, Track, Interview, Movie, Audiobook, AudiobookChapter, PhysicalBook, PhysicalBookChapter, Actor, Artist, Director, Writer, Person, or Relationship): ");
         String type = scan.nextLine().toLowerCase();
 
         switch (type) {
@@ -120,6 +120,9 @@ public class DBApp {
                 break;
             case "person":
                 Deleter.deletePerson(conn, scan);
+                break;
+            case "relationship":
+                Deleter.deleteRelationship(type, conn, scan);
                 break;
             default:
                 // print invalid

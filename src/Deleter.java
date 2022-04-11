@@ -8,7 +8,38 @@ public class Deleter {
         deleteCreatorBase(cID, type, conn, scan);
     }
 
-    public static void deleteRelationship(String type, Connection conn, Scanner scan) {
+    public static void deleteRelationship(Connection conn, Scanner scan) {
+
+        System.out.println("Do you know the creator ID and the item ID? y/n");
+        char response = scan.nextLine().charAt(0);
+        if (response != 'y') {
+            System.out.println("Use the search function to find the creator and item IDs to establish a relationship.");
+            return;
+        }
+
+        System.out.println(
+                "Enter the type of relationship you are adding: (stars, writes, interviewed, performs, or directs)");
+        String relationshipType = scan.nextLine().toLowerCase();
+
+        try {
+
+            switch (relationshipType) {
+                case "stars":
+                case "writes":
+                case "interviewed":
+                case "performs":
+                case "directs":
+                    deleteRelationship(relationshipType, conn, scan);
+                    break;
+                default:
+                    System.err.println(relationshipType + " isn't a valid relationship type");
+            }
+        } catch (Exception e) {
+            System.out.println("Unable to create relationship. Exception:" + e);
+        }
+    }
+
+    private static void deleteRelationship(String type, Connection conn, Scanner scan) {
         Relationship rel = Searcher.pickRelationship(type, conn, scan);
         PreparedStatement stmt = null;
         try {
@@ -52,14 +83,14 @@ public class Deleter {
     public static void deletePerson(Connection conn, Scanner scan) {
         int cardID = Searcher.pickPerson(conn, scan);
         PreparedStatement stmt = null;
-            try {
-                stmt = conn.prepareStatement(Maps.deletePersonString);
-                stmt.setInt(1, cardID);
-                stmt.executeUpdate();
-            } catch (SQLException e) {
-                System.out.println(e.getMessage());
-            } finally {
-                Util.closeStmt(stmt);
-            }
+        try {
+            stmt = conn.prepareStatement(Maps.deletePersonString);
+            stmt.setInt(1, cardID);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            Util.closeStmt(stmt);
+        }
     }
 }
