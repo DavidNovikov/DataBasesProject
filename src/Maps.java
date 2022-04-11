@@ -15,6 +15,7 @@ public class Maps {
     public static Map<String, String[]> relationshipOptionMap;
     public static Map<String, String> genreSearcherMap;
     public static Map<String, String> genreEditorMap;
+    public static Map<String, String> genreAdderMap;
 
     // Instantiating the static maps
     static {
@@ -32,6 +33,7 @@ public class Maps {
         itemSearcherMap = new HashMap<>();
         genreSearcherMap = new HashMap<>();
         genreEditorMap = new HashMap<>();
+        genreAdderMap = new HashMap<>();
 
         String[] starsOptionList = {"actor","movie"};
         String[] writesOptionList = {"writer","audiobook","physicalbook"};
@@ -141,7 +143,8 @@ public class Maps {
         
         genreSearcherMap.put("genres", "SELECT DISTINCT GENRE FROM ITEM_GENRE");
         genreSearcherMap.put("search", "SELECT * FROM ITEM_GENRE, ITEM WHERE ITEM_GENRE.Item_ID = ITEM.Item_ID AND ITEM_GENRE.Genre = ?");
-        genreEditorMap.put("item", "UPDATE item_genre SET Genre = ? WHERE Item_ID = ?");
+        genreEditorMap.put("item", "UPDATE item_genre SET Genre = ? WHERE Item_ID = ?;");
+        genreAdderMap.put("item", "INSERT INTO item_genre values(?,?);");
         
         
     }

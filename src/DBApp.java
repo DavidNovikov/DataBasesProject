@@ -741,7 +741,7 @@ public class DBApp {
     public void add() {
         // ask for which type of item to add
         System.out.println(
-                "What would you like to add? (Album, Track, Interview, Movie, Audiobook, AudiobookChapter, PhysicalBook, PhysicalBookChapter, Actor, Artist, Director, Writer, or Relationship)");
+                "What would you like to add? (Album, Track, Interview, Movie, Audiobook, AudiobookChapter, PhysicalBook, PhysicalBookChapter, Actor, Artist, Director, Writer, Relationship, or Genre)");
         // get the type
         String type = scan.nextLine().toLowerCase();
         // add depending on the type
@@ -766,6 +766,8 @@ public class DBApp {
                 break;
             case "relationship":
                 Adder.addRelationship(conn, scan);
+            case "genre":
+            	Adder.addGenre(conn, scan);
                 break;
             default:
                 // print invalid
