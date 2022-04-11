@@ -198,6 +198,7 @@ public class Util {
 		int flag = 1;
 		int newID = -1;
         while(flag == 1) {
+        	//TODO throw error when transactions implemented
             System.out.println("What entry would you like to select? enter the number before the entry (1, 2, 3... etc): ");
 	        int entry = Integer.parseInt(scan.nextLine());
 	        if (entry < 1 || entry > IDs.size()) {
