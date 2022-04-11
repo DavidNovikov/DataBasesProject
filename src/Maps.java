@@ -15,9 +15,12 @@ public class Maps {
     public static Map<String, String[]> personEditorMap;
     public static Map<String, String[]> relationshipEditorMap;
     public static Map<String, String[]> relationshipOptionMap;
-    public static String addPersonString = "insert into person values (?,?,?,?,?);";
+    public static String addPersonString = "insert or rollback into person values (?,?,?,?,?);";
     public static String searchPersonString = "SELECT * FROM PERSON WHERE email = ?;";
-    public static String deletePersonString = "DELETE FROM PERSON WHERE CardID = ?;";
+    public static String deletePersonString = "delete or rollback FROM PERSON WHERE CardID = ?;";
+    public static String startTransactionString = "begin transaction;";
+    public static String endTransactionString = "commit;";
+    public static String forceRollBackString = "ROLLBACK;";
 
     // Instantiating the static maps
     static {
@@ -47,38 +50,41 @@ public class Maps {
         relationshipOptionMap.put("performs", performsOptionList);
         relationshipOptionMap.put("directs", directsOptionList);
 
-        String[] starsList = { "UPDATE stars SET Creator_ID = ? WHERE Creator_ID = ? AND Item_ID = ?;",
-                "UPDATE stars SET Item_ID = ? WHERE Creator_ID = ? AND Item_ID = ?;",
-                "UPDATE stars SET Role = ? WHERE Creator_ID = ? AND Item_ID = ?;" };
-        String[] writesList = { "UPDATE writes SET Creator_ID = ? WHERE Creator_ID = ? AND Item_ID = ?;",
-                "UPDATE writes SET Item_ID = ? WHERE Creator_ID = ? AND Item_ID = ?;" };
-        String[] interviewedList = { "UPDATE interviewed SET Creator_ID = ? WHERE Creator_ID = ? AND Item_ID = ?;",
-                "UPDATE interviewed SET Item_ID = ? WHERE Creator_ID = ? AND Item_ID = ?;" };
-        String[] performsList = { "UPDATE performs SET Creator_ID = ? WHERE Creator_ID = ? AND Item_ID = ?;",
-                "UPDATE performs SET Item_ID = ? WHERE Creator_ID = ? AND Item_ID = ?;" };
-        String[] directsList = { "UPDATE directs SET Creator_ID = ? WHERE Creator_ID = ? AND Item_ID = ?;",
-                "UPDATE directs SET Item_ID = ? WHERE Creator_ID = ? AND Item_ID = ?;" };
+        String[] starsList = { "update or rollback stars SET Creator_ID = ? WHERE Creator_ID = ? AND Item_ID = ?;",
+                "update or rollback stars SET Item_ID = ? WHERE Creator_ID = ? AND Item_ID = ?;",
+                "update or rollback stars SET Role = ? WHERE Creator_ID = ? AND Item_ID = ?;" };
+        String[] writesList = { "update or rollback writes SET Creator_ID = ? WHERE Creator_ID = ? AND Item_ID = ?;",
+                "update or rollback writes SET Item_ID = ? WHERE Creator_ID = ? AND Item_ID = ?;" };
+        String[] interviewedList = {
+                "update or rollback interviewed SET Creator_ID = ? WHERE Creator_ID = ? AND Item_ID = ?;",
+                "update or rollback interviewed SET Item_ID = ? WHERE Creator_ID = ? AND Item_ID = ?;" };
+        String[] performsList = {
+                "update or rollback performs SET Creator_ID = ? WHERE Creator_ID = ? AND Item_ID = ?;",
+                "update or rollback performs SET Item_ID = ? WHERE Creator_ID = ? AND Item_ID = ?;" };
+        String[] directsList = { "update or rollback directs SET Creator_ID = ? WHERE Creator_ID = ? AND Item_ID = ?;",
+                "update or rollback directs SET Item_ID = ? WHERE Creator_ID = ? AND Item_ID = ?;" };
         relationshipEditorMap.put("stars", starsList);
         relationshipEditorMap.put("writes", writesList);
         relationshipEditorMap.put("interviewed", interviewedList);
         relationshipEditorMap.put("performs", performsList);
         relationshipEditorMap.put("directs", directsList);
 
-        String[] personList = { "UPDATE person SET Email = ? WHERE CardID = ?;",
-                "UPDATE person SET Fname = ? WHERE CardID = ?;",
-                "UPDATE person SET Lname = ? WHERE CardID = ?;",
-                "UPDATE person SET Address = ? WHERE CardID = ?;", "UPDATE person SET CardID = ? WHERE CardID = ?;" };
+        String[] personList = { "update or rollback person SET Email = ? WHERE CardID = ?;",
+                "update or rollback person SET Fname = ? WHERE CardID = ?;",
+                "update or rollback person SET Lname = ? WHERE CardID = ?;",
+                "update or rollback person SET Address = ? WHERE CardID = ?;",
+                "update or rollback person SET CardID = ? WHERE CardID = ?;" };
         personEditorMap.put("person", personList);
 
-        String[] albumList = { "UPDATE album SET NumberSongs = ? WHERE ItemID = ?;",
-                "UPDATE album SET NumberMinutes = ? WHERE ItemID = ?;" };
-        String[] trackList = { "UPDATE track SET NumberSeconds = ? WHERE ItemID = ?;",
-                "UPDATE track SET AlbumID = ? WHERE ItemID = ?;" };
-        String[] interviewList = { "UPDATE interview SET NumberMinutes = ? WHERE ItemID = ?;" };
-        String[] movieList = { "UPDATE movie SET Runtime = ? WHERE ItemID = ?;",
-                "UPDATE movie SET Rating = ? WHERE ItemID = ?;" };
-        String[] audiobookList = { "UPDATE audiobook SET NumberMinutes = ? WHERE ItemID = ?;" };
-        String[] physicalbookList = { "UPDATE physical_book SET NumberPages = ? WHERE ItemID = ?;" };
+        String[] albumList = { "update or rollback album SET NumberSongs = ? WHERE ItemID = ?;",
+                "update or rollback album SET NumberMinutes = ? WHERE ItemID = ?;" };
+        String[] trackList = { "update or rollback track SET NumberSeconds = ? WHERE ItemID = ?;",
+                "update or rollback track SET AlbumID = ? WHERE ItemID = ?;" };
+        String[] interviewList = { "update or rollback interview SET NumberMinutes = ? WHERE ItemID = ?;" };
+        String[] movieList = { "update or rollback movie SET Runtime = ? WHERE ItemID = ?;",
+                "update or rollback movie SET Rating = ? WHERE ItemID = ?;" };
+        String[] audiobookList = { "update or rollback audiobook SET NumberMinutes = ? WHERE ItemID = ?;" };
+        String[] physicalbookList = { "update or rollback physical_book SET NumberPages = ? WHERE ItemID = ?;" };
         itemEditorMap.put("album", albumList);
         itemEditorMap.put("track", trackList);
         itemEditorMap.put("interview", interviewList);
@@ -86,43 +92,43 @@ public class Maps {
         itemEditorMap.put("audiobook", audiobookList);
         itemEditorMap.put("physicalbook", physicalbookList);
 
-        String[] actorList = { "UPDATE actor SET ar_name = ? WHERE creator_id = ?;",
-                "UPDATE actor SET Date_Of_Birth = ? WHERE creator_id = ?;" };
-        String[] artistList = { "UPDATE artist SET ar_name = ? WHERE creator_id = ?;",
-                "UPDATE artist SET Date_Of_Birth = ? WHERE creator_id = ?;" };
-        String[] directorList = { "UPDATE director SET ar_name = ? WHERE creator_id = ?;",
-                "UPDATE director SET Date_Of_Birth = ? WHERE creator_id = ?;" };
-        String[] writerList = { "UPDATE writer SET ar_name = ? WHERE creator_id = ?;",
-                "UPDATE writer SET Date_Of_Birth = ? WHERE creator_id = ?;" };
+        String[] actorList = { "update or rollback actor SET ar_name = ? WHERE creator_id = ?;",
+                "update or rollback actor SET Date_Of_Birth = ? WHERE creator_id = ?;" };
+        String[] artistList = { "update or rollback artist SET ar_name = ? WHERE creator_id = ?;",
+                "update or rollback artist SET Date_Of_Birth = ? WHERE creator_id = ?;" };
+        String[] directorList = { "update or rollback director SET ar_name = ? WHERE creator_id = ?;",
+                "update or rollback director SET Date_Of_Birth = ? WHERE creator_id = ?;" };
+        String[] writerList = { "update or rollback writer SET ar_name = ? WHERE creator_id = ?;",
+                "update or rollback writer SET Date_Of_Birth = ? WHERE creator_id = ?;" };
         creatorEditorMap.put("actor", actorList);
         creatorEditorMap.put("artist", artistList);
         creatorEditorMap.put("director", directorList);
         creatorEditorMap.put("writer", writerList);
 
-        itemAdderMap.put("item", "insert into item values (?,?,?,?);");
-        itemAdderMap.put("album", "insert into album values (?,?,?);");
-        itemAdderMap.put("track", "insert into track values (?,?,?);");
-        itemAdderMap.put("interview", "insert into interview values (?,?);");
-        itemAdderMap.put("movie", "insert into movie values (?,?,?);");
-        itemAdderMap.put("audiobook", "insert into audiobook values (?,?);");
-        itemAdderMap.put("physical_book", "insert into physical_book values (?,?);");
+        itemAdderMap.put("item", "insert or rollback into item values (?,?,?,?);");
+        itemAdderMap.put("album", "insert or rollback into album values (?,?,?);");
+        itemAdderMap.put("track", "insert or rollback into track values (?,?,?);");
+        itemAdderMap.put("interview", "insert or rollback into interview values (?,?);");
+        itemAdderMap.put("movie", "insert or rollback into movie values (?,?,?);");
+        itemAdderMap.put("audiobook", "insert or rollback into audiobook values (?,?);");
+        itemAdderMap.put("physical_book", "insert or rollback into physical_book values (?,?);");
 
-        creatorAdderMap.put("creator", "insert into creator values (?);");
-        creatorAdderMap.put("artist", "insert into artist values (?,?,?);");
-        creatorAdderMap.put("actor", "insert into actor values (?,?,?);");
-        creatorAdderMap.put("director", "insert into director values (?,?,?);");
-        creatorAdderMap.put("writer", "insert into writer values (?,?,?);");
+        creatorAdderMap.put("creator", "insert or rollback into creator values (?);");
+        creatorAdderMap.put("artist", "insert or rollback into artist values (?,?,?);");
+        creatorAdderMap.put("actor", "insert or rollback into actor values (?,?,?);");
+        creatorAdderMap.put("director", "insert or rollback into director values (?,?,?);");
+        creatorAdderMap.put("writer", "insert or rollback into writer values (?,?,?);");
 
         creatorSearcherMap.put("artist", "SELECT * FROM artist where ar_name = ?;");
         creatorSearcherMap.put("actor", "SELECT * FROM actor where ar_name = ?;");
         creatorSearcherMap.put("director", "SELECT * FROM director where ar_name = ?;");
         creatorSearcherMap.put("writer", "SELECT * FROM writer where ar_name = ?;");
 
-        creatorDeleteMap.put("creator", "delete from creator where Creator_ID = ?;");
-        creatorDeleteMap.put("artist", "delete from artist where Creator_ID = ?;");
-        creatorDeleteMap.put("actor", "delete from actor where Creator_ID = ?;");
-        creatorDeleteMap.put("director", "delete from director where Creator_ID = ?;");
-        creatorDeleteMap.put("writer", "delete from writer where Creator_ID = ?;");
+        creatorDeleteMap.put("creator", "delete or rollback from creator where Creator_ID = ?;");
+        creatorDeleteMap.put("artist", "delete or rollback from artist where Creator_ID = ?;");
+        creatorDeleteMap.put("actor", "delete or rollback from actor where Creator_ID = ?;");
+        creatorDeleteMap.put("director", "delete or rollback from director where Creator_ID = ?;");
+        creatorDeleteMap.put("writer", "delete or rollback from writer where Creator_ID = ?;");
 
         creatorNameMap.put("artist", "Ar_Name");
         creatorNameMap.put("actor", "Ar_Name");
