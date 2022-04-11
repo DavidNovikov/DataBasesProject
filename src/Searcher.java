@@ -136,14 +136,20 @@ public class Searcher {
 		        	stmt = conn.prepareStatement(Maps.genreSearcherMap.get("genres"));
 		        	rSet = stmt.executeQuery();
 		        	Util.searchPrintNoRet(rSet);
+		        	System.out.println("Enter the name of the genre you would like to search for, or 1 to list all genres:");
+		            genre = scan.nextLine();
 		        }else {
 		        	stmt = conn.prepareStatement(Maps.genreSearcherMap.get("search"));
 		        	stmt.setString(1, genre);
 		        	rSet = stmt.executeQuery();
 		        	genreList = Util.searchPrint(rSet, "Item_ID");
-		        	System.out.println("What entry would you like to select? enter the number before the entry (1, 2, 3... etc): ");
-	    	        int entry = Integer.parseInt(scan.nextLine());
-	    	        genreID = genreList.get(entry-1);
+		        	if (genreList.size() !=0 ) {
+			        	System.out.println("What entry would you like to select? enter the number before the entry (1, 2, 3... etc): ");
+		    	        int entry = Integer.parseInt(scan.nextLine());
+		    	        genreID = genreList.get(entry-1);
+		        	} else {
+		        		System.out.println("Query returned no entries");
+		        	}
 	    	        listFlag = false;
 		        }
 		        
