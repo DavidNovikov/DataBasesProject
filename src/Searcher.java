@@ -147,10 +147,14 @@ public class Searcher {
 			        	System.out.println("What entry would you like to select? enter the number before the entry (1, 2, 3... etc): ");
 		    	        int entry = Integer.parseInt(scan.nextLine());
 		    	        genreID = genreList.get(entry-1);
+		    	        listFlag = false;
+		    	        
 		        	} else {
 		        		System.out.println("Query returned no entries");
+		        		System.out.println("Enter the name of the genre you would like to search for, or 1 to list all genres:");
+			            genre = scan.nextLine();
 		        	}
-	    	        listFlag = false;
+	    	        
 		        }
 		        
         	} 
