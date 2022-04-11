@@ -55,4 +55,43 @@ public class Deleter {
             Util.closeStmt(stmt);
         }
     }
+
+    public static void deleteItem(String type, Connection conn, Scanner scan) throws Exception {
+        try {
+            int itemID = Searcher.pickItem(type, conn, scan);
+            deleteItemSuper(itemID, type, conn, scan);
+            deleteItemBase(itemID, type, conn, scan);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw e;
+        }
+    }
+
+    private static void deleteItemBase(int itemID, String type, Connection conn, Scanner scan) throws Exception {
+        PreparedStatement stmt = null;
+        try {
+            stmt = conn.prepareStatement(Maps.itemDeleteMap.get("item"));
+            stmt.setInt(1, itemID);
+            stmt.executeUpdate();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw e;
+        } finally {
+            Util.closeStmt(stmt);
+        }
+    }
+
+    private static void deleteItemSuper(int itemID, String type, Connection conn, Scanner scan) throws Exception {
+        PreparedStatement stmt = null;
+        try {
+            stmt = conn.prepareStatement(Maps.itemDeleteMap.get(type));
+            stmt.setInt(1, itemID);
+            stmt.executeUpdate();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw e;
+        } finally {
+            Util.closeStmt(stmt);
+        }
+    }
 }

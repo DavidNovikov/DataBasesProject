@@ -30,6 +30,7 @@ public class DBApp {
             case "audiobookchapter":
             case "physicalbookchapter":
             case "physicalbook":
+            case "itemordered":
                 // TODO: search for item
                 Searcher.pickItem(type, conn, scan);
                 break;
@@ -51,7 +52,7 @@ public class DBApp {
     public void add() throws Exception {
         // ask for which type of item to add
         System.out.println(
-                "What would you like to add? (Album, Track, Interview, Movie, Audiobook, AudiobookChapter, PhysicalBook, PhysicalBookChapter, Actor, Artist, Director, Writer, Person, or Relationship)");
+                "What would you like to add? (Album, Track, Interview, Movie, Audiobook, AudiobookChapter, PhysicalBook, PhysicalBookChapter, itemOrdered, Actor, Artist, Director, Writer, Person, or Relationship)");
         // get the type
         String type = scan.nextLine().toLowerCase();
         // add depending on the type
@@ -62,6 +63,7 @@ public class DBApp {
             case "movie":
             case "audiobook":
             case "physicalbook":
+            case "itemordered":
                 Adder.addItem(Util.changeToDBString(type), conn, scan);
                 break;
             case "audiobookchapter":
@@ -89,7 +91,7 @@ public class DBApp {
     public void delete() throws Exception {
         // Ask the user which record they want to delete
         System.out.println(
-                "Enter the type of the record to be deleted (Album, Track, Interview, Movie, Audiobook, AudiobookChapter, PhysicalBook, PhysicalBookChapter, Actor, Artist, Director, Writer, or Person): ");
+                "Enter the type of the record to be deleted (Album, Track, Interview, Movie, Audiobook, AudiobookChapter, PhysicalBook, PhysicalBookChapter, itemOrdered, Actor, Artist, Director, Writer, or Person): ");
         String type = scan.nextLine().toLowerCase();
 
         switch (type) {
@@ -99,7 +101,8 @@ public class DBApp {
             case "movie":
             case "audiobook":
             case "physicalbook":
-                // TODO: delete item
+            case "itemordered":
+                Deleter.deleteItem(type, conn, scan);
                 break;
             case "audiobookchapter":
             case "physicalbookchapter":
@@ -123,7 +126,7 @@ public class DBApp {
     public void edit() throws Exception {
         // Ask the user which record they want to edit
         System.out.println(
-                "Enter the type of the record to be edited (Album, Track, Interview, Movie, Audiobook, AudiobookChapter, PhysicalBook, PhysicalBookChapter, Actor, Artist, Director, Writer, Person, Stars, Writes, Interviewed, Performs, or Directs): ");
+                "Enter the type of the record to be edited (Album, Track, Interview, Movie, Audiobook, AudiobookChapter, PhysicalBook, PhysicalBookChapter, itemOrdered, Actor, Artist, Director, Writer, Person, Stars, Writes, Interviewed, Performs, or Directs): ");
         String type = scan.nextLine().toLowerCase();
 
         switch (type) {
@@ -133,6 +136,7 @@ public class DBApp {
             case "movie":
             case "audiobook":
             case "physicalbook":
+            case "itemordered":
                 Editor.editItem(type, conn, scan);
                 break;
             case "audiobookchapter":

@@ -226,4 +226,25 @@ public class Util {
         }
         return newID;
 	}
+
+	public static String getTypeFromList(Scanner scan, List<String> validTypes) throws Exception{
+		boolean successful = false;
+		String response = "";
+		while (!successful) {
+			System.out.print("Enter the type: (");
+			for(String s: validTypes){
+				System.out.print(s+" ");
+			}
+			System.out.println(") or q to quit");
+			response = scan.nextLine();
+			if (validTypes.contains(response)) {
+				successful = true;
+			} else if(response.equals("q")){
+				throw new Exception("User quit during operation!");
+			}else{
+				System.out.println("Invalid type!");
+			}
+		}
+		return response;
+	}
 }

@@ -262,6 +262,9 @@ public class Editor {
                 case "physicalbook":
                     editing = 1;
                     break;
+                case "itemordered":
+                    editing = whatToEditItemOrdered(scan);
+                    break;
                 default:
                     // print invalid
                     System.out.println(type + " is an Invalid input");
@@ -288,6 +291,9 @@ public class Editor {
                 case "physicalbook":
                     stmt = editItemExecuteSingle(stmt, scan, editing, "number of pages");
                     break;
+                case "itemordered":
+                    stmt = editItemOrderedExecute(stmt, scan, editing);
+                    break;
                 default:
                     // print invalid
                     System.out.println(type + " is an Invalid input");
@@ -302,6 +308,17 @@ public class Editor {
         }
     }
 
+    private static int whatToEditItemOrdered(Scanner scan) throws Exception{
+        int option = 0;
+        while (option == 0) {
+            System.out.println("Please enter 1 to edit Item_ID, 2 to edit the price, 3 to edit the quantity ordered,\n 4 to edit the expected arrival date, 5 to edit the actual arrival date");
+            option = Integer.valueOf(scan.nextLine());
+            if (!(option == 1 || option == 2 || option == 3 || option == 4 || option == 5))
+                option = 0;
+        }
+        return option;
+    }
+
     private static int whatToEditItemGeneric(Scanner scan, String option1, String option2) throws Exception {
         int option = 0;
         while (option == 0) {
@@ -311,6 +328,40 @@ public class Editor {
                 option = 0;
         }
         return option;
+    }
+
+    private static PreparedStatement editItemOrderedExecute(PreparedStatement stmt, Scanner scan, int editing) throws Exception {
+        try {
+            switch (editing) {
+                case 1:
+                    System.out.println("enter the new Item_ID");
+                    int itemID = Integer.parseInt(scan.nextLine());
+                    stmt.setInt(1, itemID);
+                    break;
+                case 2:
+                    System.out.println("enter the new price in the format dollars.cents");
+                    double price = Double.parseDouble(scan.nextLine());
+                    stmt.setDouble(1, price);
+                    break;
+                case 3:
+                    System.out.println("enter the new quantity ordered");
+                    int quantity = Integer.parseInt(scan.nextLine());
+                    stmt.setInt(1, quantity);
+                    break;
+                case 4:
+                    String estimatedArrivalDate = Util.getDate(scan, "new estimated arrival date");
+                    stmt.setString(1, estimatedArrivalDate);
+                    break;
+                case 5:
+                    String actualArrivalDate = Util.getDate(scan, "new actual arrival date");
+                    stmt.setString(1, actualArrivalDate);
+                    break;
+            }
+            return stmt;
+        } catch (Exception e) {
+            System.out.println("Exception entering new value:" + e);
+            throw e;
+        }
     }
 
     private static PreparedStatement editItemExecuteGeneric(PreparedStatement stmt, Scanner scan, int editing,
