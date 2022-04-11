@@ -33,4 +33,21 @@ public class Deleter {
             Util.closeStmt(stmt);
         }
     }
+    
+    public static void deleteGenre(Connection conn, Scanner scan) {
+    	System.out.println("Select an entry to delete a genre from");
+    	int itemID = Searcher.pickGenre(conn, scan);
+    	PreparedStatement stmt = null;
+    	try {
+	        System.out.println("What is the genre you wish to delete?");
+	        String newGenre = scan.nextLine();
+	        stmt = conn.prepareStatement(Maps.genreDeleterMap.get("item"));
+	        stmt.setInt(1, itemID);
+	        stmt.setString(2, newGenre);
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            Util.closeStmt(stmt);
+        }
+    }
 }
