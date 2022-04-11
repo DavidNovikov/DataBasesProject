@@ -18,7 +18,7 @@ public class Searcher {
                 rSet = stmt.executeQuery();
                 System.out.println("Name, dob, creator id");
                 while (rSet.next() && creatorID == -1) {
-                    String name = rSet.getString(Util.creatorNameString(type));
+                    String name = rSet.getString(Maps.creatorNameMap.get(type));
                     String dob = rSet.getString("date_of_birth");
                     creatorID = rSet.getInt("creator_id");
                     System.out.println(name + ", " + dob + ", " + creatorID);
@@ -80,7 +80,7 @@ public class Searcher {
 
             try {
 
-                String sql = "SELECT * FROM PERSON WHERE email = ?;";
+                String sql = Maps.searchPersonString;
                 stmt = conn.prepareStatement(sql);
                 stmt.setString(1, email);
                 // stmt.setString(2, type);

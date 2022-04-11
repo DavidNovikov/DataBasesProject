@@ -48,4 +48,18 @@ public class Deleter {
             Util.closeStmt(stmt);
         }
     }
+
+    public static void deletePerson(Connection conn, Scanner scan) {
+        int cardID = Searcher.pickPerson(conn, scan);
+        PreparedStatement stmt = null;
+            try {
+                stmt = conn.prepareStatement(Maps.deletePersonString);
+                stmt.setInt(1, cardID);
+                stmt.executeUpdate();
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+            } finally {
+                Util.closeStmt(stmt);
+            }
+    }
 }

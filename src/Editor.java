@@ -123,15 +123,23 @@ public class Editor {
         try {
             int editing = whatToEditPerson(scan);
             stmt = conn.prepareStatement(Maps.personEditorMap.get(type)[editing - 1]);
-            // 1 for email, 2 for fname, 3 for lname, 4 for address
+            // 1 for email, 2 for fname, 3 for lname, 4 for address, 5 for address
             switch (editing) {
                 case 1:
+                    String newEmail = Util.getEmail(scan);
+                    stmt.setString(1, newEmail);
+                    break;
                 case 2:
                 case 3:
                 case 4:
                     System.out.println("enter the new value:");
                     String newValue = scan.nextLine();
                     stmt.setString(1, newValue);
+                    break;
+                case 5:
+                    int newCardID = Util.nextIDFrom("library_card", conn);
+                    System.out.println("The new library card number is: " + newCardID);
+                    stmt.setInt(1, newCardID);
                     break;
                 default:
                     System.out.println("Invalid editing option!");
@@ -149,9 +157,9 @@ public class Editor {
         int option = 0;
         while (option == 0) {
             System.out.println(
-                    "Please enter 1 to edit the email, 2 to edit the first name, 3 to edit the last name, 4 to edit the address");
+                    "Please enter 1 to edit the email, 2 to edit the first name, 3 to edit the last name, 4 to edit the address, 5 to edit the library card number: ");
             option = Integer.valueOf(scan.nextLine());
-            if (!(option == 1 || option == 2 || option == 3 || option == 4))
+            if (!(option == 1 || option == 2 || option == 3 || option == 4 || option == 5))
                 option = 0;
         }
         return option;
@@ -215,10 +223,10 @@ public class Editor {
                     editing = whatToEditItemGeneric(scan, "runtime", "rating");
                     break;
                 case "audiobook":
-                    editing = whatToEditItemGeneric(scan, "number of chapters", "number of minutes");
+                    editing = 1;
                     break;
                 case "physicalbook":
-                    editing = whatToEditItemGeneric(scan, "number of chapters", "number of pages");
+                    editing = 1;
                     break;
                 default:
                     // print invalid
@@ -241,10 +249,10 @@ public class Editor {
                     stmt = editItemExecuteIntString(stmt, scan, editing, "runtime", "rating");
                     break;
                 case "audiobook":
-                    stmt = editItemExecuteGeneric(stmt, scan, editing, "number of chapters", "number of minutes");
+                    stmt = editItemExecuteSingle(stmt, scan, editing, "number of minutes");
                     break;
                 case "physicalbook":
-                    stmt = editItemExecuteGeneric(stmt, scan, editing, "number of chapters", "number of pages");
+                    stmt = editItemExecuteSingle(stmt, scan, editing, "number of pages");
                     break;
                 default:
                     // print invalid
