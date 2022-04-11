@@ -125,26 +125,29 @@ public class Searcher {
     	PreparedStatement stmt = null;
         ResultSet rSet = null;
         int genreID = -1;
+        boolean listFlag = true;
         
         System.out.println("Enter the name of the genre you would like to search for, or 1 to list all genres:");
         String genre = scan.nextLine();
         
         try {
-	        if (genre.equals("1")) {
-	        	stmt = conn.prepareStatement(Maps.genreSearcherMap.get("genres"));
-	        	rSet = stmt.executeQuery();
-	        	Util.searchPrintNoRet(rSet);
-	        }else {
-	        	stmt = conn.prepareStatement(Maps.genreSearcherMap.get("search"));
-	        	stmt.setString(1, genre);
-	        	rSet = stmt.executeQuery();
-	        	genreList = Util.searchPrint(rSet, "Item_ID");
-	        	System.out.println("What entry would you like to select? enter the number before the entry (1, 2, 3... etc): ");
-    	        int entry = Integer.parseInt(scan.nextLine());
-    	        genreID = genreList.get(entry-1);
-	        }
-	        
-	        
+        	while(listFlag) {
+		        if (genre.equals("1")) {
+		        	stmt = conn.prepareStatement(Maps.genreSearcherMap.get("genres"));
+		        	rSet = stmt.executeQuery();
+		        	Util.searchPrintNoRet(rSet);
+		        }else {
+		        	stmt = conn.prepareStatement(Maps.genreSearcherMap.get("search"));
+		        	stmt.setString(1, genre);
+		        	rSet = stmt.executeQuery();
+		        	genreList = Util.searchPrint(rSet, "Item_ID");
+		        	System.out.println("What entry would you like to select? enter the number before the entry (1, 2, 3... etc): ");
+	    	        int entry = Integer.parseInt(scan.nextLine());
+	    	        genreID = genreList.get(entry-1);
+	    	        listFlag = false;
+		        }
+		        
+        	} 
         }catch (SQLException e) {
             System.out.println(e.getMessage());
         } finally {
