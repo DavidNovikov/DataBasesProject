@@ -26,7 +26,7 @@ public class Maps {
     public static Map<String, String> relationshipDeleterMap;
     public static String addPersonString = "insert or rollback into person values (?,?,?,?,?);";
     public static String searchPersonString = "SELECT * FROM PERSON WHERE email = ?;";
-    public static String deletePersonString = "delete or rollback FROM PERSON WHERE CardID = ?;";
+    public static String deletePersonString = "delete FROM PERSON WHERE CardID = ?;";
     public static String addItemCheckoutString = "insert into item_checked_out values (?,?,?,?,?);";
     public static String searchItemCheckoutsString = "SELECT * FROM ITEM_CHECKED_OUT WHERE ItemID = ?;";
     public static String startTransactionString = "begin transaction;";
