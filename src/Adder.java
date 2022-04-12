@@ -66,7 +66,14 @@ public class Adder {
             stmt.setInt(1, itemID);
             stmt.setString(2, title);
             stmt.setInt(3, year);
-            stmt.setString(4, Maps.itemInsertType.get(item));
+            String insertType = "";
+            if(item.equals("itemordered")){
+                insertType = Util.getTypeFromList(scan, Arrays.asList("album", "track", "movie", "interview", "audiobook", "physicalbook"));
+                addItemSuper(insertType, conn, scan, itemID);
+            }else{
+                insertType = item;
+            }
+            stmt.setString(4, Maps.itemInsertType.get(insertType));
 
             stmt.executeUpdate();
         } catch (Exception e) {
@@ -99,10 +106,41 @@ public class Adder {
             case "physicalbook":
                 addPhysicalbook(item, conn, scan, newItemID);
                 break;
+            case "itemordered":
+                addItemOrdered(conn, scan, newItemID);
+                break;
             default:
                 System.err.println(item + " isn't a valid new item insert type");
         }
 
+    }
+
+    private static void addItemOrdered(Connection conn, Scanner scan, int newItemID) throws Exception{
+        PreparedStatement stmt = null;
+
+        try {
+            System.out.println("Please enter the price in the format dollars.cents");
+            double price = Double.valueOf(scan.nextLine());
+
+            System.out.println("Please enter the quantity ordered");
+            int quantity = Integer.valueOf(scan.nextLine());
+
+            String arrivalDate = Util.getDate(scan, "Estimated Arrival Date");
+
+            stmt = conn.prepareStatement(Maps.itemAdderMap.get("itemordered"));
+
+            stmt.setInt(1,newItemID);
+            stmt.setDouble(2, price);
+            stmt.setInt(3, quantity);
+            stmt.setString(4, arrivalDate);
+            stmt.setNull(5, Types.DATE);
+            stmt.executeUpdate();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw e;
+        } finally {
+            Util.closeStmt(stmt);
+        }
     }
 
     private static void addAlbum(String item, Connection conn, Scanner scan, int newItemID) throws Exception {
@@ -186,7 +224,7 @@ public class Adder {
             int runtime = Integer.valueOf(scan.nextLine());
 
             System.out.println("Please enter the rating");
-            String rating = scan.nextLine();
+            String rating = Util.getTypeFromList(scan, Arrays.asList("G","PG","PG-13","R","NC-17"));
 
             stmt = conn.prepareStatement(Maps.itemAdderMap.get("movie"));
 
@@ -325,8 +363,7 @@ public class Adder {
             System.out.println("Please enter the role");
             String role = scan.nextLine();
 
-            String query = "insert into stars values (?,?,?);";
-            stmt = conn.prepareStatement(query);
+            stmt = conn.prepareStatement(Maps.relationshipAdderMap.get("stars"));
 
             stmt.setInt(1, creatorID);
             stmt.setString(2, role);
@@ -351,9 +388,7 @@ public class Adder {
             System.out.println("Please enter the item ID");
             int itemID = Integer.valueOf(scan.nextLine());
 
-            String query = "insert into " + relationshipType + " values (?,?);";
-            stmt = conn.prepareStatement(query);
-
+            stmt = conn.prepareStatement(Maps.relationshipAdderMap.get(relationshipType));
             stmt.setInt(1, creatorID);
             stmt.setInt(2, itemID);
             stmt.executeUpdate();

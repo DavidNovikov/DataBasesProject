@@ -2,41 +2,12 @@ import java.sql.*;
 import java.util.*;
 
 public class Editor {
-    public static String getRelationshipCreatorType(String relationshipType) throws Exception {
-        return Maps.relationshipOptionMap.get(relationshipType)[0];
-    }
-
-    public static String getRelationshipItemType(String relationshipType, Scanner scan) throws Exception {
-        if (Maps.relationshipOptionMap.get(relationshipType).length > 2) {
-            // there are multiple options for item type
-            String[] optionArray = Maps.relationshipOptionMap.get(relationshipType);
-            int option = 0;
-            while (option == 0) {
-                for (int i = 1; i < optionArray.length; i++) {
-                    System.out.println("Enter " + i + " if the item type is " + optionArray[i]);
-                }
-                option = Integer.valueOf(scan.nextLine());
-                if (!(option == 1 || option == 2)) {
-                    option = 0;
-                }
-            }
-            return Maps.relationshipOptionMap.get(relationshipType)[option];
-        } else {
-            // there is just one item type
-            return Maps.relationshipOptionMap.get(relationshipType)[1];
-        }
-    }
 
     public static void editRelationship(String relationshipType, Connection conn, Scanner scan) throws Exception {
         // ask if item type is audiobook or album
-
+        Relationship rel = Searcher.pickRelationship(relationshipType, conn, scan);
         PreparedStatement stmt = null;
         try {
-            String itemType = getRelationshipItemType(relationshipType, scan);
-            String creatorType = getRelationshipCreatorType(relationshipType);
-
-            int itemID = Searcher.pickItem(itemType, conn, scan);
-            int creatorID = Searcher.pickCreator(creatorType, conn, scan);
             int editing = 0;
             switch (relationshipType) {
                 case "stars":
@@ -66,8 +37,8 @@ public class Editor {
                     System.out.println(relationshipType + " is an invalid input");
             }
 
-            stmt.setInt(2, creatorID);
-            stmt.setInt(3, itemID);
+            stmt.setInt(2, rel.getCreatorID());
+            stmt.setInt(3, rel.getItemID());
             stmt.executeUpdate();
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -262,6 +233,9 @@ public class Editor {
                 case "physicalbook":
                     editing = 1;
                     break;
+                case "itemordered":
+                    editing = whatToEditItemOrdered(scan);
+                    break;
                 default:
                     // print invalid
                     System.out.println(type + " is an Invalid input");
@@ -287,6 +261,9 @@ public class Editor {
                     break;
                 case "physicalbook":
                     stmt = editItemExecuteSingle(stmt, scan, editing, "number of pages");
+                    break;
+                case "itemordered":
+                    stmt = editItemOrderedExecute(stmt, scan, editing);
                     break;
                 default:
                     // print invalid
@@ -320,6 +297,17 @@ public class Editor {
         }
     }
 
+    private static int whatToEditItemOrdered(Scanner scan) throws Exception{
+        int option = 0;
+        while (option == 0) {
+            System.out.println("Please enter 1 to edit Item_ID, 2 to edit the price, 3 to edit the quantity ordered,\n 4 to edit the expected arrival date, 5 to edit the actual arrival date");
+            option = Integer.valueOf(scan.nextLine());
+            if (!(option == 1 || option == 2 || option == 3 || option == 4 || option == 5))
+                option = 0;
+        }
+        return option;
+    }
+
     private static int whatToEditItemGeneric(Scanner scan, String option1, String option2) throws Exception {
         int option = 0;
         while (option == 0) {
@@ -329,6 +317,40 @@ public class Editor {
                 option = 0;
         }
         return option;
+    }
+
+    private static PreparedStatement editItemOrderedExecute(PreparedStatement stmt, Scanner scan, int editing) throws Exception {
+        try {
+            switch (editing) {
+                case 1:
+                    System.out.println("enter the new Item_ID");
+                    int itemID = Integer.parseInt(scan.nextLine());
+                    stmt.setInt(1, itemID);
+                    break;
+                case 2:
+                    System.out.println("enter the new price in the format dollars.cents");
+                    double price = Double.parseDouble(scan.nextLine());
+                    stmt.setDouble(1, price);
+                    break;
+                case 3:
+                    System.out.println("enter the new quantity ordered");
+                    int quantity = Integer.parseInt(scan.nextLine());
+                    stmt.setInt(1, quantity);
+                    break;
+                case 4:
+                    String estimatedArrivalDate = Util.getDate(scan, "new estimated arrival date");
+                    stmt.setString(1, estimatedArrivalDate);
+                    break;
+                case 5:
+                    String actualArrivalDate = Util.getDate(scan, "new actual arrival date");
+                    stmt.setString(1, actualArrivalDate);
+                    break;
+            }
+            return stmt;
+        } catch (Exception e) {
+            System.out.println("Exception entering new value:" + e);
+            throw e;
+        }
     }
 
     private static PreparedStatement editItemExecuteGeneric(PreparedStatement stmt, Scanner scan, int editing,
