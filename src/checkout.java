@@ -68,7 +68,12 @@ public class checkout {
     	return allDueDates;
     }
     
+    public static void deleteItemCheckedOut(String type, Connection conn, Scanner scan) throws Exception {
+    	int itemID = Searcher.pickItem(type, conn, scan);
+    }
+    
+    
+    
     //TODO: update
-    //TODO: search
     //TODO: delete
 }

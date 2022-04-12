@@ -212,6 +212,7 @@ public class DBApp {
                             // search for a record and print it
                             search();
                         case 'c':
+                        	//ask the user for a record to checkout and add it to the list of items checked out.
                             checkout();
                             break;
                         case 'd':
