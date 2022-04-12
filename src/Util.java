@@ -246,7 +246,8 @@ public class Util {
                     System.out.print(",  ");
             }
             System.out.print("\n");
-        }
+        	}
+       	}
 
 	public static String getTypeFromList(Scanner scan, List<String> validTypes) throws Exception{
 		boolean successful = false;

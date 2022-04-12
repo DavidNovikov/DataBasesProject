@@ -127,7 +127,13 @@ public class Deleter {
 	        stmt.setString(2, newGenre);
 	        stmt.executeUpdate();
         } catch (SQLException e) {
-
+        	System.out.println(e.getMessage());
+            throw e;
+        } finally {
+            Util.closeStmt(stmt);
+        }
+    }
+        
     public static void deleteItem(String type, Connection conn, Scanner scan) throws Exception {
         try {
             int itemID = Searcher.pickItem(type, conn, scan);
