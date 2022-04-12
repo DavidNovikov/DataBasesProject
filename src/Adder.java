@@ -224,7 +224,7 @@ public class Adder {
             int runtime = Integer.valueOf(scan.nextLine());
 
             System.out.println("Please enter the rating");
-            String rating = scan.nextLine();
+            String rating = Util.getTypeFromList(scan, Arrays.asList("G","PG","PG-13","R","NC-17"));
 
             stmt = conn.prepareStatement(Maps.itemAdderMap.get("movie"));
 

@@ -23,6 +23,7 @@ public class Maps {
     public static String endTransactionString = "commit;";
     public static String forceRollBackString = "ROLLBACK;";
     public static String getTypeColumnInItemFromItemIDString = "SELECT Type FROM Item WHERE Item_ID = ?;";
+    public static String checkItemInOrderedString = "SELECT * FROM Item_Ordered WHERE Item_ID = ?;";
 
     // Instantiating the static maps
     static {

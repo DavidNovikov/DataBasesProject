@@ -286,4 +286,30 @@ public class Util {
 		}
 		return request;
 	}
+
+	public static boolean itemIsInItemsOrdered(int itemID, Connection conn) throws Exception{
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		boolean result = true;
+		try {
+			stmt = conn.prepareStatement(Maps.checkItemInOrderedString);
+			stmt.setInt(1,itemID);
+			rSet = stmt.executeQuery();
+			boolean hasNext = rSet.next();
+			if(hasNext== false){
+				//then the item is not in ordered
+				result = false;
+			}else{
+				//then the item is in ordered
+				result = true;
+			}
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			throw e;
+		} finally {
+			closeStmt(stmt);
+			closeRSet(rSet);
+		}
+		return result;
+	}
 }
