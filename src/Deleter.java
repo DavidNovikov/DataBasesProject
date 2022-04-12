@@ -44,6 +44,7 @@ public class Deleter {
 	        stmt = conn.prepareStatement(Maps.genreDeleterMap.get("item"));
 	        stmt.setInt(1, itemID);
 	        stmt.setString(2, newGenre);
+	        stmt.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         } finally {

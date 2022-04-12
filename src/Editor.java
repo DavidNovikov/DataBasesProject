@@ -297,6 +297,7 @@ public class Editor {
 	        stmt = conn.prepareStatement(Maps.genreEditorMap.get("item"));
 	        stmt.setString(1, newGenre);
 	        stmt.setInt(2, itemID);
+	        stmt.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         } finally {
