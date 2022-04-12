@@ -18,6 +18,7 @@ public class Maps {
     public static String addPersonString = "insert or rollback into person values (?,?,?,?,?);";
     public static String searchPersonString = "SELECT * FROM PERSON WHERE email = ?;";
     public static String deletePersonString = "delete or rollback FROM PERSON WHERE CardID = ?;";
+    public static String checkoutItemString = "insert into item_checked_out values (?,?,?,?,?);";
     public static String startTransactionString = "begin transaction;";
     public static String endTransactionString = "commit;";
     public static String forceRollBackString = "ROLLBACK;";
