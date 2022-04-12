@@ -137,6 +137,8 @@ public class DBApp {
                 Editor.editItem(type, conn, scan);
                 break;
             case "audiobookchapter":
+            	Editor.editChapterAB(conn, scan);
+            	break;
             case "physicalbookchapter":
                 // TODO: edit chapter
                 break;

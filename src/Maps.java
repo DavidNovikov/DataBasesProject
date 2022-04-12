@@ -166,7 +166,7 @@ public class Maps {
         chapterABSearcherMap.put("audiobook","SELECT * FROM CHAPTER_AB WHERE BookID = ?;");
         chapterABSearcherMap.put("chapter","SELECT * FROM CHAPTER_AB WHERE BookID = ? AND Title = ?;");
         
-        chapterABEditorMap.put("audiobook", "update or rollback chapter_ab SET TITLE = ? WHERE BookID = ?;");
+        chapterABEditorMap.put("audiobook", "UPDATE OR ROLLBACK CHAPTER_AB SET Title = ? WHERE BookID IN (SELECT BookID FROM CHAPTER_AB WHERE Title = ? AND BookID = ?);");
 
     }
     
