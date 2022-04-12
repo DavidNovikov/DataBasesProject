@@ -23,6 +23,8 @@ public class Maps {
     public static String forceRollBackString = "ROLLBACK;";
     public static Map<String, String> chapterABSearcherMap;
     public static Map<String, String> chapterABEditorMap;
+    public static Map<String, String> chapterABAdderMap;
+    public static Map<String, String> chapterABDeleterMap;
 
     // Instantiating the static maps
     static {
@@ -42,6 +44,8 @@ public class Maps {
         itemSearcherMap = new HashMap<>();
         chapterABSearcherMap = new HashMap<>();
         chapterABEditorMap = new HashMap<>();
+        chapterABAdderMap = new HashMap<>();
+        chapterABDeleterMap = new HashMap<>();
 
         String[] starsOptionList = { "actor", "movie" };
         String[] writesOptionList = { "writer", "audiobook", "physicalbook" };
@@ -167,6 +171,8 @@ public class Maps {
         chapterABSearcherMap.put("chapter","SELECT * FROM CHAPTER_AB WHERE BookID = ? AND Title = ?;");
         
         chapterABEditorMap.put("audiobook", "UPDATE OR ROLLBACK CHAPTER_AB SET Title = ? WHERE BookID IN (SELECT BookID FROM CHAPTER_AB WHERE Title = ? AND BookID = ?);");
+        chapterABAdderMap.put("audiobook","insert or rollback into chapter_ab values(?, ?);");
+        chapterABDeleterMap.put("audiobook", "delete FROM CHAPTER_AB where BookID = ? AND Title = ?;");
 
     }
     

@@ -66,6 +66,8 @@ public class DBApp {
                 Adder.addItem(Util.changeToDBString(type), conn, scan);
                 break;
             case "audiobookchapter":
+            	Adder.addChapterAB(conn, scan);
+            	break;
             case "physicalbookchapter":
                 // TODO: add chapters as attributes
                 break;
@@ -103,6 +105,8 @@ public class DBApp {
                 // TODO: delete item
                 break;
             case "audiobookchapter":
+            	Deleter.deleteChapterAB(conn, scan);
+            	break;
             case "physicalbookchapter":
                 // TODO: delete chapter
                 break;
