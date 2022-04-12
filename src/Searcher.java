@@ -3,7 +3,7 @@ import java.util.*;
 
 public class Searcher {
     public static int pickCreator(String type, Connection conn, Scanner scan) throws Exception {
-        int creatorID = -1;
+        int creatorID;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
@@ -14,13 +14,9 @@ public class Searcher {
             stmt.setString(1, cName);
 
             rSet = stmt.executeQuery();
-            System.out.println("Name, dob, creator id");
-            while (rSet.next() && creatorID == -1) {
-                String name = rSet.getString(Maps.creatorNameMap.get(type));
-                String dob = rSet.getString("date_of_birth");
-                creatorID = rSet.getInt("creator_id");
-                System.out.println(name + ", " + dob + ", " + creatorID);
-            }
+
+            ArrayList<Integer> potentialIDs = Util.searchPrint(rSet, "creator_ID");
+            creatorID = Util.itemListPick(potentialIDs, scan);
         } catch (Exception e) {
             System.out.println(e.getMessage());
             throw e;
@@ -58,6 +54,7 @@ public class Searcher {
     }
 
     public static int pickPerson(Connection conn, Scanner scan) throws Exception {
+
         int CardID = -1;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -67,7 +64,6 @@ public class Searcher {
             String sql = Maps.searchPersonString;
             stmt = conn.prepareStatement(sql);
             stmt.setString(1, email);
-            // stmt.setString(2, type);
 
             rSet = stmt.executeQuery();
             ResultSetMetaData rSetmd = rSet.getMetaData();
@@ -98,6 +94,7 @@ public class Searcher {
         }
         return CardID;
     }
+
     public static int pickChapter(String type, Connection conn, Scanner scan) throws Exception {
     	int ItemID = -1;
     	PreparedStatement stmt = null;
@@ -116,32 +113,125 @@ public class Searcher {
     		rSet = stmt.executeQuery();
     		Util.searchPrint(rSet, "BookID");
     	}catch (Exception e) {
-            System.out.println(e.getMessage());
+        System.out.println(e.getMessage());
             throw e;
         } finally {
             Util.closeStmt(stmt);
             Util.closeRSet(rSet);
         }
-    	return ItemID;
+        return ItemID;
     }
-    public static int pickChapterPB(Connection conn, Scanner scan) throws Exception {
-    	int ItemID = -1;
+    
+    public static int pickGenre(Connection conn, Scanner scan)throws Exception {
+    	ArrayList<Integer> genreList = new ArrayList<Integer>();
     	PreparedStatement stmt = null;
         ResultSet rSet = null;
-    	try {
-    		System.out.println("Please select a physical book to search a chapter from: ");
-    		ItemID = pickItem("audiobook", conn, scan);
-    		stmt = conn.prepareStatement(Maps.chapterSearcherMap.get("audiobook"));
-    		stmt.setInt(1, ItemID);
-    		rSet = stmt.executeQuery();
-    		Util.searchPrint(rSet, "BookID");
-    	}catch (Exception e) {
+        int genreID = -1;
+        boolean listFlag = true;
+        
+        System.out.println("Enter the name of the genre you would like to search for, or 1 to list all genres:");
+        String genre = scan.nextLine();
+        
+        try {
+        	while(listFlag) {
+		        if (genre.equals("1")) {
+		        	stmt = conn.prepareStatement(Maps.genreSearcherMap.get("genres"));
+		        	rSet = stmt.executeQuery();
+		        	Util.searchPrintNoRet(rSet);
+		        	System.out.println("Enter the name of the genre you would like to search for, or 1 to list all genres:");
+		            genre = scan.nextLine();
+		        }else {
+		        	stmt = conn.prepareStatement(Maps.genreSearcherMap.get("search"));
+		        	stmt.setString(1, genre);
+		        	rSet = stmt.executeQuery();
+		        	genreList = Util.searchPrint(rSet, "Item_ID");
+		        	if (genreList.size() !=0 ) {
+			        	System.out.println("What entry would you like to select? enter the number before the entry (1, 2, 3... etc): ");
+		    	        int entry = Integer.parseInt(scan.nextLine());
+		    	        genreID = genreList.get(entry-1);
+		    	        listFlag = false;
+		    	        
+		        	} else {
+		        		System.out.println("Query returned no entries");
+		        		System.out.println("Enter the name of the genre you would like to search for, or 1 to list all genres:");
+			            genre = scan.nextLine();
+		        	}
+	    	        
+		        }
+		        
+        	} 
+        }catch (SQLException e) {
             System.out.println(e.getMessage());
             throw e;
         } finally {
             Util.closeStmt(stmt);
             Util.closeRSet(rSet);
         }
-    	return ItemID;
+      return genreID;
     }
+
+    public static Relationship pickRelationship(String type, Connection conn, Scanner scan) throws Exception {
+        Relationship relationship = new Relationship();
+        boolean found = false;
+        while (!found) {
+            String itemType = getRelationshipItemType(type, scan);
+            String creatorType = getRelationshipCreatorType(type);
+
+            int itemID = pickItem(itemType, conn, scan);
+            int creatorID = pickCreator(creatorType, conn, scan);
+
+            relationship.setCreatorID(creatorID);
+            relationship.setItemID(itemID);
+
+            PreparedStatement stmt = null;
+            ResultSet rSet = null;
+            try {
+                stmt = conn.prepareStatement(Maps.relationshipSearcherMap.get(type));
+                stmt.setInt(1, relationship.getCreatorID());
+                stmt.setInt(2, relationship.getItemID());
+                rSet = stmt.executeQuery();
+
+                ArrayList<Integer> potentialIDs = Util.searchPrint(rSet, "Item_ID");
+                if (potentialIDs.size() == 1) { // we have found the unique id
+                    found = true;
+                } else {
+                    System.out.println("relationship not found try again");
+                }
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+                throw e;
+            } finally {
+                Util.closeStmt(stmt);
+                Util.closeRSet(rSet);
+            }
+        }
+
+        return relationship;
+    }
+
+    private static String getRelationshipCreatorType(String relationshipType) {
+        return Maps.relationshipOptionMap.get(relationshipType)[0];
+    }
+
+    private static String getRelationshipItemType(String relationshipType, Scanner scan) throws Exception {
+        if (Maps.relationshipOptionMap.get(relationshipType).length > 2) {
+            // there are multiple options for item type
+            String[] optionArray = Maps.relationshipOptionMap.get(relationshipType);
+            int option = 0;
+            while (option == 0) {
+                for (int i = 1; i < optionArray.length; i++) {
+                    System.out.println("Enter " + i + " if the item type is " + optionArray[i]);
+                }
+                option = Integer.valueOf(scan.nextLine());
+                if (!(option == 1 || option == 2)) {
+                    option = 0;
+                }
+            }
+            return Maps.relationshipOptionMap.get(relationshipType)[option];
+        } else {
+            // there is just one item type
+            return Maps.relationshipOptionMap.get(relationshipType)[1];
+        }
+    }
+
 }

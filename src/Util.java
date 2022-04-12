@@ -1,4 +1,5 @@
 import java.sql.*;
+import java.text.*;
 import java.util.*;
 
 public class Util {
@@ -135,30 +136,25 @@ public class Util {
 		while (!successful) {
 			System.out.println("Enter the " + dateName + " in the form YYYY-MM-DD:");
 			response = scan.nextLine();
-			String[] date = response.split("-");
-			if (date.length != 3) {
-				System.out.println("Date does not have a year, month, and day");
-			} else if (date[0].length() != 4) {
-				System.out.println("Year needs to be 4 digits");
-			} else if (date[1].length() != 2) {
-				System.out.println("Month needs to be 4 digits");
-			} else if (date[2].length() != 2) {
-				System.out.println("Day needs to be 2 digits");
-			} else {
-				try {
-					int year = Integer.parseInt(date[0]);
-					int month = Integer.parseInt(date[1]);
-					int day = Integer.parseInt(date[2]);
-					// if these all work, it is successful
-					successful = true;
-				} catch (NumberFormatException e) {
-					System.out.println("Either the year, month, or day is not a valid number.");
-					throw e;
-				}
+			if(!dateIsValid(response)){
+				System.out.println("Not a valid date!");
+			}else{
+				successful = true;
 			}
 		}
 		return response;
 	}
+
+	private static boolean dateIsValid(String date) {
+        try {
+            DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
+            dateFormatter.setLenient(false);
+            dateFormatter.parse(date);
+            return true;
+        } catch (ParseException e) {
+            return false;
+        }
+    }
 
 	public static ArrayList<Integer> searchPrint(ResultSet rSet, String columnName) throws SQLException {
 		ResultSetMetaData rSetmd = rSet.getMetaData();
@@ -225,5 +221,110 @@ public class Util {
 	        }
         }
         return newID;
+	}
+
+	public static void searchPrintNoRet(ResultSet rSet) throws SQLException {
+		ResultSetMetaData rSetmd = rSet.getMetaData();
+        int columnCount = rSetmd.getColumnCount();
+        for (int i = 1; i <= columnCount; i++) {
+            String value = rSetmd.getColumnName(i);
+            System.out.print(value);
+            if (i < columnCount)
+                System.out.print(",  ");
+        }
+        System.out.print("\n");
+        int rsetCount = 0;
+        while (rSet.next()) {
+        	rsetCount++;
+            for (int i = 1; i <= columnCount; i++) {
+                String columnValue = rSet.getString(i);
+                if(i ==  1) {
+                	System.out.print("(" + rsetCount + ")");
+                }
+                System.out.print(columnValue);
+                if (i < columnCount)
+                    System.out.print(",  ");
+            }
+            System.out.print("\n");
+        	}
+       	}
+
+	public static String getTypeFromList(Scanner scan, List<String> validTypes) throws Exception{
+		boolean successful = false;
+		String response = "";
+		while (!successful) {
+			System.out.print("Enter the type: (");
+			for(String s: validTypes){
+				System.out.print(s+" ");
+			}
+			System.out.println(") or q to quit");
+			response = scan.nextLine();
+			if (validTypes.contains(response)) {
+				successful = true;
+			} else if(response.equals("q")){
+				throw new Exception("User quit during operation!");
+			}else{
+				System.out.println("Invalid type!");
+			}
+		}
+		return response;
+	}
+
+	public static String getTypeColumnInItemFromItemID(int itemID, Connection conn) throws Exception{
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		String type = null;
+		try {
+			stmt = conn.prepareStatement(Maps.getTypeColumnInItemFromItemIDString);
+			stmt.setInt(1,itemID);
+			rSet = stmt.executeQuery();
+			type = rSet.getString("Type");
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			throw e;
+		} finally {
+			closeStmt(stmt);
+			closeRSet(rSet);
+		}
+		return type;
+	}
+
+	public static String changeToJavaString(String request) {
+		request = request.toLowerCase();
+		// add depending on the type
+		switch (request) {
+			case "chapter_ab":
+				request = "audiobookchapter";
+				break;
+			case "chapter_pb":
+				request = "physicalbookchapter";
+				break;
+			case "pbook":
+				request = "physicalbook";
+				break;
+			case "abook":
+				request = "audiobook";
+				break;
+		}
+		return request;
+	}
+
+	public static boolean itemIsInItemsOrdered(int itemID, Connection conn) throws Exception{
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		boolean result = true;
+		try {
+			stmt = conn.prepareStatement(Maps.checkItemInOrderedString);
+			stmt.setInt(1,itemID);
+			rSet = stmt.executeQuery();
+			result = rSet.next();
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			throw e;
+		} finally {
+			closeStmt(stmt);
+			closeRSet(rSet);
+		}
+		return result;
 	}
 }
