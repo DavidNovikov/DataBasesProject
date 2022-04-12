@@ -376,15 +376,15 @@ public class Editor {
         }
     }
     
-    public static void editChapterAB(Connection conn, Scanner scan) throws Exception {
+    public static void editChapter(String type, Connection conn, Scanner scan) throws Exception {
     	PreparedStatement stmt = null;
     	try {
-    		int ItemID = Searcher.pickChapterAB(conn, scan);
+    		int ItemID = Searcher.pickChapter(type, conn, scan);
     		System.out.println("What is the name of the chapter that you would like to rename?");
     		String chapterName = scan.nextLine();
     		System.out.println("What is the new name of the chapter?");
     		String newChapterName = scan.nextLine();
-    		stmt = conn.prepareStatement(Maps.chapterABEditorMap.get("audiobook"));
+    		stmt = conn.prepareStatement(Maps.chapterEditorMap.get(type));
     		stmt.setString(1, newChapterName);
     		stmt.setString(2, chapterName);
     		stmt.setInt(3, ItemID);

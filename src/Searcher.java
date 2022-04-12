@@ -98,14 +98,40 @@ public class Searcher {
         }
         return CardID;
     }
-    public static int pickChapterAB(Connection conn, Scanner scan) throws Exception {
+    public static int pickChapter(String type, Connection conn, Scanner scan) throws Exception {
+    	int ItemID = -1;
+    	PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        String bookGrab = null;
+    	try {
+    		if(type.equals("audiobookchapter")) {
+    			bookGrab = "audiobook";
+    		} else if(type.equals("physicalbookchapter")) {
+    			bookGrab = "physicalbook";
+    		}
+    		System.out.println("Please select a " + bookGrab + " to search a chapter from: ");
+    		ItemID = pickItem(bookGrab, conn, scan);
+    		stmt = conn.prepareStatement(Maps.chapterSearcherMap.get(type));
+    		stmt.setInt(1, ItemID);
+    		rSet = stmt.executeQuery();
+    		Util.searchPrint(rSet, "BookID");
+    	}catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw e;
+        } finally {
+            Util.closeStmt(stmt);
+            Util.closeRSet(rSet);
+        }
+    	return ItemID;
+    }
+    public static int pickChapterPB(Connection conn, Scanner scan) throws Exception {
     	int ItemID = -1;
     	PreparedStatement stmt = null;
         ResultSet rSet = null;
     	try {
-    		System.out.println("Please select a book to search a chapter from: ");
+    		System.out.println("Please select a physical book to search a chapter from: ");
     		ItemID = pickItem("audiobook", conn, scan);
-    		stmt = conn.prepareStatement(Maps.chapterABSearcherMap.get("audiobook"));
+    		stmt = conn.prepareStatement(Maps.chapterSearcherMap.get("audiobook"));
     		stmt.setInt(1, ItemID);
     		rSet = stmt.executeQuery();
     		Util.searchPrint(rSet, "BookID");

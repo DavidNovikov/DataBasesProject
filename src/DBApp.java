@@ -31,9 +31,9 @@ public class DBApp {
                 Searcher.pickItem(type, conn, scan);
                 break;
             case "audiobookchapter":
-            	Searcher.pickChapterAB(conn, scan);
-            	break;
             case "physicalbookchapter":
+            	Searcher.pickChapter(type, conn, scan);
+            	break;
             case "actor":
             case "director":
             case "artist":
@@ -66,10 +66,8 @@ public class DBApp {
                 Adder.addItem(Util.changeToDBString(type), conn, scan);
                 break;
             case "audiobookchapter":
-            	Adder.addChapterAB(conn, scan);
-            	break;
             case "physicalbookchapter":
-                // TODO: add chapters as attributes
+            	Adder.addChapter(type, conn, scan);
                 break;
             case "actor":
             case "director":
@@ -105,10 +103,8 @@ public class DBApp {
                 // TODO: delete item
                 break;
             case "audiobookchapter":
-            	Deleter.deleteChapterAB(conn, scan);
-            	break;
             case "physicalbookchapter":
-                // TODO: delete chapter
+            	Deleter.deleteChapter(type, conn, scan);
                 break;
             case "actor":
             case "director":
@@ -141,10 +137,8 @@ public class DBApp {
                 Editor.editItem(type, conn, scan);
                 break;
             case "audiobookchapter":
-            	Editor.editChapterAB(conn, scan);
-            	break;
             case "physicalbookchapter":
-                // TODO: edit chapter
+            	Editor.editChapter(type, conn, scan);
                 break;
             case "actor":
             case "director":

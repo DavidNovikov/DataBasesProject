@@ -21,10 +21,11 @@ public class Maps {
     public static String startTransactionString = "begin transaction;";
     public static String endTransactionString = "commit;";
     public static String forceRollBackString = "ROLLBACK;";
-    public static Map<String, String> chapterABSearcherMap;
-    public static Map<String, String> chapterABEditorMap;
-    public static Map<String, String> chapterABAdderMap;
-    public static Map<String, String> chapterABDeleterMap;
+    public static Map<String, String> chapterSearcherMap;
+    public static Map<String, String> chapterEditorMap;
+    public static Map<String, String> chapterAdderMap;
+    public static Map<String, String> chapterDeleterMap;
+
 
     // Instantiating the static maps
     static {
@@ -42,10 +43,11 @@ public class Maps {
         creatorNameMap = new HashMap<>();
         itemInsertType = new HashMap<>();
         itemSearcherMap = new HashMap<>();
-        chapterABSearcherMap = new HashMap<>();
-        chapterABEditorMap = new HashMap<>();
-        chapterABAdderMap = new HashMap<>();
-        chapterABDeleterMap = new HashMap<>();
+        chapterSearcherMap = new HashMap<>();
+        chapterEditorMap = new HashMap<>();
+        chapterAdderMap = new HashMap<>();
+        chapterDeleterMap = new HashMap<>();
+        
 
         String[] starsOptionList = { "actor", "movie" };
         String[] writesOptionList = { "writer", "audiobook", "physicalbook" };
@@ -164,15 +166,23 @@ public class Maps {
         itemSearcherMap.put("movie", "SELECT * FROM ITEM ,movie WHERE title = ? AND ITEM.Item_ID = movie.ItemID ");
         itemSearcherMap.put("audiobook",
                 "SELECT * FROM ITEM ,audiobook WHERE title = ? AND ITEM.Item_ID = audiobook.ItemID ");
-        itemSearcherMap.put("physicalbook",
+        itemSearcherMap.put("physical_book",
                 "SELECT * FROM ITEM ,physical_book WHERE title = ? AND ITEM.Item_ID = physical_book.ItemID ");
         
-        chapterABSearcherMap.put("audiobook","SELECT * FROM CHAPTER_AB WHERE BookID = ?;");
-        chapterABSearcherMap.put("chapter","SELECT * FROM CHAPTER_AB WHERE BookID = ? AND Title = ?;");
+        chapterSearcherMap.put("audiobookchapter","SELECT * FROM CHAPTER_AB WHERE BookID = ?;");
+        chapterSearcherMap.put("physicalbookchapter","SELECT * FROM CHAPTER_PB WHERE BookID = ?;");
         
-        chapterABEditorMap.put("audiobook", "UPDATE OR ROLLBACK CHAPTER_AB SET Title = ? WHERE BookID IN (SELECT BookID FROM CHAPTER_AB WHERE Title = ? AND BookID = ?);");
-        chapterABAdderMap.put("audiobook","insert or rollback into chapter_ab values(?, ?);");
-        chapterABDeleterMap.put("audiobook", "delete FROM CHAPTER_AB where BookID = ? AND Title = ?;");
+        chapterSearcherMap.put("chapterAB","SELECT * FROM CHAPTER_AB WHERE BookID = ? AND Title = ?;");
+        chapterSearcherMap.put("chapterPB","SELECT * FROM CHAPTER_PB WHERE BookID = ? AND Title = ?;");
+        
+        chapterEditorMap.put("audiobookchapter", "UPDATE OR ROLLBACK CHAPTER_AB SET Title = ? WHERE BookID IN (SELECT BookID FROM CHAPTER_AB WHERE Title = ? AND BookID = ?);");
+        chapterEditorMap.put("physicalbookchapter", "UPDATE OR ROLLBACK CHAPTER_PB SET Title = ? WHERE BookID IN (SELECT BookID FROM CHAPTER_PB WHERE Title = ? AND BookID = ?);");
+        
+        chapterAdderMap.put("audiobookchapter","insert or rollback into chapter_ab values(?, ?);");
+        chapterAdderMap.put("physicalbookchapter","insert or rollback into chapter_pb values(?, ?);");
+        
+        chapterDeleterMap.put("audiobookchapter", "delete FROM CHAPTER_AB where BookID = ? AND Title = ?;");
+        chapterDeleterMap.put("physicalbookchapter", "delete FROM CHAPTER_PB where BookID = ? AND Title = ?;");
 
     }
     
