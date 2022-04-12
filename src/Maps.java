@@ -7,6 +7,7 @@ public class Maps {
     public static Map<String, String> creatorSearcherMap;
     public static Map<String, String[]> creatorEditorMap;
     public static Map<String, String> creatorDeleteMap;
+    public static Map<String, String> itemDeleteMap;
     public static Map<String, String[]> creatorDeleteRelationshipMap;
     public static Map<String, String> nextIDMap;
     public static Map<String, String> nextIDColumnMap;
@@ -25,6 +26,8 @@ public class Maps {
     public static String startTransactionString = "begin transaction;";
     public static String endTransactionString = "commit;";
     public static String forceRollBackString = "ROLLBACK;";
+    public static String getTypeColumnInItemFromItemIDString = "SELECT Type FROM Item WHERE Item_ID = ?;";
+    public static String checkItemInOrderedString = "SELECT * FROM Item_Ordered WHERE Item_ID = ?;";
 
     // Instantiating the static maps
     static {
@@ -33,6 +36,7 @@ public class Maps {
         creatorAdderMap = new HashMap<>();
         creatorSearcherMap = new HashMap<>();
         creatorDeleteMap = new HashMap<>();
+        itemDeleteMap = new HashMap<>();
         nextIDMap = new HashMap<>();
         nextIDColumnMap = new HashMap<>();
         personEditorMap = new HashMap<>();
@@ -119,8 +123,13 @@ public class Maps {
         String[] movieList = { "update or rollback movie SET Runtime = ? WHERE ItemID = ?;",
                 "update or rollback movie SET Rating = ? WHERE ItemID = ?;" };
         String[] audiobookList = { "update or rollback audiobook SET NumberMinutes = ? WHERE ItemID = ?;" };
-        String[] physicalbookList = {
-                "update or rollback physical_book SET NumberPages = ? WHERE ItemID = ?;" };
+        String[] physicalbookList = { "update or rollback physical_book SET NumberPages = ? WHERE ItemID = ?;" };
+        String[] itemorderedList = { "update or rollback item_ordered SET Item_ID = ? WHERE Item_ID = ?;", 
+                "update or rollback item_ordered SET price = ? WHERE Item_ID = ?;", 
+                "update or rollback item_ordered SET Quantity_ordered = ? WHERE Item_ID = ?;", 
+                "update or rollback item_ordered SET EArrivalDate = ? WHERE Item_ID = ?;", 
+                "update or rollback item_ordered SET ActualArrivalDate = ? WHERE Item_ID = ?;"};
+        itemEditorMap.put("itemordered",itemorderedList);
         itemEditorMap.put("album", albumList);
         itemEditorMap.put("track", trackList);
         itemEditorMap.put("interview", interviewList);
@@ -141,6 +150,7 @@ public class Maps {
         creatorEditorMap.put("director", directorList);
         creatorEditorMap.put("writer", writerList);
 
+        itemAdderMap.put("itemordered", "insert or rollback into item_ordered values (?,?,?,?,?);");
         itemAdderMap.put("item", "insert or rollback into item values (?,?,?,?);");
         itemAdderMap.put("album", "insert or rollback into album values (?,?,?);");
         itemAdderMap.put("track", "insert or rollback into track values (?,?,?);");
@@ -166,6 +176,18 @@ public class Maps {
         creatorDeleteMap.put("director", "delete from director where Creator_ID = ?;");
         creatorDeleteMap.put("writer", "delete from writer where Creator_ID = ?;");
 
+
+        itemDeleteMap.put("item", "delete from item where Item_ID = ?;");
+        itemDeleteMap.put("itemordered", "delete from item_ordered where Item_ID = ?;");
+        itemDeleteMap.put("album", "delete from album where ItemID = ?;");
+        itemDeleteMap.put("track", "delete from track where ItemID = ?;");
+        itemDeleteMap.put("movie", "delete from movie where ItemID = ?;");
+        itemDeleteMap.put("audiobook", "delete from audiobook where ItemID = ?;");
+        itemDeleteMap.put("physicalbook", "delete from physical_book where ItemID = ?;");
+        itemDeleteMap.put("audiobookchapter", "delete from chapter_ab where ItemID = ?;");
+        itemDeleteMap.put("physicalbookchapter", "delete from chapter_pb where ItemID = ?;");
+
+
         String[] creatorDeleteRelArtist = { "delete from performs where Creator_ID = ?;" };
         String[] creatorDeleteRelActor = { "delete from stars where Creator_ID = ?;",
                 "delete from interviewed where Creator_ID = ?;" };
@@ -176,6 +198,7 @@ public class Maps {
         creatorDeleteRelationshipMap.put("actor", creatorDeleteRelActor);
         creatorDeleteRelationshipMap.put("director", creatorDeleteRelDirector);
         creatorDeleteRelationshipMap.put("writer", creatorDeleteRelWriter);
+
 
         creatorNameMap.put("artist", "Ar_Name");
         creatorNameMap.put("actor", "Ar_Name");
@@ -197,10 +220,10 @@ public class Maps {
         itemInsertType.put("audiobook", "ABook");
         itemInsertType.put("physicalbook", "PBook");
 
-        itemSearcherMap.put("album",
-                "SELECT * FROM ITEM ,ALBUM WHERE title = ? AND ITEM.Item_ID = ALBUM.ItemID ");
-        itemSearcherMap.put("track",
-                "SELECT * FROM ITEM ,TRACK WHERE title = ? AND ITEM.Item_ID = TRACK.ItemID ");
+        itemSearcherMap.put("album", "SELECT * FROM ITEM ,ALBUM WHERE title = ? AND ITEM.Item_ID = ALBUM.ItemID ");
+        itemSearcherMap.put("track", "SELECT * FROM ITEM ,TRACK WHERE title = ? AND ITEM.Item_ID = TRACK.ItemID ");
+        itemSearcherMap.put("itemordered", "SELECT * FROM ITEM, item_ordered WHERE title = ? AND ITEM.Item_ID = Item_Ordered.Item_ID ");
+
         itemSearcherMap.put("interview",
                 "SELECT * FROM ITEM ,interview WHERE title = ? AND ITEM.Item_ID = interview.ItemID ");
         itemSearcherMap.put("movie",

@@ -114,4 +114,57 @@ public class Deleter {
             Util.closeStmt(stmt);
         }
     }
+
+    public static void deleteItem(String type, Connection conn, Scanner scan) throws Exception {
+        try {
+            int itemID = Searcher.pickItem(type, conn, scan);
+            
+            //if the type is itemordered, get the corresponding item type for the itemID
+            //and call deleteItemSuper on that
+            if(type.equals("itemordered")){
+                String databaseType = Util.getTypeColumnInItemFromItemID(itemID, conn);
+                //convert the database type to the types we use for java program
+                String javaType = Util.changeToJavaString(databaseType);
+                //delete item super from that type
+                deleteItemSuper(itemID, javaType, conn, scan);
+            }else if(Util.itemIsInItemsOrdered(itemID, conn)){
+                //check to see if the item is in ordered items. If so, make them delete it as an itemOrdered
+                throw new Exception("This item was ordered. To delete it, delete it as an \"itemOrdered\"\n");
+            }
+
+            deleteItemSuper(itemID, type, conn, scan);
+            deleteItemBase(itemID, type, conn, scan);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw e;
+        }
+    }
+
+    private static void deleteItemBase(int itemID, String type, Connection conn, Scanner scan) throws Exception {
+        PreparedStatement stmt = null;
+        try {
+            stmt = conn.prepareStatement(Maps.itemDeleteMap.get("item"));
+            stmt.setInt(1, itemID);
+            stmt.executeUpdate();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw e;
+        } finally {
+            Util.closeStmt(stmt);
+        }
+    }
+
+    private static void deleteItemSuper(int itemID, String type, Connection conn, Scanner scan) throws Exception {
+        PreparedStatement stmt = null;
+        try {
+            stmt = conn.prepareStatement(Maps.itemDeleteMap.get(type));
+            stmt.setInt(1, itemID);
+            stmt.executeUpdate();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw e;
+        } finally {
+            Util.closeStmt(stmt);
+        }
+    }
 }

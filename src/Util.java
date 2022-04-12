@@ -226,4 +226,83 @@ public class Util {
         }
         return newID;
 	}
+
+	public static String getTypeFromList(Scanner scan, List<String> validTypes) throws Exception{
+		boolean successful = false;
+		String response = "";
+		while (!successful) {
+			System.out.print("Enter the type: (");
+			for(String s: validTypes){
+				System.out.print(s+" ");
+			}
+			System.out.println(") or q to quit");
+			response = scan.nextLine();
+			if (validTypes.contains(response)) {
+				successful = true;
+			} else if(response.equals("q")){
+				throw new Exception("User quit during operation!");
+			}else{
+				System.out.println("Invalid type!");
+			}
+		}
+		return response;
+	}
+
+	public static String getTypeColumnInItemFromItemID(int itemID, Connection conn) throws Exception{
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		String type = null;
+		try {
+			stmt = conn.prepareStatement(Maps.getTypeColumnInItemFromItemIDString);
+			stmt.setInt(1,itemID);
+			rSet = stmt.executeQuery();
+			type = rSet.getString("Type");
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			throw e;
+		} finally {
+			closeStmt(stmt);
+			closeRSet(rSet);
+		}
+		return type;
+	}
+
+	public static String changeToJavaString(String request) {
+		request = request.toLowerCase();
+		// add depending on the type
+		switch (request) {
+			case "chapter_ab":
+				request = "audiobookchapter";
+				break;
+			case "chapter_pb":
+				request = "physicalbookchapter";
+				break;
+			case "pbook":
+				request = "physicalbook";
+				break;
+			case "abook":
+				request = "audiobook";
+				break;
+		}
+		return request;
+	}
+
+	public static boolean itemIsInItemsOrdered(int itemID, Connection conn) throws Exception{
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		boolean result = true;
+		try {
+			stmt = conn.prepareStatement(Maps.checkItemInOrderedString);
+			stmt.setInt(1,itemID);
+			rSet = stmt.executeQuery();
+			result = rSet.next();
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			throw e;
+		} finally {
+			closeStmt(stmt);
+			closeRSet(rSet);
+		}
+		return result;
+	}
 }
