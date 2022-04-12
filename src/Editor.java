@@ -302,7 +302,7 @@ public class Editor {
         }
     }
     
-    public static void editGenre(String type, Connection conn, Scanner scan) {
+    public static void editGenre(String type, Connection conn, Scanner scan) throws Exception {
     	int itemID = Searcher.pickGenre(conn, scan);
     	PreparedStatement stmt = null;
         try {
@@ -314,6 +314,7 @@ public class Editor {
 	        stmt.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
+            throw e;
         } finally {
             Util.closeStmt(stmt);
         }

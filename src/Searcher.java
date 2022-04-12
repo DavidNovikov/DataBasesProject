@@ -120,7 +120,7 @@ public class Searcher {
         return CardID;
     }
     
-    public static int pickGenre(Connection conn, Scanner scan){
+    public static int pickGenre(Connection conn, Scanner scan)throws Exception {
     	ArrayList<Integer> genreList = new ArrayList<Integer>();
     	PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -160,6 +160,7 @@ public class Searcher {
         	} 
         }catch (SQLException e) {
             System.out.println(e.getMessage());
+            throw e;
         } finally {
             Util.closeStmt(stmt);
             Util.closeRSet(rSet);

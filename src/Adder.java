@@ -438,7 +438,7 @@ public class Adder {
         }
     }
     
-    public static void addGenre(Connection conn, Scanner scan) {
+    public static void addGenre(Connection conn, Scanner scan) throws Exception {
     	System.out.println("Select an entry to add a genre to");
     	int itemID = Searcher.pickGenre(conn, scan);
     	PreparedStatement stmt = null;
@@ -451,6 +451,7 @@ public class Adder {
 	        stmt.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
+            throw e;
         } finally {
             Util.closeStmt(stmt);
         }
