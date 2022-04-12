@@ -38,35 +38,14 @@ public class Searcher {
         try {
             System.out.println("Please enter the " + type + "'s name");
             String itemName = scan.nextLine();
+
             stmt = conn.prepareStatement(Maps.itemSearcherMap.get(type));
             stmt.setString(1, itemName);
 
-
-            try {
-                if(type.equals("physicalbook")) {
-                    type = "physical_book";
-                }
-                stmt = conn.prepareStatement(Maps.itemSearcherMap.get(type));
-                stmt.setString(1, itemName);
-                
-
-                rSet = stmt.executeQuery();
-                ArrayList<Integer> potentialIDs = Util.searchPrint(rSet, "Item_ID");
-                ItemID = Util.itemListPick(potentialIDs, scan);
-            } catch (SQLException e) {
-                System.out.println(e.getMessage());
-            } finally {
-                Util.closeStmt(stmt);
-                Util.closeRSet(rSet);
-            }
             rSet = stmt.executeQuery();
+
             ArrayList<Integer> potentialIDs = Util.searchPrint(rSet, "Item_ID");
-
-
-            System.out.println(
-                    "What entry would you like to select? Enter the number before the entry (1, 2, 3... etc): ");
-            int entry = Integer.parseInt(scan.nextLine());
-            ItemID = potentialIDs.get(entry - 1);
+            ItemID = Util.itemListPick(potentialIDs, scan);
         } catch (Exception e) {
             System.out.println(e.getMessage());
             throw e;

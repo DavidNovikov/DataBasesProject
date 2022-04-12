@@ -2,11 +2,12 @@ import java.sql.*;
 import java.util.*;
 
 public class checkout {
+	private static int itemID;
     public static void addCheckoutItem(String type, Connection conn, Scanner scan) throws Exception {
     	ArrayList<String> alreadyCheckedOut = searchItemsCheckedOut(type, conn, scan);
     	if (alreadyCheckedOut.isEmpty()) {
+    		System.out.println("Your item has not been checked out yet.");
     		PreparedStatement stmt = null;
-    		int itemID = Searcher.pickItem(type, conn, scan);
     		int cardID = Searcher.pickPerson(conn, scan);
     		String formattedCurrentDate = Util.getDate(scan, "Checkout Date");
     		String formattedDueDate = Util.getDate(scan, "Due Date");
@@ -16,9 +17,9 @@ public class checkout {
     			stmt = conn.prepareStatement(sql);
     			stmt.setInt(1, itemID);
     			stmt.setInt(2, cardID);
-    			stmt.setString(3, formattedCurrentDate);
+    			stmt.setString(3, formattedDueDate);
     			stmt.setNull(4, Types.NULL);
-    			stmt.setString(5, formattedDueDate);
+    			stmt.setString(5, formattedCurrentDate);
     			stmt.executeUpdate();
             
             
@@ -44,15 +45,14 @@ public class checkout {
     	
     	PreparedStatement stmt = null;
     	ResultSet rSet = null;
-    	int itemID = Searcher.pickItem(type, conn, scan);
-    	System.out.println("Debug");
+    	itemID = Searcher.pickItem(type, conn, scan);
     	try {
     		String sql = Maps.searchItemCheckoutsString;
     		stmt = conn.prepareStatement(sql);
     		stmt.setInt(1, itemID);
     		
     		rSet = stmt.executeQuery();
-    		while (rSet.next() && itemID == -1) {
+    		while (rSet.next()) {
     			String dueDate = rSet.getString("Due_Date");
     			allDueDates.add(dueDate);
     			itemID = rSet.getInt("ItemID");
@@ -60,7 +60,10 @@ public class checkout {
     	} catch (SQLException | NumberFormatException e) {
     		System.out.println(e.getMessage());
     		throw e;
-    	} 	
+    	} finally {
+    		Util.closeRSet(rSet);
+            Util.closeStmt(stmt);            
+        }
     	
     	return allDueDates;
     }
