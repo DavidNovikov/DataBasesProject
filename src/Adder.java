@@ -363,8 +363,7 @@ public class Adder {
             System.out.println("Please enter the role");
             String role = scan.nextLine();
 
-            String query = "insert into stars values (?,?,?);";
-            stmt = conn.prepareStatement(query);
+            stmt = conn.prepareStatement(Maps.relationshipAdderMap.get("stars"));
 
             stmt.setInt(1, creatorID);
             stmt.setString(2, role);
@@ -389,9 +388,7 @@ public class Adder {
             System.out.println("Please enter the item ID");
             int itemID = Integer.valueOf(scan.nextLine());
 
-            String query = "insert into " + relationshipType + " values (?,?);";
-            stmt = conn.prepareStatement(query);
-
+            stmt = conn.prepareStatement(Maps.relationshipAdderMap.get(relationshipType));
             stmt.setInt(1, creatorID);
             stmt.setInt(2, itemID);
             stmt.executeUpdate();
