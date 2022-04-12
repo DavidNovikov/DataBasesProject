@@ -146,7 +146,7 @@ public class DBApp {
             case "actor":
             case "director":
             case "artist":
-            case "writeer":
+            case "writer":
                 Editor.editCreator(type, conn, scan);
                 break;
             case "person":

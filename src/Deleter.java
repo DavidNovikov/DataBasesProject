@@ -59,6 +59,17 @@ public class Deleter {
     public static void deleteItem(String type, Connection conn, Scanner scan) throws Exception {
         try {
             int itemID = Searcher.pickItem(type, conn, scan);
+            //if the type is itemordered, get the corresponding item type for the itemID
+            //and call deleteItemSuper on that
+            if(type.equals("itemordered")){
+                String databaseType = Util.getTypeColumnInItemFromItemID(itemID, conn);
+                System.out.println("dbtype "+databaseType);
+                //convert the database type to the types we use for java program
+                String javaType = Util.changeToJavaString(databaseType);
+                System.out.println("jtype "+javaType);
+                //delete item super from that type
+                deleteItemSuper(itemID, javaType, conn, scan);
+            }
             deleteItemSuper(itemID, type, conn, scan);
             deleteItemBase(itemID, type, conn, scan);
         } catch (Exception e) {

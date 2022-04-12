@@ -22,6 +22,7 @@ public class Maps {
     public static String startTransactionString = "begin transaction;";
     public static String endTransactionString = "commit;";
     public static String forceRollBackString = "ROLLBACK;";
+    public static String getTypeColumnInItemFromItemIDString = "SELECT Type FROM Item WHERE Item_ID = ?;";
 
     // Instantiating the static maps
     static {
@@ -145,7 +146,7 @@ public class Maps {
         itemDeleteMap.put("track", "delete from track where ItemID = ?;");
         itemDeleteMap.put("movie", "delete from movie where ItemID = ?;");
         itemDeleteMap.put("audiobook", "delete from audiobook where ItemID = ?;");
-        itemDeleteMap.put("physical_book", "delete from physical_book where ItemID = ?;");
+        itemDeleteMap.put("physicalbook", "delete from physical_book where ItemID = ?;");
         itemDeleteMap.put("audiobookchapter", "delete from chapter_ab where ItemID = ?;");
         itemDeleteMap.put("physicalbookchapter", "delete from chapter_pb where ItemID = ?;");
 

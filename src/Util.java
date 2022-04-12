@@ -247,4 +247,43 @@ public class Util {
 		}
 		return response;
 	}
+
+	public static String getTypeColumnInItemFromItemID(int itemID, Connection conn) throws Exception{
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		String type = null;
+		try {
+			stmt = conn.prepareStatement(Maps.getTypeColumnInItemFromItemIDString);
+			stmt.setInt(1,itemID);
+			rSet = stmt.executeQuery();
+			type = rSet.getString("Type");
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			throw e;
+		} finally {
+			closeStmt(stmt);
+			closeRSet(rSet);
+		}
+		return type;
+	}
+
+	public static String changeToJavaString(String request) {
+		request = request.toLowerCase();
+		// add depending on the type
+		switch (request) {
+			case "chapter_ab":
+				request = "audiobookchapter";
+				break;
+			case "chapter_pb":
+				request = "physicalbookchapter";
+				break;
+			case "pbook":
+				request = "physicalbook";
+				break;
+			case "abook":
+				request = "audiobook";
+				break;
+		}
+		return request;
+	}
 }
