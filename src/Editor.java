@@ -2,41 +2,12 @@ import java.sql.*;
 import java.util.*;
 
 public class Editor {
-    public static String getRelationshipCreatorType(String relationshipType) throws Exception {
-        return Maps.relationshipOptionMap.get(relationshipType)[0];
-    }
-
-    public static String getRelationshipItemType(String relationshipType, Scanner scan) throws Exception {
-        if (Maps.relationshipOptionMap.get(relationshipType).length > 2) {
-            // there are multiple options for item type
-            String[] optionArray = Maps.relationshipOptionMap.get(relationshipType);
-            int option = 0;
-            while (option == 0) {
-                for (int i = 1; i < optionArray.length; i++) {
-                    System.out.println("Enter " + i + " if the item type is " + optionArray[i]);
-                }
-                option = Integer.valueOf(scan.nextLine());
-                if (!(option == 1 || option == 2)) {
-                    option = 0;
-                }
-            }
-            return Maps.relationshipOptionMap.get(relationshipType)[option];
-        } else {
-            // there is just one item type
-            return Maps.relationshipOptionMap.get(relationshipType)[1];
-        }
-    }
 
     public static void editRelationship(String relationshipType, Connection conn, Scanner scan) throws Exception {
         // ask if item type is audiobook or album
-
+        Relationship rel = Searcher.pickRelationship(relationshipType, conn, scan);
         PreparedStatement stmt = null;
         try {
-            String itemType = getRelationshipItemType(relationshipType, scan);
-            String creatorType = getRelationshipCreatorType(relationshipType);
-
-            int itemID = Searcher.pickItem(itemType, conn, scan);
-            int creatorID = Searcher.pickCreator(creatorType, conn, scan);
             int editing = 0;
             switch (relationshipType) {
                 case "stars":
@@ -66,8 +37,8 @@ public class Editor {
                     System.out.println(relationshipType + " is an invalid input");
             }
 
-            stmt.setInt(2, creatorID);
-            stmt.setInt(3, itemID);
+            stmt.setInt(2, rel.getCreatorID());
+            stmt.setInt(3, rel.getItemID());
             stmt.executeUpdate();
         } catch (Exception e) {
             System.out.println(e.getMessage());

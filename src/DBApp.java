@@ -18,7 +18,7 @@ public class DBApp {
     public void search() throws Exception {
         // Ask the user which record they want to edit
         System.out.println(
-                "Enter the type of the record to be searched for (Album, Track, Interview, Movie, Audiobook, AudiobookChapter, PhysicalBook, PhysicalBookChapter, Actor, Artist, Director, Writer, or Person): ");
+                "Enter the type of the record to be searched for (Album, Track, Interview, Movie, Audiobook, AudiobookChapter, PhysicalBook, PhysicalBookChapter, Actor, Artist, Director, Writer, Person, Stars, Writes, Interviewed, Performs, or Directs): ");
         String type = scan.nextLine().toLowerCase();
 
         switch (type) {
@@ -41,6 +41,13 @@ public class DBApp {
                 break;
             case "person":
                 Searcher.pickPerson(conn, scan);
+                break;
+            case "stars":
+            case "writes":
+            case "interviewed":
+            case "performs":
+            case "directs":
+                Searcher.pickRelationship(type, conn, scan);
                 break;
             default:
                 // print invalid
@@ -89,7 +96,7 @@ public class DBApp {
     public void delete() throws Exception {
         // Ask the user which record they want to delete
         System.out.println(
-                "Enter the type of the record to be deleted (Album, Track, Interview, Movie, Audiobook, AudiobookChapter, PhysicalBook, PhysicalBookChapter, Actor, Artist, Director, Writer, or Person): ");
+                "Enter the type of the record to be deleted (Album, Track, Interview, Movie, Audiobook, AudiobookChapter, PhysicalBook, PhysicalBookChapter, Actor, Artist, Director, Writer, Person, or Relationship): ");
         String type = scan.nextLine().toLowerCase();
 
         switch (type) {
@@ -113,6 +120,9 @@ public class DBApp {
                 break;
             case "person":
                 Deleter.deletePerson(conn, scan);
+                break;
+            case "relationship":
+                Deleter.deleteRelationship(conn, scan);
                 break;
             default:
                 // print invalid
