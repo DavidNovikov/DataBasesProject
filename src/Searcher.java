@@ -62,7 +62,6 @@ public class Searcher {
             String sql = Maps.searchPersonString;
             stmt = conn.prepareStatement(sql);
             stmt.setString(1, email);
-            // stmt.setString(2, type);
 
             rSet = stmt.executeQuery();
             ResultSetMetaData rSetmd = rSet.getMetaData();
