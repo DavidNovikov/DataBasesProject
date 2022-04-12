@@ -472,4 +472,23 @@ public class Adder {
             Util.closeStmt(stmt);
         }
     }
+    
+    public static void addGenre(Connection conn, Scanner scan) throws Exception {
+    	System.out.println("Select an entry to add a genre to");
+    	int itemID = Searcher.pickGenre(conn, scan);
+    	PreparedStatement stmt = null;
+    	try {
+	        System.out.println("What is the new genre?");
+	        String newGenre = scan.nextLine();
+	        stmt = conn.prepareStatement(Maps.genreAdderMap.get("item"));
+	        stmt.setInt(1, itemID);
+	        stmt.setString(2, newGenre);
+	        stmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            throw e;
+        } finally {
+            Util.closeStmt(stmt);
+        }
+    }
 }

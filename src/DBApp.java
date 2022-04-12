@@ -18,7 +18,7 @@ public class DBApp {
     public void search() throws Exception {
         // Ask the user which record they want to edit
         System.out.println(
-                "Enter the type of the record to be searched for (Album, Track, Interview, Movie, Audiobook, AudiobookChapter, PhysicalBook, PhysicalBookChapter, Actor, Artist, Director, Writer, Person, Stars, Writes, Interviewed, Performs, or Directs): ");
+                "Enter the type of the record to be searched for (Album, Track, Interview, Movie, Audiobook, AudiobookChapter, PhysicalBook, PhysicalBookChapter, Actor, Artist, Director, Writer, Person, Stars, Writes, Interviewed, Performs, Directs, or Genre): ");
         String type = scan.nextLine().toLowerCase();
 
         switch (type) {
@@ -43,6 +43,9 @@ public class DBApp {
             case "person":
                 Searcher.pickPerson(conn, scan);
                 break;
+            case "genre":
+            	Searcher.pickGenre(conn, scan);
+            	break;
             case "stars":
             case "writes":
             case "interviewed":
@@ -59,7 +62,7 @@ public class DBApp {
     public void add() throws Exception {
         // ask for which type of item to add
         System.out.println(
-                "What would you like to add? (Album, Track, Interview, Movie, Audiobook, AudiobookChapter, PhysicalBook, PhysicalBookChapter, itemOrdered, Actor, Artist, Director, Writer, Person, or Relationship)");
+                "What would you like to add? (Album, Track, Interview, Movie, Audiobook, AudiobookChapter, PhysicalBook, PhysicalBookChapter, itemOrdered, Actor, Artist, Director, Writer, Person, or Genre)");
         // get the type
         String type = scan.nextLine().toLowerCase();
         // add depending on the type
@@ -85,6 +88,8 @@ public class DBApp {
                 break;
             case "relationship":
                 Adder.addRelationship(conn, scan);
+            case "genre":
+            	Adder.addGenre(conn, scan);
                 break;
             case "person":
                 Adder.addPerson(conn, scan);
@@ -97,8 +102,7 @@ public class DBApp {
 
     public void delete() throws Exception {
         // Ask the user which record they want to delete
-        System.out.println("Enter the type of the record to be deleted (Album, Track, Interview, Movie, Audiobook, AudiobookChapter, PhysicalBook, PhysicalBookChapter, itemOrdered, Actor, Artist, Director, Writer, or Person): ");
-
+        System.out.println("Enter the type of the record to be deleted (Album, Track, Interview, Movie, Audiobook, AudiobookChapter, PhysicalBook, PhysicalBookChapter, itemOrdered, Actor, Artist, Director, Writer, Person, or Genre): ");
         String type = scan.nextLine().toLowerCase();
 
         switch (type) {
@@ -121,6 +125,9 @@ public class DBApp {
             case "writer":
                 Deleter.deleteCreator(type, conn, scan);
                 break;
+            case "genre":
+            	Deleter.deleteGenre(conn, scan);
+            	break;
             case "person":
                 Deleter.deletePerson(conn, scan);
                 break;
@@ -136,7 +143,7 @@ public class DBApp {
     public void edit() throws Exception {
         // Ask the user which record they want to edit
         System.out.println(
-                "Enter the type of the record to be edited (Album, Track, Interview, Movie, Audiobook, AudiobookChapter, PhysicalBook, PhysicalBookChapter, itemOrdered, Actor, Artist, Director, Writer, Person, Stars, Writes, Interviewed, Performs, or Directs): ");
+                "Enter the type of the record to be edited (Album, Track, Interview, Movie, Audiobook, AudiobookChapter, PhysicalBook, PhysicalBookChapter, itemOrdered, Actor, Artist, Director, Writer, Person, Stars, Writes, Interviewed, Performs, Directs, or Genre): ");
         String type = scan.nextLine().toLowerCase();
 
         switch (type) {
@@ -169,6 +176,9 @@ public class DBApp {
             case "directs":
                 Editor.editRelationship(type, conn, scan);
                 break;
+            case "genre":
+            	Editor.editGenre(type, conn, scan);
+            	break;
             default:
                 // print invalid
                 System.out.println(type + " is an Invalid input");

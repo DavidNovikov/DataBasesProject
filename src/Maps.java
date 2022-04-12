@@ -17,6 +17,10 @@ public class Maps {
     public static Map<String, String[]> personEditorMap;
     public static Map<String, String[]> relationshipEditorMap;
     public static Map<String, String[]> relationshipOptionMap;
+    public static Map<String, String> genreSearcherMap;
+    public static Map<String, String> genreEditorMap;
+    public static Map<String, String> genreAdderMap;
+    public static Map<String, String> genreDeleterMap;
     public static Map<String, String> relationshipAdderMap;
     public static Map<String, String> relationshipSearcherMap;
     public static Map<String, String> relationshipDeleterMap;
@@ -46,6 +50,10 @@ public class Maps {
         creatorNameMap = new HashMap<>();
         itemInsertType = new HashMap<>();
         itemSearcherMap = new HashMap<>();
+        genreSearcherMap = new HashMap<>();
+        genreEditorMap = new HashMap<>();
+        genreAdderMap = new HashMap<>();
+        genreDeleterMap = new HashMap<>();
         relationshipAdderMap = new HashMap<>();
         relationshipSearcherMap = new HashMap<>();
         relationshipDeleterMap = new HashMap<>();
@@ -226,12 +234,17 @@ public class Maps {
 
         itemSearcherMap.put("interview",
                 "SELECT * FROM ITEM ,interview WHERE title = ? AND ITEM.Item_ID = interview.ItemID ");
-        itemSearcherMap.put("movie",
-                "SELECT * FROM ITEM ,movie WHERE title = ? AND ITEM.Item_ID = movie.ItemID ");
-        itemSearcherMap.put("audiobook",
-                "SELECT * FROM ITEM ,audiobook WHERE title = ? AND ITEM.Item_ID = audiobook.ItemID ");
-        itemSearcherMap.put("physicalbook",
-                "SELECT * FROM ITEM ,physical_book WHERE title = ? AND ITEM.Item_ID = physical_book.ItemID ");
+
+        itemSearcherMap.put("movie", "SELECT * FROM ITEM ,movie WHERE title = ? AND ITEM.Item_ID = movie.ItemID ");
+        itemSearcherMap.put("audiobook", "SELECT * FROM ITEM ,audiobook WHERE title = ? AND ITEM.Item_ID = audiobook.ItemID ");
+        itemSearcherMap.put("physicalbook", "SELECT * FROM ITEM ,physicalbook WHERE title = ? AND ITEM.Item_ID = physicalbook.ItemID ");
+        
+        genreSearcherMap.put("genres", "SELECT DISTINCT GENRE FROM ITEM_GENRE");
+        genreSearcherMap.put("search", "SELECT * FROM ITEM_GENRE, ITEM WHERE ITEM_GENRE.Item_ID = ITEM.Item_ID AND ITEM_GENRE.Genre = ?");
+        genreEditorMap.put("item", "UPDATE item_genre SET Genre = ? WHERE Item_ID = ?;");
+        genreAdderMap.put("item", "INSERT INTO item_genre values(?,?);");
+        genreDeleterMap.put("item", "DELETE FROM item_genre WHERE Item_ID = ? AND Genre = ?;");
+
 
     }
 
