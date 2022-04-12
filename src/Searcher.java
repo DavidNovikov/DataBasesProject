@@ -122,6 +122,7 @@ public class Searcher {
                 }
             } catch (Exception e) {
                 System.out.println(e.getMessage());
+                throw e;
             } finally {
                 Util.closeStmt(stmt);
                 Util.closeRSet(rSet);
