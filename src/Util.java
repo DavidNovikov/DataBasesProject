@@ -295,14 +295,7 @@ public class Util {
 			stmt = conn.prepareStatement(Maps.checkItemInOrderedString);
 			stmt.setInt(1,itemID);
 			rSet = stmt.executeQuery();
-			boolean hasNext = rSet.next();
-			if(hasNext== false){
-				//then the item is not in ordered
-				result = false;
-			}else{
-				//then the item is in ordered
-				result = true;
-			}
+			result = rSet.next();
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			throw e;
