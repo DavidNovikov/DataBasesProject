@@ -64,7 +64,7 @@ public class Searcher {
 
 
             System.out.println(
-                    "What entry would you like to select? enter the number before the entry (1, 2, 3... etc): ");
+                    "What entry would you like to select? Enter the number before the entry (1, 2, 3... etc): ");
             int entry = Integer.parseInt(scan.nextLine());
             ItemID = potentialIDs.get(entry - 1);
         } catch (Exception e) {

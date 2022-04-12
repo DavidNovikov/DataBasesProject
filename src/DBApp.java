@@ -174,7 +174,7 @@ public class DBApp {
             case "movie":
             case "audiobook":
             case "physicalbook":
-                checkout.checkoutItem(type,conn,scan);
+                checkout.addCheckoutItem(type,conn,scan);
                 break;
             default:
                 // print invalid
@@ -212,7 +212,7 @@ public class DBApp {
                             // search for a record and print it
                             search();
                         case 'c':
-                            // TODO: implement checkout
+                            checkout();
                             break;
                         case 'd':
                             delete();
