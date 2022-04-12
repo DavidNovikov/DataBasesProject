@@ -27,12 +27,13 @@ public class DBApp {
             case "interview":
             case "movie":
             case "audiobook":
-            case "audiobookchapter":
-            case "physicalbookchapter":
             case "physicalbook":
-                // TODO: search for item
                 Searcher.pickItem(type, conn, scan);
                 break;
+            case "audiobookchapter":
+            	Searcher.pickChapterAB(conn, scan);
+            	break;
+            case "physicalbookchapter":
             case "actor":
             case "director":
             case "artist":

@@ -21,6 +21,8 @@ public class Maps {
     public static String startTransactionString = "begin transaction;";
     public static String endTransactionString = "commit;";
     public static String forceRollBackString = "ROLLBACK;";
+    public static Map<String, String> chapterABSearcherMap;
+    public static Map<String, String> chapterABEditorMap;
 
     // Instantiating the static maps
     static {
@@ -38,6 +40,8 @@ public class Maps {
         creatorNameMap = new HashMap<>();
         itemInsertType = new HashMap<>();
         itemSearcherMap = new HashMap<>();
+        chapterABSearcherMap = new HashMap<>();
+        chapterABEditorMap = new HashMap<>();
 
         String[] starsOptionList = { "actor", "movie" };
         String[] writesOptionList = { "writer", "audiobook", "physicalbook" };
@@ -158,7 +162,14 @@ public class Maps {
                 "SELECT * FROM ITEM ,audiobook WHERE title = ? AND ITEM.Item_ID = audiobook.ItemID ");
         itemSearcherMap.put("physicalbook",
                 "SELECT * FROM ITEM ,physical_book WHERE title = ? AND ITEM.Item_ID = physical_book.ItemID ");
+        
+        chapterABSearcherMap.put("audiobook","SELECT * FROM CHAPTER_AB WHERE BookID = ?;");
+        chapterABSearcherMap.put("chapter","SELECT * FROM CHAPTER_AB WHERE BookID = ? AND Title = ?;");
+        
+        chapterABEditorMap.put("audiobook", "update or rollback chapter_ab SET TITLE = ? WHERE BookID = ?;");
 
     }
+    
+    
 
 }

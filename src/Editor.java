@@ -375,5 +375,17 @@ public class Editor {
             throw e;
         }
     }
+    
+    public static void editChapterAB(Connection conn, Scanner scan) throws Exception {
+    	PreparedStatement stmt = null;
+    	try {
+    		int ItemID = Searcher.pickChapterAB(conn, scan);
+    		
+    		
+    	} catch(Exception e) {
+    		System.out.println(e.getMessage());
+            throw e;
+    	}
+    }
 
 }

@@ -38,42 +38,22 @@ public class Searcher {
         try {
             System.out.println("Please enter the " + type + "'s name");
             String itemName = scan.nextLine();
+               if(type.equals("physicalbook")) {
+                  type = "physical_book";
+                }
             stmt = conn.prepareStatement(Maps.itemSearcherMap.get(type));
             stmt.setString(1, itemName);
-
-
-            try {
-                if(type.equals("physicalbook")) {
-                    type = "physical_book";
-                }
-                stmt = conn.prepareStatement(Maps.itemSearcherMap.get(type));
-                stmt.setString(1, itemName);
                 
 
-                rSet = stmt.executeQuery();
-                ArrayList<Integer> potentialIDs = Util.searchPrint(rSet, "Item_ID");
-                ItemID = Util.itemListPick(potentialIDs, scan);
+            rSet = stmt.executeQuery();
+            ArrayList<Integer> potentialIDs = Util.searchPrint(rSet, "Item_ID");
+            ItemID = Util.itemListPick(potentialIDs, scan);
             } catch (SQLException e) {
                 System.out.println(e.getMessage());
             } finally {
                 Util.closeStmt(stmt);
                 Util.closeRSet(rSet);
             }
-            rSet = stmt.executeQuery();
-            ArrayList<Integer> potentialIDs = Util.searchPrint(rSet, "Item_ID");
-
-
-            System.out.println(
-                    "What entry would you like to select? enter the number before the entry (1, 2, 3... etc): ");
-            int entry = Integer.parseInt(scan.nextLine());
-            ItemID = potentialIDs.get(entry - 1);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            throw e;
-        } finally {
-            Util.closeStmt(stmt);
-            Util.closeRSet(rSet);
-        }
         return ItemID;
     }
 
@@ -117,5 +97,25 @@ public class Searcher {
             Util.closeRSet(rSet);
         }
         return CardID;
+    }
+    public static int pickChapterAB(Connection conn, Scanner scan) throws Exception {
+    	int ItemID = -1;
+    	PreparedStatement stmt = null;
+        ResultSet rSet = null;
+    	try {
+    		System.out.println("Please select a book to search a chapter from: ");
+    		ItemID = pickItem("audiobook", conn, scan);
+    		stmt = conn.prepareStatement(Maps.chapterABSearcherMap.get("audiobook"));
+    		stmt.setInt(1, ItemID);
+    		rSet = stmt.executeQuery();
+    		Util.searchPrint(rSet, "BookID");
+    	}catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw e;
+        } finally {
+            Util.closeStmt(stmt);
+            Util.closeRSet(rSet);
+        }
+    	return ItemID;
     }
 }
