@@ -1,4 +1,5 @@
 import java.sql.*;
+import java.text.*;
 import java.util.*;
 
 public class Util {
@@ -135,30 +136,25 @@ public class Util {
 		while (!successful) {
 			System.out.println("Enter the " + dateName + " in the form YYYY-MM-DD:");
 			response = scan.nextLine();
-			String[] date = response.split("-");
-			if (date.length != 3) {
-				System.out.println("Date does not have a year, month, and day");
-			} else if (date[0].length() != 4) {
-				System.out.println("Year needs to be 4 digits");
-			} else if (date[1].length() != 2) {
-				System.out.println("Month needs to be 4 digits");
-			} else if (date[2].length() != 2) {
-				System.out.println("Day needs to be 2 digits");
-			} else {
-				try {
-					int year = Integer.parseInt(date[0]);
-					int month = Integer.parseInt(date[1]);
-					int day = Integer.parseInt(date[2]);
-					// if these all work, it is successful
-					successful = true;
-				} catch (NumberFormatException e) {
-					System.out.println("Either the year, month, or day is not a valid number.");
-					throw e;
-				}
+			if(!dateIsValid(response)){
+				System.out.println("Not a valid date!");
+			}else{
+				successful = true;
 			}
 		}
 		return response;
 	}
+
+	private static boolean dateIsValid(String date) {
+        try {
+            DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
+            dateFormatter.setLenient(false);
+            dateFormatter.parse(date);
+            return true;
+        } catch (ParseException e) {
+            return false;
+        }
+    }
 
 	public static ArrayList<Integer> searchPrint(ResultSet rSet, String columnName) throws SQLException {
 		ResultSetMetaData rSetmd = rSet.getMetaData();
