@@ -473,6 +473,26 @@ public class Adder {
         }
     }
     
+
+    public static void addChapter(String type, Connection conn, Scanner scan) throws Exception {
+    	PreparedStatement stmt = null;
+    	try {
+    		System.out.println("Please choose the book you would like to add a chapter to: ");
+    		int ItemID = Searcher.pickChapter(type, conn, scan);
+    		System.out.println("What is the name of the chapter that you would like to add?");
+    		String chapterName = scan.nextLine();
+    		stmt = conn.prepareStatement(Maps.chapterAdderMap.get(type));
+    		stmt.setString(1, chapterName);
+    		stmt.setInt(2, ItemID);
+    		stmt.executeUpdate();
+    		
+    	} catch(Exception e) {
+    		System.out.println(e.getMessage());
+            throw e;
+    	}finally {
+            Util.closeStmt(stmt);
+        }
+}
     public static void addGenre(Connection conn, Scanner scan) throws Exception {
     	System.out.println("Select an entry to add a genre to");
     	int itemID = Searcher.pickGenre(conn, scan);

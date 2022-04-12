@@ -415,5 +415,25 @@ public class Editor {
             throw e;
         }
     }
-   
+  
+    public static void editChapter(String type, Connection conn, Scanner scan) throws Exception {
+    	PreparedStatement stmt = null;
+    	try {
+    		int ItemID = Searcher.pickChapter(type, conn, scan);
+    		System.out.println("What is the name of the chapter that you would like to rename?");
+    		String chapterName = scan.nextLine();
+    		System.out.println("What is the new name of the chapter?");
+    		String newChapterName = scan.nextLine();
+    		stmt = conn.prepareStatement(Maps.chapterEditorMap.get(type));
+    		stmt.setString(1, newChapterName);
+    		stmt.setString(2, chapterName);
+    		stmt.setInt(3, ItemID);
+    		stmt.executeUpdate();
+    	} catch(Exception e) {
+    		System.out.println(e.getMessage());
+            throw e;
+    	}finally {
+            Util.closeStmt(stmt);
+        }
+    }
 }

@@ -115,6 +115,26 @@ public class Deleter {
         }
     }
     
+    public static void deleteChapter(String type, Connection conn, Scanner scan) throws Exception {
+    	PreparedStatement stmt = null;
+    	try {
+    		System.out.println("Please choose the book you would like to remove a chapter from: ");
+    		int ItemID = Searcher.pickChapter(type, conn, scan);
+    		System.out.println("What is the name of the chapter that you would like to remove?");
+    		String chapterName = scan.nextLine();
+    		stmt = conn.prepareStatement(Maps.chapterDeleterMap.get(type));
+    		stmt.setString(2, chapterName);
+    		stmt.setInt(1, ItemID);
+    		stmt.executeUpdate();
+    		
+    	} catch(Exception e) {
+    		System.out.println(e.getMessage());
+            throw e;
+    	}finally {
+        Util.closeStmt(stmt);
+        }
+    }
+
     public static void deleteGenre(Connection conn, Scanner scan) throws Exception {
     	System.out.println("Select an entry to delete a genre from");
     	int itemID = Searcher.pickGenre(conn, scan);

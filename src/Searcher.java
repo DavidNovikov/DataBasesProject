@@ -34,21 +34,22 @@ public class Searcher {
         try {
             System.out.println("Please enter the " + type + "'s name");
             String itemName = scan.nextLine();
-
+               if(type.equals("physicalbook")) {
+                  type = "physical_book";
+                }
             stmt = conn.prepareStatement(Maps.itemSearcherMap.get(type));
             stmt.setString(1, itemName);
+                
 
             rSet = stmt.executeQuery();
-
             ArrayList<Integer> potentialIDs = Util.searchPrint(rSet, "Item_ID");
             ItemID = Util.itemListPick(potentialIDs, scan);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            throw e;
-        } finally {
-            Util.closeStmt(stmt);
-            Util.closeRSet(rSet);
-        }
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+            } finally {
+                Util.closeStmt(stmt);
+                Util.closeRSet(rSet);
+            }
         return ItemID;
     }
 
@@ -92,6 +93,33 @@ public class Searcher {
             Util.closeRSet(rSet);
         }
         return CardID;
+    }
+
+    public static int pickChapter(String type, Connection conn, Scanner scan) throws Exception {
+    	int ItemID = -1;
+    	PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        String bookGrab = null;
+    	try {
+    		if(type.equals("audiobookchapter")) {
+    			bookGrab = "audiobook";
+    		} else if(type.equals("physicalbookchapter")) {
+    			bookGrab = "physicalbook";
+    		}
+    		System.out.println("Please select a " + bookGrab + " to search a chapter from: ");
+    		ItemID = pickItem(bookGrab, conn, scan);
+    		stmt = conn.prepareStatement(Maps.chapterSearcherMap.get(type));
+    		stmt.setInt(1, ItemID);
+    		rSet = stmt.executeQuery();
+    		Util.searchPrint(rSet, "BookID");
+    	}catch (Exception e) {
+        System.out.println(e.getMessage());
+            throw e;
+        } finally {
+            Util.closeStmt(stmt);
+            Util.closeRSet(rSet);
+        }
+        return ItemID;
     }
     
     public static int pickGenre(Connection conn, Scanner scan)throws Exception {
@@ -139,10 +167,8 @@ public class Searcher {
             Util.closeStmt(stmt);
             Util.closeRSet(rSet);
         }
-    	
-    	return genreID;
+      return genreID;
     }
-    
 
     public static Relationship pickRelationship(String type, Connection conn, Scanner scan) throws Exception {
         Relationship relationship = new Relationship();

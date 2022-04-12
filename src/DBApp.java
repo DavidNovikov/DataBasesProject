@@ -27,13 +27,15 @@ public class DBApp {
             case "interview":
             case "movie":
             case "audiobook":
-            case "audiobookchapter":
-            case "physicalbookchapter":
             case "physicalbook":
             case "itemordered":
                 // TODO: search for item
                 Searcher.pickItem(type, conn, scan);
                 break;
+            case "audiobookchapter":
+            case "physicalbookchapter":
+            	Searcher.pickChapter(type, conn, scan);
+            	break;
             case "actor":
             case "director":
             case "artist":
@@ -78,7 +80,7 @@ public class DBApp {
                 break;
             case "audiobookchapter":
             case "physicalbookchapter":
-                // TODO: add chapters as attributes
+            	Adder.addChapter(type, conn, scan);
                 break;
             case "actor":
             case "director":
@@ -117,7 +119,7 @@ public class DBApp {
                 break;
             case "audiobookchapter":
             case "physicalbookchapter":
-                // TODO: delete chapter
+            	Deleter.deleteChapter(type, conn, scan);
                 break;
             case "actor":
             case "director":
@@ -158,7 +160,7 @@ public class DBApp {
                 break;
             case "audiobookchapter":
             case "physicalbookchapter":
-                // TODO: edit chapter
+            	Editor.editChapter(type, conn, scan);
                 break;
             case "actor":
             case "director":

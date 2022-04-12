@@ -30,6 +30,10 @@ public class Maps {
     public static String startTransactionString = "begin transaction;";
     public static String endTransactionString = "commit;";
     public static String forceRollBackString = "ROLLBACK;";
+    public static Map<String, String> chapterSearcherMap;
+    public static Map<String, String> chapterEditorMap;
+    public static Map<String, String> chapterAdderMap;
+    public static Map<String, String> chapterDeleterMap;
     public static String getTypeColumnInItemFromItemIDString = "SELECT Type FROM Item WHERE Item_ID = ?;";
     public static String checkItemInOrderedString = "SELECT * FROM Item_Ordered WHERE Item_ID = ?;";
 
@@ -50,6 +54,10 @@ public class Maps {
         creatorNameMap = new HashMap<>();
         itemInsertType = new HashMap<>();
         itemSearcherMap = new HashMap<>();
+        chapterSearcherMap = new HashMap<>();
+        chapterEditorMap = new HashMap<>();
+        chapterAdderMap = new HashMap<>();
+        chapterDeleterMap = new HashMap<>();
         genreSearcherMap = new HashMap<>();
         genreEditorMap = new HashMap<>();
         genreAdderMap = new HashMap<>();
@@ -236,8 +244,25 @@ public class Maps {
                 "SELECT * FROM ITEM ,interview WHERE title = ? AND ITEM.Item_ID = interview.ItemID ");
 
         itemSearcherMap.put("movie", "SELECT * FROM ITEM ,movie WHERE title = ? AND ITEM.Item_ID = movie.ItemID ");
-        itemSearcherMap.put("audiobook", "SELECT * FROM ITEM ,audiobook WHERE title = ? AND ITEM.Item_ID = audiobook.ItemID ");
-        itemSearcherMap.put("physicalbook", "SELECT * FROM ITEM ,physicalbook WHERE title = ? AND ITEM.Item_ID = physicalbook.ItemID ");
+        itemSearcherMap.put("audiobook",
+                "SELECT * FROM ITEM ,audiobook WHERE title = ? AND ITEM.Item_ID = audiobook.ItemID ");
+        itemSearcherMap.put("physical_book",
+                "SELECT * FROM ITEM ,physical_book WHERE title = ? AND ITEM.Item_ID = physical_book.ItemID ");
+        
+        chapterSearcherMap.put("audiobookchapter","SELECT * FROM CHAPTER_AB WHERE BookID = ?;");
+        chapterSearcherMap.put("physicalbookchapter","SELECT * FROM CHAPTER_PB WHERE BookID = ?;");
+        
+        chapterSearcherMap.put("chapterAB","SELECT * FROM CHAPTER_AB WHERE BookID = ? AND Title = ?;");
+        chapterSearcherMap.put("chapterPB","SELECT * FROM CHAPTER_PB WHERE BookID = ? AND Title = ?;");
+        
+        chapterEditorMap.put("audiobookchapter", "UPDATE OR ROLLBACK CHAPTER_AB SET Title = ? WHERE BookID IN (SELECT BookID FROM CHAPTER_AB WHERE Title = ? AND BookID = ?);");
+        chapterEditorMap.put("physicalbookchapter", "UPDATE OR ROLLBACK CHAPTER_PB SET Title = ? WHERE BookID IN (SELECT BookID FROM CHAPTER_PB WHERE Title = ? AND BookID = ?);");
+        
+        chapterAdderMap.put("audiobookchapter","insert or rollback into chapter_ab values(?, ?);");
+        chapterAdderMap.put("physicalbookchapter","insert or rollback into chapter_pb values(?, ?);");
+        
+        chapterDeleterMap.put("audiobookchapter", "delete FROM CHAPTER_AB where BookID = ? AND Title = ?;");
+        chapterDeleterMap.put("physicalbookchapter", "delete FROM CHAPTER_PB where BookID = ? AND Title = ?;");
         
         genreSearcherMap.put("genres", "SELECT DISTINCT GENRE FROM ITEM_GENRE");
         genreSearcherMap.put("search", "SELECT * FROM ITEM_GENRE, ITEM WHERE ITEM_GENRE.Item_ID = ITEM.Item_ID AND ITEM_GENRE.Genre = ?");
@@ -245,7 +270,8 @@ public class Maps {
         genreAdderMap.put("item", "INSERT INTO item_genre values(?,?);");
         genreDeleterMap.put("item", "DELETE FROM item_genre WHERE Item_ID = ? AND Genre = ?;");
 
-
     }
+    
+    
 
 }
