@@ -18,42 +18,30 @@ public class DBApp {
     public void search() throws Exception {
         // Ask the user which record they want to edit
         System.out.println(
-                "Enter the type of the record to be searched for (Album, Track, Interview, Movie, Audiobook, AudiobookChapter, PhysicalBook, PhysicalBookChapter, Actor, Artist, Director, Writer, Person, Stars, Writes, Interviewed, Performs, Directs, or Genre): ");
+                "Searching options:\n(Media)\n(Creator)\n(Person)\n(Relationship)\n(audiobookchapter)\n(physicalbookchapter)\n(genre)\n(q to quit)\nPlease select one:");
         String type = scan.nextLine().toLowerCase();
 
         switch (type) {
-            case "album":
-            case "track":
-            case "interview":
-            case "movie":
-            case "audiobook":
-            case "physicalbook":
-            case "itemordered":
-                // TODO: search for item
-                Searcher.pickItem(type, conn, scan);
+            case "media":
+                Searcher.pickItem(conn, scan);
                 break;
-            case "audiobookchapter":
-            case "physicalbookchapter":
-            	Searcher.pickChapter(type, conn, scan);
-            	break;
-            case "actor":
-            case "director":
-            case "artist":
-            case "writer":
-                Searcher.pickCreator(type, conn, scan);
+            case "creator":
+                Searcher.pickCreator(conn, scan);
                 break;
             case "person":
                 Searcher.pickPerson(conn, scan);
                 break;
+            case "relationship":
+                Searcher.pickRelationship(conn, scan);
+                break;
+            case "audiobookchapter":
+            case "physicalbookchapter":
+                Searcher.pickChapter(type, conn, scan);
+                break;
             case "genre":
-            	Searcher.pickGenre(conn, scan);
-            	break;
-            case "stars":
-            case "writes":
-            case "interviewed":
-            case "performs":
-            case "directs":
-                Searcher.pickRelationship(type, conn, scan);
+                Searcher.pickGenre(conn, scan);
+                break;
+            case "q":
                 break;
             default:
                 // print invalid
@@ -64,77 +52,51 @@ public class DBApp {
     public void add() throws Exception {
         // ask for which type of item to add
         System.out.println(
-                "What would you like to add? (Album, Track, Interview, Movie, Audiobook, AudiobookChapter, PhysicalBook, PhysicalBookChapter, itemOrdered, Actor, Artist, Director, Writer, Person, or Genre)");
+                "Adding options:\n(Media)\n(Creator)\n(Person)\n(Relationship)\n(q to quit)\nPlease select one:");
         // get the type
         String type = scan.nextLine().toLowerCase();
         // add depending on the type
         switch (type) {
-            case "album":
-            case "track":
-            case "interview":
-            case "movie":
-            case "audiobook":
-            case "physicalbook":
-            case "itemordered":
-                Adder.addItem(Util.changeToDBString(type), conn, scan);
+            case "media":
+                Adder.addItem(conn, scan);
                 break;
-            case "audiobookchapter":
-            case "physicalbookchapter":
-            	Adder.addChapter(type, conn, scan);
-                break;
-            case "actor":
-            case "director":
-            case "artist":
-            case "writer":
-                Adder.addCreator(Util.changeToDBString(type), conn, scan);
-                break;
-            case "relationship":
-                Adder.addRelationship(conn, scan);
-            case "genre":
-            	Adder.addGenre(conn, scan);
+            case "creator":
+                Adder.addCreator(conn, scan);
                 break;
             case "person":
                 Adder.addPerson(conn, scan);
+                break;
+            case "relationship":
+                Adder.addRelationship(conn, scan);
+            case "q":
                 break;
             default:
                 // print invalid
                 System.out.println(type + " is an Invalid input");
         }
+
     }
 
     public void delete() throws Exception {
         // Ask the user which record they want to delete
-        System.out.println("Enter the type of the record to be deleted (Album, Track, Interview, Movie, Audiobook, AudiobookChapter, PhysicalBook, PhysicalBookChapter, itemOrdered, Actor, Artist, Director, Writer, Person, or Genre): ");
+        System.out.println(
+                "Deleting options:\n(Media)\n(Creator)\n(Person)\n(Relationship)\n(q to quit)\nPlease select one:");
         String type = scan.nextLine().toLowerCase();
 
         switch (type) {
-            case "album":
-            case "track":
-            case "interview":
-            case "movie":
-            case "audiobook":
-            case "physicalbook":
-            case "itemordered":
-                Deleter.deleteItem(type, conn, scan);
+            case "media":
+                Deleter.deleteItem(conn, scan);
                 break;
-            case "audiobookchapter":
-            case "physicalbookchapter":
-            	Deleter.deleteChapter(type, conn, scan);
+            case "creator":
+                Deleter.deleteCreator(conn, scan);
                 break;
-            case "actor":
-            case "director":
-            case "artist":
-            case "writer":
-                Deleter.deleteCreator(type, conn, scan);
-                break;
-            case "genre":
-            	Deleter.deleteGenre(conn, scan);
-            	break;
             case "person":
                 Deleter.deletePerson(conn, scan);
                 break;
             case "relationship":
                 Deleter.deleteRelationship(conn, scan);
+                break;
+            case "q":
                 break;
             default:
                 // print invalid
@@ -145,42 +107,24 @@ public class DBApp {
     public void edit() throws Exception {
         // Ask the user which record they want to edit
         System.out.println(
-                "Enter the type of the record to be edited (Album, Track, Interview, Movie, Audiobook, AudiobookChapter, PhysicalBook, PhysicalBookChapter, itemOrdered, Actor, Artist, Director, Writer, Person, Stars, Writes, Interviewed, Performs, Directs, or Genre): ");
+                "Editing options:\n(Media)\n(Creator)\n(Person)\n(Relationship)\n(q to quit)\nPlease select one:");
         String type = scan.nextLine().toLowerCase();
 
         switch (type) {
-            case "album":
-            case "track":
-            case "interview":
-            case "movie":
-            case "audiobook":
-            case "physicalbook":
-            case "itemordered":
-                Editor.editItem(type, conn, scan);
+            case "media":
+                Editor.editItem(conn, scan);
                 break;
-            case "audiobookchapter":
-            case "physicalbookchapter":
-            	Editor.editChapter(type, conn, scan);
-                break;
-            case "actor":
-            case "director":
-            case "artist":
-            case "writer":
-                Editor.editCreator(type, conn, scan);
+            case "creator":
+                Editor.editCreator(conn, scan);
                 break;
             case "person":
-                Editor.editPerson(type, conn, scan);
+                Editor.editPerson(conn, scan);
                 break;
-            case "stars":
-            case "writes":
-            case "interviewed":
-            case "performs":
-            case "directs":
-                Editor.editRelationship(type, conn, scan);
+            case "relationship":
+                Editor.editRelationship(conn, scan);
                 break;
-            case "genre":
-            	Editor.editGenre(type, conn, scan);
-            	break;
+            case "q":
+                break;
             default:
                 // print invalid
                 System.out.println(type + " is an Invalid input");
@@ -234,12 +178,13 @@ public class DBApp {
                     Util.endTransaction(conn);
                 } catch (Exception e) {
                     Util.forceRollBack(conn);
+                    System.err.println(e.getMessage());
                 }
             }
         }
     }
 
-    private void getConnection() throws SQLException {
+    private void getConnection() throws Exception {
         conn = DriverManager.getConnection(CONNECTIONPATH);
     }
 
@@ -247,7 +192,7 @@ public class DBApp {
         try {
             if (conn != null)
                 conn.close();
-        } catch (SQLException e) {
+        } catch (Exception e) {
             // connection close failed.
             System.err.println(e.getMessage());
         }
@@ -268,7 +213,7 @@ public class DBApp {
                 e.printStackTrace();
             }
             app.execute();
-        } catch (SQLException e) {
+        } catch (Exception e) {
             System.err.println(e.getMessage());
         } finally {
             app.cleanUp();
