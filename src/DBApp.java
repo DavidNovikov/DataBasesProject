@@ -184,7 +184,7 @@ public class DBApp {
         }
     }
 
-    private void getConnection() throws SQLException {
+    private void getConnection() throws Exception {
         conn = DriverManager.getConnection(CONNECTIONPATH);
     }
 
@@ -192,7 +192,7 @@ public class DBApp {
         try {
             if (conn != null)
                 conn.close();
-        } catch (SQLException e) {
+        } catch (Exception e) {
             // connection close failed.
             System.err.println(e.getMessage());
         }
@@ -213,7 +213,7 @@ public class DBApp {
                 e.printStackTrace();
             }
             app.execute();
-        } catch (SQLException e) {
+        } catch (Exception e) {
             System.err.println(e.getMessage());
         } finally {
             app.cleanUp();

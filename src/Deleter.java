@@ -157,7 +157,7 @@ public class Deleter {
             stmt.setInt(1, itemID);
             stmt.setString(2, newGenre);
             stmt.executeUpdate();
-        } catch (SQLException e) {
+        } catch (Exception e) {
             throw e;
         } finally {
             Util.closeStmt(stmt);

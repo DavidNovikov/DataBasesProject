@@ -484,7 +484,7 @@ public class Adder {
             stmt.setInt(1, itemID);
             stmt.setString(2, newGenre);
             stmt.executeUpdate();
-        } catch (SQLException e) {
+        } catch (Exception e) {
             System.out.println("Unable to insert genre");
             throw e;
         } finally {

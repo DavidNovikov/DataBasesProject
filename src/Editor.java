@@ -351,7 +351,7 @@ public class Editor {
             stmt.setString(1, newGenre);
             stmt.setInt(2, itemID);
             stmt.executeUpdate();
-        } catch (SQLException e) {
+        } catch (Exception e) {
             throw e;
         } finally {
             Util.closeStmt(stmt);
