@@ -246,6 +246,35 @@ public class Searcher {
         }
       return genreIDPair;
     }
+    
+    public static Relationship pickRelationship(Connection conn, Scanner scan) throws Exception {
+        Relationship relationship = null;
+        boolean found = false;
+        while (!found) {
+            System.out.println(
+                    "Options:\n(stars)\n(writes)\n(interviewed)\n(performs)\n(directs)\n(q to quit)\nPlease enter the relationship you're searching for:");
+            String relationshipType = scan.nextLine().toLowerCase();
+            try {
+                switch (relationshipType) {
+                    case "stars":
+                    case "writes":
+                    case "interviewed":
+                    case "performs":
+                    case "directs":
+                        relationship = pickRelationship(relationshipType, conn, scan);
+                        found = true;
+                        break;
+                    case "q":
+                        throw new Exception("User quit during search");
+                    default:
+                        System.err.println(relationshipType + " isn't a valid relationship type");
+                }
+            } catch (Exception e) {
+                throw e;
+            }
+        }
+        return relationship;
+    }
 
     public static Relationship pickRelationship(String type, Connection conn, Scanner scan) throws Exception {
         Relationship relationship = new Relationship();
