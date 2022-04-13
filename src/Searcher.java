@@ -46,11 +46,15 @@ public class Searcher {
 
                 stmt = conn.prepareStatement(Maps.creatorSearcherMap.get(type));
                 stmt.setString(1, cName);
-
                 rSet = stmt.executeQuery();
 
-                ArrayList<Integer> potentialIDs = Util.searchPrint(rSet, "creator_ID");
-                creatorID = Util.itemListPick(potentialIDs, scan);
+                if (Util.resultSetContainsData(rSet)) {
+                    ArrayList<Integer> potentialIDs = Util.searchPrint(rSet, "creator_ID");
+                    creatorID = Util.itemListPick(potentialIDs, scan);
+                    found = true;
+                } else {
+                    System.out.print("None Found");
+                }
             } catch (Exception e) {
                 System.out.println(e.getMessage());
                 throw e;
@@ -67,7 +71,7 @@ public class Searcher {
         boolean found = false;
         while (!found) {
             System.out.println(
-                    "Options:\n(album)\n(track)\n(interview)\n(movie)\n(audiobook)\n(physicalbook)\n(audiobookchapter)\n(physicalbookchapter)\n(genre)\nPlease enter the item you're searching for:");
+                    "Options:\n(album)\n(track)\n(interview)\n(movie)\n(audiobook)\n(physicalbook)\n(audiobookchapter)\n(physicalbookchapter)\n(genre)\n(q to quit)\nPlease enter the item you're searching for:");
             String itemType = scan.nextLine().toLowerCase();
             try {
                 switch (itemType) {
@@ -80,6 +84,8 @@ public class Searcher {
                         itemID = pickItem(itemType, conn, scan);
                         found = true;
                         break;
+                    case "q":
+                        throw new Exception("User quit during search");
                     default:
                         System.err.println(itemType + " isn't a valid item type");
                 }
@@ -95,62 +101,65 @@ public class Searcher {
         int ItemID = -1;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-        try {
-            System.out.println("Please enter the " + type + "'s name");
-            String itemName = scan.nextLine();
-            stmt = conn.prepareStatement(Maps.itemSearcherMap.get(type));
-            stmt.setString(1, itemName);
+        boolean found = false;
+        while (!found) {
+            try {
+                System.out.println("Please enter the " + type + "'s name or q to quit");
+                String itemName = scan.nextLine();
+                if (itemName.toLowerCase().equals("q"))
+                    throw new Exception("User quit during search");
 
-            rSet = stmt.executeQuery();
-            ArrayList<Integer> potentialIDs = Util.searchPrint(rSet, "Item_ID");
-            ItemID = Util.itemListPick(potentialIDs, scan);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        } finally {
-            Util.closeStmt(stmt);
-            Util.closeRSet(rSet);
+                stmt = conn.prepareStatement(Maps.itemSearcherMap.get(type));
+                stmt.setString(1, itemName);
+                rSet = stmt.executeQuery();
+
+                if (Util.resultSetContainsData(rSet)) {
+                    ArrayList<Integer> potentialIDs = Util.searchPrint(rSet, "Item_ID");
+                    ItemID = Util.itemListPick(potentialIDs, scan);
+                    found = true;
+                } else {
+                    System.out.print("None Found");
+                }
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            } finally {
+                Util.closeStmt(stmt);
+                Util.closeRSet(rSet);
+            }
         }
         return ItemID;
     }
 
     public static int pickPerson(Connection conn, Scanner scan) throws Exception {
-
         int CardID = -1;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-        try {
-            System.out.println("Please enter the Person's email");
-            String email = scan.nextLine();
-            String sql = Maps.searchPersonString;
-            stmt = conn.prepareStatement(sql);
-            stmt.setString(1, email);
+        boolean found = false;
+        while (!found) {
+            try {
+                System.out.println("Please enter the Person's email or q to quit");
+                String email = scan.nextLine();
+                if (email.toLowerCase().equals("q"))
+                    throw new Exception("User quit during search");
 
-            rSet = stmt.executeQuery();
-            ResultSetMetaData rSetmd = rSet.getMetaData();
-            int columnCount = rSetmd.getColumnCount();
-            for (int i = 1; i <= columnCount; i++) {
-                String value = rSetmd.getColumnName(i);
-                System.out.print(value);
-                if (i < columnCount)
-                    System.out.print(",  ");
-            }
-            System.out.print("\n");
-            while (rSet.next() && CardID == -1) {
-                for (int i = 1; i <= columnCount; i++) {
-                    String columnValue = rSet.getString(i);
-                    System.out.print(columnValue);
-                    CardID = rSet.getInt("CardID");
-                    if (i < columnCount)
-                        System.out.print(",  ");
+                stmt = conn.prepareStatement(Maps.searchPersonString);
+                stmt.setString(1, email);
+                rSet = stmt.executeQuery();
+
+                if (Util.resultSetContainsData(rSet)) {
+                    ArrayList<Integer> potentialIDs = Util.searchPrint(rSet, "CardID");
+                    CardID = Util.itemListPick(potentialIDs, scan);
+                    found = true;
+                } else {
+                    System.out.print("None Found");
                 }
-                System.out.print("\n");
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+                throw e;
+            } finally {
+                Util.closeStmt(stmt);
+                Util.closeRSet(rSet);
             }
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            throw e;
-        } finally {
-            Util.closeStmt(stmt);
-            Util.closeRSet(rSet);
         }
         return CardID;
     }
@@ -160,77 +169,80 @@ public class Searcher {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         String bookGrab = null;
-        try {
-            if (type.equals("audiobookchapter")) {
-                bookGrab = "audiobook";
-            } else if (type.equals("physicalbookchapter")) {
-                bookGrab = "physicalbook";
+        boolean found = false;
+        while (!found) {
+            try {
+                if (type.equals("audiobookchapter")) {
+                    bookGrab = "audiobook";
+                } else if (type.equals("physicalbookchapter")) {
+                    bookGrab = "physicalbook";
+                }
+                System.out.println("Please select a " + bookGrab + " to search a chapter from: ");
+                ItemID = pickItem(bookGrab, conn, scan);
+
+                stmt = conn.prepareStatement(Maps.chapterSearcherMap.get(type));
+                stmt.setInt(1, ItemID);
+                rSet = stmt.executeQuery();
+
+                if (Util.resultSetContainsData(rSet)) {
+                    ArrayList<Integer> potentialIDs = Util.searchPrint(rSet, "BookID");
+                    ItemID = Util.itemListPick(potentialIDs, scan);
+                    found = true;
+                } else {
+                    System.out.print("None Found");
+                }
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+                throw e;
+            } finally {
+                Util.closeStmt(stmt);
+                Util.closeRSet(rSet);
             }
-            System.out.println("Please select a " + bookGrab + " to search a chapter from: ");
-            ItemID = pickItem(bookGrab, conn, scan);
-            stmt = conn.prepareStatement(Maps.chapterSearcherMap.get(type));
-            stmt.setInt(1, ItemID);
-            rSet = stmt.executeQuery();
-            Util.searchPrint(rSet, "BookID");
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            throw e;
-        } finally {
-            Util.closeStmt(stmt);
-            Util.closeRSet(rSet);
         }
+
         return ItemID;
     }
 
     public static int pickGenre(Connection conn, Scanner scan) throws Exception {
-        ArrayList<Integer> genreList = new ArrayList<Integer>();
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-        int genreID = -1;
-        boolean listFlag = true;
+        int itemID = -1;
+        boolean picked = false;
+        while (!picked) {
+            try {
+                System.out.println(
+                        "Enter the name of the genre you would like to search for, 1 to list all genres, q to quit:");
+                String genre = scan.nextLine();
+                if (genre.toLowerCase().equals("q"))
+                    throw new Exception("User quit during search");
 
-        System.out.println("Enter the name of the genre you would like to search for, or 1 to list all genres:");
-        String genre = scan.nextLine();
-
-        try {
-            while (listFlag) {
                 if (genre.equals("1")) {
                     stmt = conn.prepareStatement(Maps.genreSearcherMap.get("genres"));
                     rSet = stmt.executeQuery();
                     Util.searchPrintNoRet(rSet);
-                    System.out.println(
-                            "Enter the name of the genre you would like to search for, or 1 to list all genres:");
-                    genre = scan.nextLine();
                 } else {
                     stmt = conn.prepareStatement(Maps.genreSearcherMap.get("search"));
                     stmt.setString(1, genre);
                     rSet = stmt.executeQuery();
-                    genreList = Util.searchPrint(rSet, "Item_ID");
-                    if (genreList.size() != 0) {
-                        System.out.println(
-                                "What entry would you like to select? enter the number before the entry (1, 2, 3... etc): ");
-                        int entry = Integer.parseInt(scan.nextLine());
-                        genreID = genreList.get(entry - 1);
-                        listFlag = false;
 
+                    if (Util.resultSetContainsData(rSet)) {
+                        ArrayList<Integer> potentialIDs = Util.searchPrint(rSet, "CardID");
+                        itemID = Util.itemListPick(potentialIDs, scan);
+                        picked = true;
                     } else {
-                        System.out.println("Query returned no entries");
-                        System.out.println(
-                                "Enter the name of the genre you would like to search for, or 1 to list all genres:");
-                        genre = scan.nextLine();
+                        System.out.print("None Found");
                     }
-
                 }
-
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+                throw e;
+            } finally {
+                Util.closeStmt(stmt);
+                Util.closeRSet(rSet);
             }
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-            throw e;
-        } finally {
-            Util.closeStmt(stmt);
-            Util.closeRSet(rSet);
         }
-        return genreID;
+        return itemID;
+
     }
 
     public static Relationship pickRelationship(Connection conn, Scanner scan) throws Exception {
@@ -238,7 +250,7 @@ public class Searcher {
         boolean found = false;
         while (!found) {
             System.out.println(
-                    "Options:\n(stars)\n(writes)\n(interviewed)\n(performs)\n(directs)\nPlease enter the relationship you're searching for:");
+                    "Options:\n(stars)\n(writes)\n(interviewed)\n(performs)\n(directs)\n(q to quit)\nPlease enter the relationship you're searching for:");
             String relationshipType = scan.nextLine().toLowerCase();
             try {
                 switch (relationshipType) {
@@ -250,6 +262,8 @@ public class Searcher {
                         relationship = pickRelationship(relationshipType, conn, scan);
                         found = true;
                         break;
+                    case "q":
+                        throw new Exception("User quit during search");
                     default:
                         System.err.println(relationshipType + " isn't a valid relationship type");
                 }
@@ -263,6 +277,8 @@ public class Searcher {
 
     public static Relationship pickRelationship(String type, Connection conn, Scanner scan) throws Exception {
         Relationship relationship = new Relationship();
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
         boolean found = false;
         while (!found) {
             String itemType = getRelationshipItemType(type, scan);
@@ -273,20 +289,18 @@ public class Searcher {
 
             relationship.setCreatorID(creatorID);
             relationship.setItemID(itemID);
-
-            PreparedStatement stmt = null;
-            ResultSet rSet = null;
             try {
                 stmt = conn.prepareStatement(Maps.relationshipSearcherMap.get(type));
                 stmt.setInt(1, relationship.getCreatorID());
                 stmt.setInt(2, relationship.getItemID());
                 rSet = stmt.executeQuery();
 
-                ArrayList<Integer> potentialIDs = Util.searchPrint(rSet, "Item_ID");
-                if (potentialIDs.size() == 1) { // we have found the unique id
+                if (Util.resultSetContainsData(rSet)) {
+                    ArrayList<Relationship> potentialIDs = Util.searchPrintRelationships(rSet);
+                    relationship = Util.relationshipListPick(potentialIDs, scan);
                     found = true;
                 } else {
-                    System.out.println("relationship not found try again");
+                    System.out.print("None Found");
                 }
             } catch (Exception e) {
                 System.out.println(e.getMessage());
@@ -296,7 +310,6 @@ public class Searcher {
                 Util.closeRSet(rSet);
             }
         }
-
         return relationship;
     }
 
