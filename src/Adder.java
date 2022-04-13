@@ -39,9 +39,24 @@ public class Adder {
     public static void addItem(String item, Connection conn, Scanner scan) throws Exception {
         int newItemID;
         try {
+        	boolean genreFlag = true;
             newItemID = addItemBase(item, conn, scan);
             addItemSuper(item, conn, scan, newItemID);
-            // addItemGenre(item, conn, scan, newItemID);
+            
+            while (genreFlag) {
+            	System.out.println("Enter 'q' to stop adding genres, or 'y' to add a genre");
+                String choice = scan.nextLine();
+	            switch (choice) {
+	            case "y":
+	            	addGenreBase(newItemID, conn, scan);
+	            	break;
+	            case "q":
+	            	genreFlag = false;
+	            	break;
+	            default:
+	            	System.out.println("Invalid choice, try again");
+	            }
+            }
         } catch (Exception e) {
             System.out.println("failed to insert");
             throw e;
@@ -442,6 +457,14 @@ public class Adder {
     public static void addGenre(Connection conn, Scanner scan) throws Exception {
     	System.out.println("Select an entry to add a genre to");
     	int itemID = Searcher.pickGenre(conn, scan);
+    	try {
+	        addGenreBase(itemID, conn, scan);
+        } catch (Exception e) {
+            System.out.println("Failed to insert");
+            throw e;
+        }
+    }
+    private static void addGenreBase(int itemID, Connection conn, Scanner scan) throws Exception {
     	PreparedStatement stmt = null;
     	try {
 	        System.out.println("What is the new genre?");
@@ -456,5 +479,5 @@ public class Adder {
         } finally {
             Util.closeStmt(stmt);
         }
-    }
+	}
 }

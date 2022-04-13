@@ -380,4 +380,37 @@ public class Util {
 		}
 		return result;
 	}
+	public static ArrayList<Integer> getIDListFromRset(ResultSet rSet, Connection conn, Scanner scan) throws Exception {
+		ResultSetMetaData rSetmd = rSet.getMetaData();
+		int columnCount = rSetmd.getColumnCount();
+        boolean itemIDFound = false;
+        String ItemIDColName = null;
+		ArrayList<Integer> IDmap = new ArrayList<Integer>();
+		try {
+			for (int i = 1; i <= columnCount; i++) {
+    			String colName = rSetmd.getColumnName(i);
+    			if (colName.equals("ItemID") | colName.equals("Item_ID") | colName.equals("BookID")) {
+    				ItemIDColName = colName;
+    				itemIDFound = true;
+    			}
+    		}
+			if (rSet.next() == false) {
+        		System.out.println("Nothing returned from query");
+        	} else if (!itemIDFound){
+        		System.out.println("No item IDs found in result set");
+        	} else {
+        		do {
+        			int itemID = rSet.getInt(ItemIDColName);
+        			if (!IDmap.contains(itemID)) {
+    					IDmap.add(itemID);
+    				}
+        			
+        		} while(rSet.next());
+        	}
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+			throw e;
+		}
+		return IDmap;
+	}
 }

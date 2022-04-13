@@ -206,4 +206,17 @@ public class Deleter {
             Util.closeStmt(stmt);
         }
     }
+    private static void deleteItemSet(ArrayList<Integer> IDList, Connection conn, Scanner scan) throws Exception {
+    	try {
+    		for (int itemIDToDelete : IDList) {
+    			String idType = Util.getTypeColumnInItemFromItemID(itemIDToDelete, conn);
+    			String itemType = Util.changeToJavaString(idType);
+    			deleteItemSuper(itemIDToDelete, itemType, conn, scan);
+                deleteItemBase(itemIDToDelete, itemType, conn, scan);
+        	}
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw e;
+        }
+    }
 }
