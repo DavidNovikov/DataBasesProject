@@ -22,7 +22,7 @@ public class Adder {
             stmt.setInt(5, cardID);
             stmt.executeUpdate();
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.out.println("Unable to insert person");
             throw e;
         } finally {
             Util.closeStmt(stmt);
@@ -54,7 +54,7 @@ public class Adder {
                     System.err.println(itemType + " isn't a valid item type");
             }
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.out.println("failed to insert item");
             throw e;
         }
     }
@@ -66,7 +66,6 @@ public class Adder {
             addItemSuper(item, conn, scan, newItemID);
             // addItemGenre(item, conn, scan, newItemID);
         } catch (Exception e) {
-            System.out.println("failed to insert");
             throw e;
         }
     }
@@ -95,7 +94,6 @@ public class Adder {
 
             stmt.executeUpdate();
         } catch (Exception e) {
-            System.out.println(e.getMessage());
             throw e;
         } finally {
             Util.closeStmt(stmt);
@@ -152,7 +150,6 @@ public class Adder {
             stmt.setNull(5, Types.DATE);
             stmt.executeUpdate();
         } catch (Exception e) {
-            System.out.println(e.getMessage());
             throw e;
         } finally {
             Util.closeStmt(stmt);
@@ -175,7 +172,6 @@ public class Adder {
 
             stmt.executeUpdate();
         } catch (Exception e) {
-            System.out.println(e.getMessage());
             throw e;
         } finally {
             Util.closeStmt(stmt);
@@ -198,7 +194,6 @@ public class Adder {
 
             stmt.executeUpdate();
         } catch (Exception e) {
-            System.out.println(e.getMessage());
             throw e;
         } finally {
             Util.closeStmt(stmt);
@@ -220,7 +215,6 @@ public class Adder {
 
             stmt.executeUpdate();
         } catch (Exception e) {
-            System.out.println(e.getMessage());
             throw e;
         } finally {
             Util.closeStmt(stmt);
@@ -244,7 +238,6 @@ public class Adder {
 
             stmt.executeUpdate();
         } catch (Exception e) {
-            System.out.println(e.getMessage());
             throw e;
         } finally {
             Util.closeStmt(stmt);
@@ -265,7 +258,6 @@ public class Adder {
 
             stmt.executeUpdate();
         } catch (Exception e) {
-            System.out.println(e.getMessage());
             throw e;
         } finally {
             Util.closeStmt(stmt);
@@ -285,7 +277,6 @@ public class Adder {
 
             stmt.executeUpdate();
         } catch (Exception e) {
-            System.out.println(e.getMessage());
             throw e;
         } finally {
             Util.closeStmt(stmt);
@@ -309,7 +300,6 @@ public class Adder {
                     System.err.println(relationshipType + " isn't a valid relationship type");
             }
         } catch (Exception e) {
-            System.out.println(e.getMessage());
             throw e;
         }
     }
@@ -330,7 +320,7 @@ public class Adder {
                     System.err.println(relationshipType + " isn't a valid new relationship insert type");
             }
         } catch (Exception e) {
-            System.out.println("Unable to create relationship. Exception:" + e);
+            System.out.println("Unable to create relationship");
             throw e;
         }
     }
@@ -350,7 +340,6 @@ public class Adder {
             stmt.setInt(3, itemID);
             stmt.executeUpdate();
         } catch (Exception e) {
-            System.out.println(e.getMessage());
             throw e;
         } finally {
             Util.closeStmt(stmt);
@@ -372,7 +361,6 @@ public class Adder {
             stmt.setInt(2, itemID);
             stmt.executeUpdate();
         } catch (Exception e) {
-            System.out.println(e.getMessage());
             throw e;
         } finally {
             Util.closeStmt(stmt);
@@ -395,7 +383,7 @@ public class Adder {
                     System.err.println(creatorType + " isn't a valid creator type");
             }
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.out.println("Unable to insert creator");
             throw e;
         }
     }
@@ -406,7 +394,6 @@ public class Adder {
             newCreatorID = addCreatorBase(creatorType, conn, scan);
             addCreatorSuper(creatorType, conn, scan, newCreatorID);
         } catch (Exception e) {
-            System.out.println("failed to insert");
             throw e;
         }
     }
@@ -424,7 +411,6 @@ public class Adder {
 
             stmt.executeUpdate();
         } catch (Exception e) {
-            System.out.println(e.getMessage());
             throw e;
         } finally {
             Util.closeStmt(stmt);
@@ -464,7 +450,6 @@ public class Adder {
 
             stmt.executeUpdate();
         } catch (Exception e) {
-            System.out.println(e.getMessage());
             throw e;
         } finally {
             Util.closeStmt(stmt);
@@ -483,7 +468,6 @@ public class Adder {
             stmt.executeUpdate();
 
         } catch (Exception e) {
-            System.out.println(e.getMessage());
             throw e;
         } finally {
             Util.closeStmt(stmt);
@@ -500,8 +484,8 @@ public class Adder {
             stmt.setInt(1, itemID);
             stmt.setString(2, newGenre);
             stmt.executeUpdate();
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
+        } catch (Exception e) {
+            System.out.println("Unable to insert genre");
             throw e;
         } finally {
             Util.closeStmt(stmt);
