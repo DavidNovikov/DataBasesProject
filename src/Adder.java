@@ -58,8 +58,7 @@ public class Adder {
             System.out.println("Please enter the title");
             String title = scan.nextLine();
 
-            System.out.println("Please enter the year released");
-            int year = Integer.valueOf(scan.nextLine());
+            int year = Util.getInteger(scan, "year released");
 
             stmt = conn.prepareStatement(Maps.itemAdderMap.get("item"));
 
@@ -119,11 +118,9 @@ public class Adder {
         PreparedStatement stmt = null;
 
         try {
-            System.out.println("Please enter the price in the format dollars.cents");
-            double price = Double.valueOf(scan.nextLine());
+            double price = Util.getPrice(scan, "price of the item");
 
-            System.out.println("Please enter the quantity ordered");
-            int quantity = Integer.valueOf(scan.nextLine());
+            int quantity = Util.getInteger(scan, "quantity ordered");
 
             String arrivalDate = Util.getDate(scan, "Estimated Arrival Date");
 
@@ -147,11 +144,9 @@ public class Adder {
         PreparedStatement stmt = null;
 
         try {
-            System.out.println("Please enter the number of songs");
-            int numSongs = Integer.valueOf(scan.nextLine());
+            int numSongs = Util.getInteger(scan, "number of songs");
 
-            System.out.println("Please enter the length in minutes");
-            int lenInMin = Integer.valueOf(scan.nextLine());
+            int lenInMin = Util.getInteger(scan, "length in minutes");
 
             stmt = conn.prepareStatement(Maps.itemAdderMap.get("album"));
 
@@ -172,11 +167,9 @@ public class Adder {
         PreparedStatement stmt = null;
 
         try {
-            System.out.println("Please enter the AlbumID corresponding to this track");
-            int albumID = Integer.valueOf(scan.nextLine());
+            int albumID = Util.getInteger(scan, "AlbumID corresponding to this track");
 
-            System.out.println("Please enter the length in seconds");
-            int lenInSec = Integer.valueOf(scan.nextLine());
+            int lenInSec = Util.getInteger(scan, "length in seconds");
 
             stmt = conn.prepareStatement(Maps.itemAdderMap.get("track"));
 
@@ -199,8 +192,7 @@ public class Adder {
 
         try {
 
-            System.out.println("Please enter the length in minutes");
-            int lenInMin = Integer.valueOf(scan.nextLine());
+            int lenInMin = Util.getInteger(scan, "length in minutes");
 
             stmt = conn.prepareStatement(Maps.itemAdderMap.get("interview"));
 
@@ -220,8 +212,7 @@ public class Adder {
         PreparedStatement stmt = null;
 
         try {
-            System.out.println("Please enter the runtime in minutes");
-            int runtime = Integer.valueOf(scan.nextLine());
+            int runtime = Util.getInteger(scan, "runtime in minutes");
 
             System.out.println("Please enter the rating");
             String rating = Util.getTypeFromList(scan, Arrays.asList("G","PG","PG-13","R","NC-17"));
@@ -246,9 +237,7 @@ public class Adder {
         PreparedStatement stmt = null;
 
         try {
-
-            System.out.println("Please enter the length in minutes");
-            int lenInMin = Integer.valueOf(scan.nextLine());
+            int lenInMin = Util.getInteger(scan, "length in minutes");
 
             stmt = conn.prepareStatement(Maps.itemAdderMap.get("audiobook"));
 
@@ -268,9 +257,7 @@ public class Adder {
         PreparedStatement stmt = null;
 
         try {
-
-            System.out.println("Please enter the number of pages");
-            int pages = Integer.valueOf(scan.nextLine());
+            int pages = Util.getInteger(scan, "number of pages");
 
             stmt = conn.prepareStatement(Maps.itemAdderMap.get("physical_book"));
 
@@ -286,45 +273,7 @@ public class Adder {
         }
     }
 
-    // public static void addItemGenre(String item, Connection conn, Scanner scan,
-    // int newItemID) {
-    // }
-
-    // public static void addItemCheckedOut() {
-    // PreparedStatement stmt = null;
-
-    // try {
-    // System.out.println("Please enter the number of songs");
-    // int numSongs = Integer.valueOf(scan.nextLine());
-
-    // System.out.println("Please enter the length in minutes");
-    // int lenInMin = Integer.valueOf(scan.nextLine());
-
-    // String query = "insert into album values (?,?,?);";
-    // stmt = conn.prepareStatement(query);
-
-    // stmt.setInt(1, numSongs);
-    // stmt.setInt(2, lenInMin);
-    // stmt.setInt(3, newItemID);
-
-    // stmt.executeUpdate();
-    // } catch (Exception e) {
-    // System.out.println(e.getMessage());
-    // throw e;
-    // } finally {
-    // Util.closeStmt(stmt);
-    // }
-    // }
-
     public static void addRelationship(Connection conn, Scanner scan) throws Exception {
-
-        System.out.println("Do you know the creator ID and the item ID? y/n");
-        char response = scan.nextLine().charAt(0);
-        if (response != 'y') {
-            System.out.println("Use the search function to find the creator and item IDs to establish a relationship.");
-            return;
-        }
-
         System.out.println(
                 "Enter the type of relationship you are adding: (stars, writes, interviewed, performs, or directs)");
         String relationshipType = scan.nextLine().toLowerCase();
@@ -354,11 +303,9 @@ public class Adder {
         PreparedStatement stmt = null;
 
         try {
-            System.out.println("Please enter the creator ID");
-            int creatorID = Integer.valueOf(scan.nextLine());
+            int creatorID = Searcher.pickCreator("stars", conn, scan);
 
-            System.out.println("Please enter the item ID");
-            int itemID = Integer.valueOf(scan.nextLine());
+            int itemID = Searcher.pickItem("movie", conn, scan);
 
             System.out.println("Please enter the role");
             String role = scan.nextLine();
@@ -382,11 +329,10 @@ public class Adder {
         PreparedStatement stmt = null;
 
         try {
-            System.out.println("Please enter the creator ID");
-            int creatorID = Integer.valueOf(scan.nextLine());
-
-            System.out.println("Please enter the item ID");
-            int itemID = Integer.valueOf(scan.nextLine());
+            String creatorType = Searcher.getRelationshipCreatorType(relationshipType);
+            int creatorID = Searcher.pickCreator(creatorType, conn, scan);
+            String itemType = Searcher.getRelationshipItemType(relationshipType, scan);
+            int itemID = Searcher.pickItem(itemType, conn, scan);
 
             stmt = conn.prepareStatement(Maps.relationshipAdderMap.get(relationshipType));
             stmt.setInt(1, creatorID);

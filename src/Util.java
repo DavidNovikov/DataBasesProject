@@ -1,3 +1,4 @@
+import java.math.BigDecimal;
 import java.sql.*;
 import java.text.*;
 import java.util.*;
@@ -309,6 +310,14 @@ public class Util {
 		return request;
 	}
 
+	public static boolean resultSetContainsData(ResultSet rSet) throws Exception{
+		try{
+			return rSet.isBeforeFirst();
+		}catch (Exception e){
+			throw e;
+		}
+	}
+
 	public static boolean itemIsInItemsOrdered(int itemID, Connection conn) throws Exception{
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
@@ -317,13 +326,57 @@ public class Util {
 			stmt = conn.prepareStatement(Maps.checkItemInOrderedString);
 			stmt.setInt(1,itemID);
 			rSet = stmt.executeQuery();
-			result = rSet.next();
+			result = resultSetContainsData(rSet);
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			throw e;
 		} finally {
 			closeStmt(stmt);
 			closeRSet(rSet);
+		}
+		return result;
+	}
+
+	public static int getInteger(Scanner scan, String intName) throws Exception{
+		boolean successful = false;
+		String response = "";
+		int result = 0;
+		while (!successful) {
+			System.out.println("Enter the "+intName+" or enter q to quit");
+			response = scan.nextLine();
+			if(response.equals("q")){
+				throw new Exception("User quit during operation!");
+			}
+			try{
+				result = Integer.parseInt(response);
+				successful = true;
+			}catch(Exception e){
+				System.out.println("Invalid input! Enter an integer.");
+			}
+		}
+		return result;
+	}
+
+	public static double getPrice(Scanner scan, String priceName) throws Exception{
+		boolean successful = false;
+		String response = "";
+		double result = 0.0;
+		while (!successful) {
+			System.out.println("Enter the "+priceName+" in the format dollars.cents or enter q to quit");
+			response = scan.nextLine();
+			if(response.equals("q")){
+				throw new Exception("User quit during operation!");
+			}
+			try{
+				result = Double.parseDouble(response);
+				if(BigDecimal.valueOf(result).scale() > 2){
+					System.out.println("The price cannot have more than two numbers after the decimal!");
+				}else{
+					successful = true;
+				}
+			}catch(Exception e){
+				System.out.println("Invalid input!");
+			}
 		}
 		return result;
 	}
