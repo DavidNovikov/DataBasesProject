@@ -1,3 +1,4 @@
+import java.math.BigDecimal;
 import java.sql.*;
 import java.text.*;
 import java.util.*;
@@ -10,7 +11,7 @@ public class Util {
 		try {
 			stmt = conn.prepareStatement(Maps.startTransactionString);
 			stmt.execute();
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			status = -1;
 		} finally {
@@ -24,7 +25,7 @@ public class Util {
 		try {
 			stmt = conn.prepareStatement(Maps.endTransactionString);
 			stmt.execute();
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		} finally {
 			closeStmt(stmt);
@@ -36,7 +37,7 @@ public class Util {
 		try {
 			stmt = conn.prepareStatement(Maps.forceRollBackString);
 			stmt.execute();
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		} finally {
 			closeStmt(stmt);
@@ -53,7 +54,6 @@ public class Util {
 			rSet = stmt.executeQuery();
 			nextID = rSet.getInt(Maps.nextIDColumnMap.get(tableType)) + 1;
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
 			throw e;
 		} finally {
 			closeStmt(stmt);
@@ -82,7 +82,7 @@ public class Util {
 		if (stmt != null) {
 			try {
 				stmt.close();
-			} catch (SQLException e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
@@ -92,7 +92,7 @@ public class Util {
 		if (rSet != null) {
 			try {
 				rSet.close();
-			} catch (SQLException e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
@@ -115,30 +115,17 @@ public class Util {
 		return request;
 	}
 
-	public static boolean getStatus(Scanner scan) {
-		boolean active = false;
-		String response = " ";
-		while (!(response.equals("y") || response.equals("n"))) {
-			System.out.println("is the item active? y/n");
-			response = scan.nextLine();
-			if (response.equals("y")) {
-				active = true;
-			} else if (!(response.equals("y") || response.equals("n"))) {
-				System.out.println("Invalid input: enter y or n");
-			}
-		}
-		return active;
-	}
-
 	public static String getDate(Scanner scan, String dateName) throws Exception {
 		boolean successful = false;
 		String response = "";
 		while (!successful) {
-			System.out.println("Enter the " + dateName + " in the form YYYY-MM-DD:");
+			System.out.println("Enter the " + dateName + " in the form YYYY-MM-DD or q to quit:");
 			response = scan.nextLine();
-			if(!dateIsValid(response)){
+			if (response.toLowerCase().equals("q"))
+				throw new Exception("User quit during operation!");
+			if (!dateIsValid(response)) {
 				System.out.println("Not a valid date!");
-			}else{
+			} else {
 				successful = true;
 			}
 		}
@@ -146,17 +133,17 @@ public class Util {
 	}
 
 	private static boolean dateIsValid(String date) {
-        try {
-            DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
-            dateFormatter.setLenient(false);
-            dateFormatter.parse(date);
-            return true;
-        } catch (ParseException e) {
-            return false;
-        }
-    }
+		try {
+			DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
+			dateFormatter.setLenient(false);
+			dateFormatter.parse(date);
+			return true;
+		} catch (ParseException e) {
+			return false;
+		}
+	}
 
-	public static ArrayList<Integer> searchPrint(ResultSet rSet, String columnName) throws SQLException {
+	public static ArrayList<Integer> searchPrint(ResultSet rSet, String columnName) throws Exception {
 		ResultSetMetaData rSetmd = rSet.getMetaData();
 		int columnCount = rSetmd.getColumnCount();
 		ArrayList<Integer> IDmap = new ArrayList<Integer>();
@@ -188,12 +175,47 @@ public class Util {
 		return IDmap;
 	}
 
-	public static String getEmail(Scanner scan) {
+	public static ArrayList<Relationship> searchPrintRelationships(ResultSet rSet)
+			throws Exception {
+		ResultSetMetaData rSetmd = rSet.getMetaData();
+		int columnCount = rSetmd.getColumnCount();
+		ArrayList<Relationship> relList = new ArrayList<Relationship>();
+		for (int i = 1; i <= columnCount; i++) {
+			String value = rSetmd.getColumnName(i);
+			System.out.print(value);
+			if (i < columnCount)
+				System.out.print(",  ");
+		}
+		System.out.print("\n");
+		int rsetCount = 0;
+		while (rSet.next()) {
+			rsetCount++;
+			for (int i = 1; i <= columnCount; i++) {
+				String columnValue = rSet.getString(i);
+				if (i == 1) {
+					System.out.print("(" + rsetCount + ")");
+				}
+				System.out.print(columnValue);
+				int newCID = rSet.getInt("Creator_ID");
+				int newIID = rSet.getInt("Item_ID");
+				Relationship newRel = new Relationship(newCID, newIID);
+				relList.add(newRel);
+				if (i < columnCount)
+					System.out.print(",  ");
+			}
+			System.out.print("\n");
+		}
+		return relList;
+	}
+
+	public static String getEmail(Scanner scan) throws Exception {
 		boolean successful = false;
 		String response = "";
 		while (!successful) {
-			System.out.println("Enter the email:");
+			System.out.println("Enter the email (q to quit):");
 			response = scan.nextLine();
+			if (response.toLowerCase().equals("q"))
+				throw new Exception("User quit during operation!");
 			int atIndex = response.indexOf("@");
 			int dotIndex = response.lastIndexOf(".");
 			if (atIndex != -1 && dotIndex != -1 && atIndex < dotIndex) {
@@ -204,83 +226,64 @@ public class Util {
 		}
 		return response;
 	}
-	
-	public static int itemListPick(ArrayList<Integer> IDs, Scanner scan) {
-		int flag = 1;
-		int newID = -1;
-        while(flag == 1) {
-        	//TODO throw error when transactions implemented
-            System.out.println("What entry would you like to select? enter the number before the entry (1, 2, 3... etc): ");
-	        int entry = Integer.parseInt(scan.nextLine());
-	        if (entry < 1 || entry > IDs.size()) {
-	        	System.out.println("Invalid choice, try again");
-	        	
-	        } else {
-	        	flag = 0;
-	        	newID = IDs.get(entry-1);
-	        }
-        }
-        return newID;
+
+	public static void searchPrintNoRet(ResultSet rSet) throws Exception {
+		ResultSetMetaData rSetmd = rSet.getMetaData();
+		int columnCount = rSetmd.getColumnCount();
+		for (int i = 1; i <= columnCount; i++) {
+			String value = rSetmd.getColumnName(i);
+			System.out.print(value);
+			if (i < columnCount)
+				System.out.print(",  ");
+		}
+		System.out.print("\n");
+		int rsetCount = 0;
+		while (rSet.next()) {
+			rsetCount++;
+			for (int i = 1; i <= columnCount; i++) {
+				String columnValue = rSet.getString(i);
+				if (i == 1) {
+					System.out.print("(" + rsetCount + ")");
+				}
+				System.out.print(columnValue);
+				if (i < columnCount)
+					System.out.print(",  ");
+			}
+			System.out.print("\n");
+		}
 	}
 
-	public static void searchPrintNoRet(ResultSet rSet) throws SQLException {
-		ResultSetMetaData rSetmd = rSet.getMetaData();
-        int columnCount = rSetmd.getColumnCount();
-        for (int i = 1; i <= columnCount; i++) {
-            String value = rSetmd.getColumnName(i);
-            System.out.print(value);
-            if (i < columnCount)
-                System.out.print(",  ");
-        }
-        System.out.print("\n");
-        int rsetCount = 0;
-        while (rSet.next()) {
-        	rsetCount++;
-            for (int i = 1; i <= columnCount; i++) {
-                String columnValue = rSet.getString(i);
-                if(i ==  1) {
-                	System.out.print("(" + rsetCount + ")");
-                }
-                System.out.print(columnValue);
-                if (i < columnCount)
-                    System.out.print(",  ");
-            }
-            System.out.print("\n");
-        	}
-       	}
-
-	public static String getTypeFromList(Scanner scan, List<String> validTypes) throws Exception{
+	public static String getTypeFromList(Scanner scan, List<String> validTypes) throws Exception {
 		boolean successful = false;
 		String response = "";
 		while (!successful) {
 			System.out.print("Enter the type: (");
-			for(String s: validTypes){
-				System.out.print(s+" ");
+			for (String s : validTypes) {
+				System.out.print(s + " ");
 			}
 			System.out.println(") or q to quit");
 			response = scan.nextLine();
 			if (validTypes.contains(response)) {
 				successful = true;
-			} else if(response.equals("q")){
+			} else if (response.equals("q")) {
 				throw new Exception("User quit during operation!");
-			}else{
+			} else {
 				System.out.println("Invalid type!");
 			}
 		}
 		return response;
 	}
 
-	public static String getTypeColumnInItemFromItemID(int itemID, Connection conn) throws Exception{
+	public static String getTypeColumnInItemFromItemID(int itemID, Connection conn) throws Exception {
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
 		String type = null;
 		try {
 			stmt = conn.prepareStatement(Maps.getTypeColumnInItemFromItemIDString);
-			stmt.setInt(1,itemID);
+			stmt.setInt(1, itemID);
 			rSet = stmt.executeQuery();
 			type = rSet.getString("Type");
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
 			throw e;
 		} finally {
 			closeStmt(stmt);
@@ -309,21 +312,82 @@ public class Util {
 		return request;
 	}
 
-	public static boolean itemIsInItemsOrdered(int itemID, Connection conn) throws Exception{
+	public static boolean resultSetContainsData(ResultSet rSet) throws Exception {
+		try {
+			return rSet.isBeforeFirst();
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	public static boolean itemIsInItemsOrdered(int itemID, Connection conn) throws Exception {
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
 		boolean result = true;
 		try {
 			stmt = conn.prepareStatement(Maps.checkItemInOrderedString);
-			stmt.setInt(1,itemID);
+			stmt.setInt(1, itemID);
 			rSet = stmt.executeQuery();
-			result = rSet.next();
+			result = resultSetContainsData(rSet);
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
 			throw e;
 		} finally {
 			closeStmt(stmt);
 			closeRSet(rSet);
+		}
+		return result;
+	}
+
+	public static int getInteger(Scanner scan, String intName) throws Exception {
+		boolean successful = false;
+		String response = "";
+		int result = 0;
+		while (!successful) {
+			System.out.println("Enter the " + intName + " or enter q to quit");
+			response = scan.nextLine();
+			if (response.equals("q")) {
+				throw new Exception("User quit during operation!");
+			}
+			try {
+				result = Integer.parseInt(response);
+				successful = true;
+			} catch (Exception e) {
+				System.out.println("Invalid input! Enter an integer.");
+			}
+		}
+		return result;
+	}
+
+	public static String getString(Scanner scan, String strName) throws Exception {
+		String response = "";
+		System.out.println("Enter the " + strName + " or q to quit");
+		response = scan.nextLine();
+		if (response.equals("q")) {
+			throw new Exception("User quit during operation!");
+		}
+		return response;
+	}
+
+	public static double getPrice(Scanner scan, String priceName) throws Exception {
+		boolean successful = false;
+		String response = "";
+		double result = 0.0;
+		while (!successful) {
+			System.out.println("Enter the " + priceName + " in the format dollars.cents or enter q to quit");
+			response = scan.nextLine();
+			if (response.equals("q")) {
+				throw new Exception("User quit during operation!");
+			}
+			try {
+				result = Double.parseDouble(response);
+				if (BigDecimal.valueOf(result).scale() > 2) {
+					System.out.println("The price cannot have more than two numbers after the decimal!");
+				} else {
+					successful = true;
+				}
+			} catch (Exception e) {
+				System.out.println("Invalid input!");
+			}
 		}
 		return result;
 	}

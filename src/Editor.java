@@ -3,7 +3,28 @@ import java.util.*;
 
 public class Editor {
 
-    public static void editRelationship(String relationshipType, Connection conn, Scanner scan) throws Exception {
+    public static void editRelationship(Connection conn, Scanner scan) throws Exception {
+        System.out.println(
+                "Options:\n(stars)\n(writes)\n(interviewed)\n(performs)\n(directs)\nPlease enter the relationship you're editing:");
+        String relationshipType = scan.nextLine().toLowerCase();
+        try {
+            switch (relationshipType) {
+                case "stars":
+                case "writes":
+                case "interviewed":
+                case "performs":
+                case "directs":
+                    editRelationship(relationshipType, conn, scan);
+                    break;
+                default:
+                    System.err.println(relationshipType + " isn't a valid relationship type");
+            }
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+    private static void editRelationship(String relationshipType, Connection conn, Scanner scan) throws Exception {
         // ask if item type is audiobook or album
         Relationship rel = Searcher.pickRelationship(relationshipType, conn, scan);
         PreparedStatement stmt = null;
@@ -25,13 +46,13 @@ public class Editor {
             stmt = conn.prepareStatement(Maps.relationshipEditorMap.get(relationshipType)[editing - 1]);
             switch (relationshipType) {
                 case "stars":
-                    stmt = editRelationshipExecuteStars(stmt, scan, editing);
+                    stmt = editRelationshipExecuteStars(stmt, scan, editing, conn);
                     break;
                 case "writes":
                 case "interviewed":
                 case "performs":
                 case "directs":
-                    stmt = editRelationshipExecuteGeneric(stmt, scan, editing);
+                    stmt = editRelationshipExecuteGeneric(stmt, scan, editing, conn, relationshipType);
                     break;
                 default:
                     System.out.println(relationshipType + " is an invalid input");
@@ -41,58 +62,56 @@ public class Editor {
             stmt.setInt(3, rel.getItemID());
             stmt.executeUpdate();
         } catch (Exception e) {
-            System.out.println(e.getMessage());
             throw e;
         } finally {
             Util.closeStmt(stmt);
         }
     }
 
-    private static PreparedStatement editRelationshipExecuteGeneric(PreparedStatement stmt, Scanner scan, int editing)
+    private static PreparedStatement editRelationshipExecuteGeneric(PreparedStatement stmt, Scanner scan, int editing,
+            Connection conn, String relationshipType)
             throws Exception {
         try {
             switch (editing) {
                 case 1:
-                    System.out.println("enter the new " + "creatorID");
-                    int newValue = Integer.parseInt(scan.nextLine());
-                    stmt.setInt(1, newValue);
+                    String creatorType = Searcher.getRelationshipCreatorType(relationshipType);
+                    int newCreatorID = Searcher.pickCreator(creatorType, conn, scan);
+                    stmt.setInt(1, newCreatorID);
                     break;
                 case 2:
-                    System.out.println("enter the new " + "itemID");
-                    int newValue2 = Integer.parseInt(scan.nextLine());
-                    stmt.setInt(1, newValue2);
+                    String itemType = Searcher.getRelationshipItemType(relationshipType, scan);
+                    int newItemID = Searcher.pickItem(itemType, conn, scan);
+                    stmt.setInt(1, newItemID);
                     break;
             }
             return stmt;
         } catch (Exception e) {
-            System.out.println("Exception entering new value:" + e);
             throw e;
         }
     }
 
-    private static PreparedStatement editRelationshipExecuteStars(PreparedStatement stmt, Scanner scan, int editing)
+    private static PreparedStatement editRelationshipExecuteStars(PreparedStatement stmt, Scanner scan, int editing,
+            Connection conn)
             throws Exception {
         try {
             switch (editing) {
                 case 1:
-                    System.out.println("enter the new " + "creatorID");
-                    int newValue = Integer.parseInt(scan.nextLine());
-                    stmt.setInt(1, newValue);
+                    String creatorType = Searcher.getRelationshipCreatorType("stars");
+                    int newCreatorID = Searcher.pickCreator(creatorType, conn, scan);
+                    stmt.setInt(1, newCreatorID);
                     break;
                 case 2:
-                    System.out.println("enter the new " + "itemID");
-                    int newValue2 = Integer.parseInt(scan.nextLine());
-                    stmt.setInt(1, newValue2);
+                    String itemType = Searcher.getRelationshipItemType("stars", scan);
+                    int newItemID = Searcher.pickItem(itemType, conn, scan);
+                    stmt.setInt(1, newItemID);
                     break;
                 case 3:
-                    System.out.println("enter the new " + "role");
-                    String newRole = scan.nextLine();
+                    String newRole = Util.getString(scan, "new role");
                     stmt.setString(1, newRole);
                     break;
             }
             return stmt;
         } catch (Exception e) {
-            System.out.println("Exception entering new value:" + e);
             throw e;
         }
 
@@ -101,7 +120,7 @@ public class Editor {
     private static int whatToEditRelationshipGeneric(Scanner scan) throws Exception {
         int option = 0;
         while (option == 0) {
-            System.out.println("Please enter 1 to edit the creatorID, 2 to edit the itemID:");
+            System.out.println("Please enter 1 to edit the creator, 2 to edit the item:");
             option = Integer.valueOf(scan.nextLine());
             if (!(option == 1 || option == 2))
                 option = 0;
@@ -112,7 +131,7 @@ public class Editor {
     private static int whatToEditRelationshipStars(Scanner scan) throws Exception {
         int option = 0;
         while (option == 0) {
-            System.out.println("Please enter 1 to edit the creatorID, 2 to edit the itemID, 3 to edit the role:");
+            System.out.println("Please enter 1 to edit the creator, 2 to edit the item, 3 to edit the role:");
             option = Integer.valueOf(scan.nextLine());
             if (!(option == 1 || option == 2 || option == 3))
                 option = 0;
@@ -120,12 +139,12 @@ public class Editor {
         return option;
     }
 
-    public static void editPerson(String type, Connection conn, Scanner scan) throws Exception {
+    public static void editPerson(Connection conn, Scanner scan) throws Exception {
         PreparedStatement stmt = null;
         try {
             int cardID = Searcher.pickPerson(conn, scan);
             int editing = whatToEditPerson(scan);
-            stmt = conn.prepareStatement(Maps.personEditorMap.get(type)[editing - 1]);
+            stmt = conn.prepareStatement(Maps.personEditorArr[editing - 1]);
             // 1 for email, 2 for fname, 3 for lname, 4 for address, 5 for address
             switch (editing) {
                 case 1:
@@ -135,8 +154,7 @@ public class Editor {
                 case 2:
                 case 3:
                 case 4:
-                    System.out.println("enter the new value:");
-                    String newValue = scan.nextLine();
+                    String newValue = Util.getString(scan, "new value");
                     stmt.setString(1, newValue);
                     break;
                 case 5:
@@ -150,7 +168,6 @@ public class Editor {
             stmt.setInt(2, cardID);
             stmt.executeUpdate();
         } catch (Exception e) {
-            System.out.println(e.getMessage());
             throw e;
         } finally {
             Util.closeStmt(stmt);
@@ -169,7 +186,27 @@ public class Editor {
         return option;
     }
 
-    public static void editCreator(String type, Connection conn, Scanner scan) throws Exception {
+    public static void editCreator(Connection conn, Scanner scan) throws Exception {
+        System.out.println(
+                "Options:\n(actor)\n(director)\n(artist)\n(writer)\nPlease enter the creator you're editing:");
+        String creatorType = scan.nextLine().toLowerCase();
+        try {
+            switch (creatorType) {
+                case "actor":
+                case "director":
+                case "artist":
+                case "writer":
+                    editCreator(creatorType, conn, scan);
+                    break;
+                default:
+                    System.err.println(creatorType + " isn't a valid creator type");
+            }
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+    private static void editCreator(String type, Connection conn, Scanner scan) throws Exception {
         PreparedStatement stmt = null;
         try {
             int creatorID = Searcher.pickCreator(type, conn, scan);
@@ -179,8 +216,7 @@ public class Editor {
 
             switch (editing) {
                 case 1:
-                    System.out.println("enter the new value");
-                    String newName = scan.nextLine();
+                    String newName = Util.getString(scan, "new name");
                     stmt.setString(1, newName);
                     break;
                 case 2:
@@ -191,7 +227,6 @@ public class Editor {
             stmt.setInt(2, creatorID);
             stmt.executeUpdate();
         } catch (Exception e) {
-            System.out.println(e.getMessage());
             throw e;
         } finally {
             Util.closeStmt(stmt);
@@ -209,7 +244,36 @@ public class Editor {
         return option;
     }
 
-    public static void editItem(String type, Connection conn, Scanner scan) throws Exception {
+    public static void editItem(Connection conn, Scanner scan) throws Exception {
+        System.out.println(
+                "Options:\n(album)\n(track)\n(interview)\n(movie)\n(audiobook)\n(physicalbook)\n(audiobookchapter)\n(physicalbookchapter)\n(genre)\nPlease enter the item you're editing:");
+        String itemType = scan.nextLine().toLowerCase();
+        try {
+            switch (itemType) {
+                case "album":
+                case "track":
+                case "interview":
+                case "movie":
+                case "audiobook":
+                case "physicalbook":
+                    editItem(itemType, conn, scan);
+                    break;
+                case "audiobookchapter":
+                case "physicalbookchapter":
+                    editChapter(itemType, conn, scan);
+                    break;
+                case "genre":
+                    editGenre(itemType, conn, scan);
+                    break;
+                default:
+                    System.err.println(itemType + " isn't a valid item type");
+            }
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+    private static void editItem(String type, Connection conn, Scanner scan) throws Exception {
         PreparedStatement stmt = null;
         try {
             int itemID = Searcher.pickItem(type, conn, scan);
@@ -272,35 +336,33 @@ public class Editor {
             stmt.setInt(2, itemID);
             stmt.executeUpdate();
         } catch (Exception e) {
-            System.out.println(e.getMessage());
-            throw e;
-        } finally {
-            Util.closeStmt(stmt);
-        }
-    }
-    
-    public static void editGenre(String type, Connection conn, Scanner scan) throws Exception {
-    	int itemID = Searcher.pickGenre(conn, scan);
-    	PreparedStatement stmt = null;
-        try {
-	        System.out.println("What is the new genre?");
-	        String newGenre = scan.nextLine();
-	        stmt = conn.prepareStatement(Maps.genreEditorMap.get("item"));
-	        stmt.setString(1, newGenre);
-	        stmt.setInt(2, itemID);
-	        stmt.executeUpdate();
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
             throw e;
         } finally {
             Util.closeStmt(stmt);
         }
     }
 
-    private static int whatToEditItemOrdered(Scanner scan) throws Exception{
+    private static void editGenre(String type, Connection conn, Scanner scan) throws Exception {
+        int itemID = Searcher.pickGenre(conn, scan);
+        PreparedStatement stmt = null;
+        try {
+            String newGenre = Util.getString(scan, "new genre");
+            stmt = conn.prepareStatement(Maps.genreEditorMap.get("item"));
+            stmt.setString(1, newGenre);
+            stmt.setInt(2, itemID);
+            stmt.executeUpdate();
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            Util.closeStmt(stmt);
+        }
+    }
+
+    private static int whatToEditItemOrdered(Scanner scan) throws Exception {
         int option = 0;
         while (option == 0) {
-            System.out.println("Please enter 1 to edit Item_ID, 2 to edit the price, 3 to edit the quantity ordered,\n 4 to edit the expected arrival date, 5 to edit the actual arrival date");
+            System.out.println(
+                    "Please enter 1 to edit Item_ID, 2 to edit the price, 3 to edit the quantity ordered,\n 4 to edit the expected arrival date, 5 to edit the actual arrival date");
             option = Integer.valueOf(scan.nextLine());
             if (!(option == 1 || option == 2 || option == 3 || option == 4 || option == 5))
                 option = 0;
@@ -319,7 +381,8 @@ public class Editor {
         return option;
     }
 
-    private static PreparedStatement editItemOrderedExecute(PreparedStatement stmt, Scanner scan, int editing) throws Exception {
+    private static PreparedStatement editItemOrderedExecute(PreparedStatement stmt, Scanner scan, int editing)
+            throws Exception {
         try {
             switch (editing) {
                 case 1:
@@ -348,7 +411,6 @@ public class Editor {
             }
             return stmt;
         } catch (Exception e) {
-            System.out.println("Exception entering new value:" + e);
             throw e;
         }
     }
@@ -370,7 +432,6 @@ public class Editor {
             }
             return stmt;
         } catch (Exception e) {
-            System.out.println("Exception entering new value:" + e);
             throw e;
         }
     }
@@ -381,19 +442,16 @@ public class Editor {
         try {
             switch (editing) {
                 case 1:
-                    System.out.println("enter the new " + option1);
-                    int newValue = Integer.parseInt(scan.nextLine());
+                    int newValue = Util.getInteger(scan, "new " + option1);
                     stmt.setInt(1, newValue);
                     break;
                 case 2:
-                    System.out.println("enter the new " + option2);
-                    String newValue2 = scan.nextLine();
+                    String newValue2 = Util.getString(scan, "new " + option2);
                     stmt.setString(1, newValue2);
                     break;
             }
             return stmt;
         } catch (Exception e) {
-            System.out.println("Exception entering new value:" + e);
             throw e;
         }
     }
@@ -411,28 +469,24 @@ public class Editor {
             }
             return stmt;
         } catch (Exception e) {
-            System.out.println("Exception entering new value:" + e);
             throw e;
         }
     }
-  
-    public static void editChapter(String type, Connection conn, Scanner scan) throws Exception {
-    	PreparedStatement stmt = null;
-    	try {
-    		int ItemID = Searcher.pickChapter(type, conn, scan);
-    		System.out.println("What is the name of the chapter that you would like to rename?");
-    		String chapterName = scan.nextLine();
-    		System.out.println("What is the new name of the chapter?");
-    		String newChapterName = scan.nextLine();
-    		stmt = conn.prepareStatement(Maps.chapterEditorMap.get(type));
-    		stmt.setString(1, newChapterName);
-    		stmt.setString(2, chapterName);
-    		stmt.setInt(3, ItemID);
-    		stmt.executeUpdate();
-    	} catch(Exception e) {
-    		System.out.println(e.getMessage());
+
+    private static void editChapter(String type, Connection conn, Scanner scan) throws Exception {
+        PreparedStatement stmt = null;
+        try {
+            int ItemID = Searcher.pickChapter(type, conn, scan);
+            String chapterName = Util.getString(scan, "chapter you would like to rename");
+            String newChapterName = Util.getString(scan, "new chapter name");
+            stmt = conn.prepareStatement(Maps.chapterEditorMap.get(type));
+            stmt.setString(1, newChapterName);
+            stmt.setString(2, chapterName);
+            stmt.setInt(3, ItemID);
+            stmt.executeUpdate();
+        } catch (Exception e) {
             throw e;
-    	}finally {
+        } finally {
             Util.closeStmt(stmt);
         }
     }
