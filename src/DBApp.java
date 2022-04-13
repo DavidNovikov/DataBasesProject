@@ -18,36 +18,29 @@ public class DBApp {
     public void search() throws Exception {
         // Ask the user which record they want to edit
         System.out.println(
-                "Enter the type of the record to be searched for (Album, Track, Interview, Movie, Audiobook, AudiobookChapter, PhysicalBook, PhysicalBookChapter, Actor, Artist, Director, Writer, Person, Stars, Writes, Interviewed, Performs, or Directs): ");
+                "Searching options:\n(Media)\n(Creator)\n(Person)\n(Relationship)\n(audiobookchapter)\n(physicalbookchapter)\n(genre)\n(q to quit)\nPlease select one:");
         String type = scan.nextLine().toLowerCase();
 
         switch (type) {
-            case "album":
-            case "track":
-            case "interview":
-            case "movie":
-            case "audiobook":
-            case "audiobookchapter":
-            case "physicalbookchapter":
-            case "physicalbook":
-                // TODO: search for item
-                Searcher.pickItem(type, conn, scan);
+            case "media":
+                Searcher.pickItem(conn, scan);
                 break;
-            case "actor":
-            case "director":
-            case "artist":
-            case "writer":
-                Searcher.pickCreator(type, conn, scan);
+            case "creator":
+                Searcher.pickCreator(conn, scan);
                 break;
             case "person":
                 Searcher.pickPerson(conn, scan);
                 break;
-            case "stars":
-            case "writes":
-            case "interviewed":
-            case "performs":
-            case "directs":
-                Searcher.pickRelationship(type, conn, scan);
+            case "relationship":
+                Searcher.pickRelationship(conn, scan);
+            case "audiobookchapter":
+            case "physicalbookchapter":
+                Searcher.pickChapter(type, conn, scan);
+                break;
+            case "genre":
+                Searcher.pickGenre(conn, scan);
+                break;
+            case "q":
                 break;
             default:
                 // print invalid
@@ -74,7 +67,6 @@ public class DBApp {
                 break;
             case "relationship":
                 Adder.addRelationship(conn, scan);
-                break;
             case "q":
                 break;
             default:
@@ -92,7 +84,7 @@ public class DBApp {
 
         switch (type) {
             case "media":
-                // TODO: Deleter.deleteItem(conn, scan);
+                Deleter.deleteItem(conn, scan);
                 break;
             case "creator":
                 Deleter.deleteCreator(conn, scan);

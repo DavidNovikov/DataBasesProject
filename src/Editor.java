@@ -254,7 +254,7 @@ public class Editor {
 
     public static void editItem(Connection conn, Scanner scan) throws Exception {
         System.out.println(
-                "Options:\n(album)\n(track)\n(interview)\n(movie)\n(audiobook)\n(physicalbook)\n(audiobookchapter)\n(physicalbookchapter)\nPlease enter the item you're editing:");
+                "Options:\n(album)\n(track)\n(interview)\n(movie)\n(audiobook)\n(physicalbook)\n(audiobookchapter)\n(physicalbookchapter)\n(genre)\nPlease enter the item you're editing:");
         String itemType = scan.nextLine().toLowerCase();
         try {
             switch (itemType) {
@@ -268,7 +268,10 @@ public class Editor {
                     break;
                 case "audiobookchapter":
                 case "physicalbookchapter":
-                    // TODO: edit chapter method goes here
+                    editChapter(itemType, conn, scan);
+                    break;
+                case "genre":
+                    editGenre(itemType, conn, scan);
                     break;
                 default:
                     System.err.println(itemType + " isn't a valid item type");
@@ -303,6 +306,9 @@ public class Editor {
                 case "physicalbook":
                     editing = 1;
                     break;
+                case "itemordered":
+                    editing = whatToEditItemOrdered(scan);
+                    break;
                 default:
                     // print invalid
                     System.out.println(type + " is an Invalid input");
@@ -329,6 +335,9 @@ public class Editor {
                 case "physicalbook":
                     stmt = editItemExecuteSingle(stmt, scan, editing, "number of pages");
                     break;
+                case "itemordered":
+                    stmt = editItemOrderedExecute(stmt, scan, editing);
+                    break;
                 default:
                     // print invalid
                     System.out.println(type + " is an Invalid input");
@@ -343,6 +352,36 @@ public class Editor {
         }
     }
 
+    private static void editGenre(String type, Connection conn, Scanner scan) throws Exception {
+        int itemID = Searcher.pickGenre(conn, scan);
+        PreparedStatement stmt = null;
+        try {
+            System.out.println("What is the new genre?");
+            String newGenre = scan.nextLine();
+            stmt = conn.prepareStatement(Maps.genreEditorMap.get("item"));
+            stmt.setString(1, newGenre);
+            stmt.setInt(2, itemID);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            throw e;
+        } finally {
+            Util.closeStmt(stmt);
+        }
+    }
+
+    private static int whatToEditItemOrdered(Scanner scan) throws Exception {
+        int option = 0;
+        while (option == 0) {
+            System.out.println(
+                    "Please enter 1 to edit Item_ID, 2 to edit the price, 3 to edit the quantity ordered,\n 4 to edit the expected arrival date, 5 to edit the actual arrival date");
+            option = Integer.valueOf(scan.nextLine());
+            if (!(option == 1 || option == 2 || option == 3 || option == 4 || option == 5))
+                option = 0;
+        }
+        return option;
+    }
+
     private static int whatToEditItemGeneric(Scanner scan, String option1, String option2) throws Exception {
         int option = 0;
         while (option == 0) {
@@ -352,6 +391,41 @@ public class Editor {
                 option = 0;
         }
         return option;
+    }
+
+    private static PreparedStatement editItemOrderedExecute(PreparedStatement stmt, Scanner scan, int editing)
+            throws Exception {
+        try {
+            switch (editing) {
+                case 1:
+                    System.out.println("enter the new Item_ID");
+                    int itemID = Integer.parseInt(scan.nextLine());
+                    stmt.setInt(1, itemID);
+                    break;
+                case 2:
+                    System.out.println("enter the new price in the format dollars.cents");
+                    double price = Double.parseDouble(scan.nextLine());
+                    stmt.setDouble(1, price);
+                    break;
+                case 3:
+                    System.out.println("enter the new quantity ordered");
+                    int quantity = Integer.parseInt(scan.nextLine());
+                    stmt.setInt(1, quantity);
+                    break;
+                case 4:
+                    String estimatedArrivalDate = Util.getDate(scan, "new estimated arrival date");
+                    stmt.setString(1, estimatedArrivalDate);
+                    break;
+                case 5:
+                    String actualArrivalDate = Util.getDate(scan, "new actual arrival date");
+                    stmt.setString(1, actualArrivalDate);
+                    break;
+            }
+            return stmt;
+        } catch (Exception e) {
+            System.out.println("Exception entering new value:" + e);
+            throw e;
+        }
     }
 
     private static PreparedStatement editItemExecuteGeneric(PreparedStatement stmt, Scanner scan, int editing,
@@ -417,4 +491,24 @@ public class Editor {
         }
     }
 
+    private static void editChapter(String type, Connection conn, Scanner scan) throws Exception {
+        PreparedStatement stmt = null;
+        try {
+            int ItemID = Searcher.pickChapter(type, conn, scan);
+            System.out.println("What is the name of the chapter that you would like to rename?");
+            String chapterName = scan.nextLine();
+            System.out.println("What is the new name of the chapter?");
+            String newChapterName = scan.nextLine();
+            stmt = conn.prepareStatement(Maps.chapterEditorMap.get(type));
+            stmt.setString(1, newChapterName);
+            stmt.setString(2, chapterName);
+            stmt.setInt(3, ItemID);
+            stmt.executeUpdate();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw e;
+        } finally {
+            Util.closeStmt(stmt);
+        }
+    }
 }
