@@ -104,7 +104,7 @@ public class DBApp {
 
     public void delete() throws Exception {
         // Ask the user which record they want to delete
-        System.out.println("Enter the type of the record to be deleted (Album, Track, Interview, Movie, Audiobook, AudiobookChapter, PhysicalBook, PhysicalBookChapter, itemOrdered, Actor, Artist, Director, Writer, Person, or Genre): ");
+        System.out.println("Enter the type of the record to be deleted (Album, Track, Interview, Movie, Audiobook, AudiobookChapter, PhysicalBook, PhysicalBookChapter, itemOrdered, itemCheckedOut, Actor, Artist, Director, Writer, Person, or Genre): ");
         String type = scan.nextLine().toLowerCase();
 
         switch (type) {
@@ -136,6 +136,8 @@ public class DBApp {
             case "relationship":
                 Deleter.deleteRelationship(conn, scan);
                 break;
+            case "itemcheckedout":
+            	checkout.deleteItemCheckedOut(conn, scan);
             default:
                 // print invalid
                 System.out.println(type + " is an Invalid input");

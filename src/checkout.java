@@ -68,6 +68,41 @@ public class checkout {
     	return allDueDates;
     } 
     
+    public static void deleteItemCheckedOut(Connection conn, Scanner scan) throws Exception {
+    	System.out.println("Enter the type of record that was checked out, to be deleted. (Album, Track, Interview, Movie, Audiobook, or PhysicalBook): ");
+        String type = scan.nextLine().toLowerCase();
+        int itemID = -1;
+    	switch (type) {
+        	case "album":
+        	case "track":
+        	case "interview":
+        	case "movie":
+        	case "audiobook":
+        	case "physicalbook":
+        		itemID = Searcher.pickItem(type,conn, scan);
+            break;
+        	default:
+        		// print invalid
+        		System.out.println("In default");
+        		System.out.println(type + " is an Invalid input");
+        }
+    	String checkoutDate = Util.getDate(scan, "Checkout Date");
+    	System.out.println("Debug2");
+    	PreparedStatement stmt = null;
+    	try {
+    		String sql = Maps.deleteItemCheckoutsString;
+    		stmt = conn.prepareStatement(sql);
+    		stmt.setInt(1, itemID);
+    		stmt.setString(2,checkoutDate);
+    		stmt.executeUpdate();
+    	} catch (SQLException | NumberFormatException e) {
+    		System.out.println(e.getMessage());
+    		throw e;
+    	} finally {
+            Util.closeStmt(stmt);            
+        }  	
+    }
+    
     //TODO: update
     //TODO: delete
 }

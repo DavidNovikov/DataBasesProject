@@ -29,6 +29,7 @@ public class Maps {
     public static String deletePersonString = "delete FROM PERSON WHERE CardID = ?;";
     public static String addItemCheckoutString = "insert into item_checked_out values (?,?,?,?,?);";
     public static String searchItemCheckoutsString = "SELECT * FROM ITEM_CHECKED_OUT WHERE ItemID = ?;";
+    public static String deleteItemCheckoutsString = "DELETE FROM ITEM_CHECKED_OUT WHERE ItemID = ? AND Checkout_Date = ?;";
     public static String startTransactionString = "begin transaction;";
     public static String endTransactionString = "commit;";
     public static String forceRollBackString = "ROLLBACK;";
