@@ -11,7 +11,7 @@ public class Util {
 		try {
 			stmt = conn.prepareStatement(Maps.startTransactionString);
 			stmt.execute();
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			status = -1;
 		} finally {
@@ -25,7 +25,7 @@ public class Util {
 		try {
 			stmt = conn.prepareStatement(Maps.endTransactionString);
 			stmt.execute();
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		} finally {
 			closeStmt(stmt);
@@ -37,7 +37,7 @@ public class Util {
 		try {
 			stmt = conn.prepareStatement(Maps.forceRollBackString);
 			stmt.execute();
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		} finally {
 			closeStmt(stmt);
@@ -54,7 +54,6 @@ public class Util {
 			rSet = stmt.executeQuery();
 			nextID = rSet.getInt(Maps.nextIDColumnMap.get(tableType)) + 1;
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
 			throw e;
 		} finally {
 			closeStmt(stmt);
@@ -83,7 +82,7 @@ public class Util {
 		if (stmt != null) {
 			try {
 				stmt.close();
-			} catch (SQLException e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
@@ -93,7 +92,7 @@ public class Util {
 		if (rSet != null) {
 			try {
 				rSet.close();
-			} catch (SQLException e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
@@ -144,7 +143,7 @@ public class Util {
 		}
 	}
 
-	public static ArrayList<Integer> searchPrint(ResultSet rSet, String columnName) throws SQLException {
+	public static ArrayList<Integer> searchPrint(ResultSet rSet, String columnName) throws Exception {
 		ResultSetMetaData rSetmd = rSet.getMetaData();
 		int columnCount = rSetmd.getColumnCount();
 		ArrayList<Integer> IDmap = new ArrayList<Integer>();
@@ -177,7 +176,7 @@ public class Util {
 	}
 
 	public static ArrayList<Relationship> searchPrintRelationships(ResultSet rSet)
-			throws SQLException {
+			throws Exception {
 		ResultSetMetaData rSetmd = rSet.getMetaData();
 		int columnCount = rSetmd.getColumnCount();
 		ArrayList<Relationship> relList = new ArrayList<Relationship>();
@@ -228,7 +227,7 @@ public class Util {
 		return response;
 	}
 
-	public static void searchPrintNoRet(ResultSet rSet) throws SQLException {
+	public static void searchPrintNoRet(ResultSet rSet) throws Exception {
 		ResultSetMetaData rSetmd = rSet.getMetaData();
 		int columnCount = rSetmd.getColumnCount();
 		for (int i = 1; i <= columnCount; i++) {
@@ -285,7 +284,6 @@ public class Util {
 			rSet = stmt.executeQuery();
 			type = rSet.getString("Type");
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
 			throw e;
 		} finally {
 			closeStmt(stmt);
@@ -332,7 +330,6 @@ public class Util {
 			rSet = stmt.executeQuery();
 			result = resultSetContainsData(rSet);
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
 			throw e;
 		} finally {
 			closeStmt(stmt);

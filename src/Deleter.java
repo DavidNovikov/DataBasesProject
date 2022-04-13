@@ -19,7 +19,6 @@ public class Deleter {
                     System.err.println(creatorType + " isn't a valid creator type");
             }
         } catch (Exception e) {
-            System.out.println(e.getMessage());
             throw e;
         }
     }
@@ -31,7 +30,6 @@ public class Deleter {
             deleteCreatorSuper(cID, type, conn);
             deleteCreatorBase(cID, type, conn);
         } catch (Exception e) {
-            System.out.println(e.getMessage());
             throw e;
         }
     }
@@ -43,7 +41,6 @@ public class Deleter {
             stmt.setInt(1, cID);
             stmt.executeUpdate();
         } catch (Exception e) {
-            System.out.println(e.getMessage());
             throw e;
         } finally {
             Util.closeStmt(stmt);
@@ -57,7 +54,6 @@ public class Deleter {
             stmt.setInt(1, cID);
             stmt.executeUpdate();
         } catch (Exception e) {
-            System.out.println(e.getMessage());
             throw e;
         } finally {
             Util.closeStmt(stmt);
@@ -74,7 +70,6 @@ public class Deleter {
                 stmt.executeUpdate();
             }
         } catch (Exception e) {
-            System.out.println(e.getMessage());
             throw e;
         } finally {
             Util.closeStmt(stmt);
@@ -101,7 +96,6 @@ public class Deleter {
                     System.err.println(relationshipType + " isn't a valid relationship type");
             }
         } catch (Exception e) {
-            System.out.println(e.getMessage());
             throw e;
         }
     }
@@ -115,7 +109,6 @@ public class Deleter {
             stmt.setInt(2, rel.getItemID());
             stmt.executeUpdate();
         } catch (Exception e) {
-            System.out.println(e.getMessage());
             throw e;
         } finally {
             Util.closeStmt(stmt);
@@ -130,7 +123,6 @@ public class Deleter {
             stmt.setInt(1, cardID);
             stmt.executeUpdate();
         } catch (Exception e) {
-            System.out.println(e.getMessage());
             throw e;
         } finally {
             Util.closeStmt(stmt);
@@ -149,7 +141,6 @@ public class Deleter {
             stmt.executeUpdate();
 
         } catch (Exception e) {
-            System.out.println(e.getMessage());
             throw e;
         } finally {
             Util.closeStmt(stmt);
@@ -166,8 +157,7 @@ public class Deleter {
             stmt.setInt(1, itemID);
             stmt.setString(2, newGenre);
             stmt.executeUpdate();
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
+        } catch (Exception e) {
             throw e;
         } finally {
             Util.closeStmt(stmt);
@@ -199,7 +189,6 @@ public class Deleter {
                     System.err.println(itemType + " isn't a valid item type");
             }
         } catch (Exception e) {
-            System.out.println(e.getMessage());
             throw e;
         }
     }
@@ -224,7 +213,6 @@ public class Deleter {
             deleteItemSuper(itemID, type, conn, scan);
             deleteItemBase(itemID, type, conn, scan);
         } catch (Exception e) {
-            System.out.println(e.getMessage());
             throw e;
         }
     }
@@ -236,7 +224,6 @@ public class Deleter {
             stmt.setInt(1, itemID);
             stmt.executeUpdate();
         } catch (Exception e) {
-            System.out.println(e.getMessage());
             throw e;
         } finally {
             Util.closeStmt(stmt);
@@ -250,7 +237,6 @@ public class Deleter {
             stmt.setInt(1, itemID);
             stmt.executeUpdate();
         } catch (Exception e) {
-            System.out.println(e.getMessage());
             throw e;
         } finally {
             Util.closeStmt(stmt);
