@@ -53,7 +53,7 @@ public class Searcher {
                     creatorID = Util.itemListPick(potentialIDs, scan);
                     found = true;
                 } else {
-                    System.out.print("None Found");
+                    System.out.println("None Found");
                 }
             } catch (Exception e) {
                 System.out.println(e.getMessage());
@@ -118,10 +118,11 @@ public class Searcher {
                     ItemID = Util.itemListPick(potentialIDs, scan);
                     found = true;
                 } else {
-                    System.out.print("None Found");
+                    System.out.println("None Found");
                 }
             } catch (Exception e) {
                 System.out.println(e.getMessage());
+                throw e;
             } finally {
                 Util.closeStmt(stmt);
                 Util.closeRSet(rSet);
@@ -151,7 +152,7 @@ public class Searcher {
                     CardID = Util.itemListPick(potentialIDs, scan);
                     found = true;
                 } else {
-                    System.out.print("None Found");
+                    System.out.println("None Found");
                 }
             } catch (Exception e) {
                 System.out.println(e.getMessage());
@@ -177,7 +178,6 @@ public class Searcher {
                 } else if (type.equals("physicalbookchapter")) {
                     bookGrab = "physicalbook";
                 }
-                System.out.println("Please select a " + bookGrab + " to search a chapter from: ");
                 ItemID = pickItem(bookGrab, conn, scan);
 
                 stmt = conn.prepareStatement(Maps.chapterSearcherMap.get(type));
@@ -189,7 +189,7 @@ public class Searcher {
                     ItemID = Util.itemListPick(potentialIDs, scan);
                     found = true;
                 } else {
-                    System.out.print("None Found");
+                    System.out.println("None Found");
                 }
             } catch (Exception e) {
                 System.out.println(e.getMessage());
@@ -230,7 +230,7 @@ public class Searcher {
                         itemID = Util.itemListPick(potentialIDs, scan);
                         picked = true;
                     } else {
-                        System.out.print("None Found");
+                        System.out.println("None Found");
                     }
                 }
             } catch (SQLException e) {
@@ -300,7 +300,7 @@ public class Searcher {
                     relationship = Util.relationshipListPick(potentialIDs, scan);
                     found = true;
                 } else {
-                    System.out.print("None Found");
+                    System.out.println("None Found");
                 }
             } catch (Exception e) {
                 System.out.println(e.getMessage());

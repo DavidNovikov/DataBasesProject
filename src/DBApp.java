@@ -33,6 +33,7 @@ public class DBApp {
                 break;
             case "relationship":
                 Searcher.pickRelationship(conn, scan);
+                break;
             case "audiobookchapter":
             case "physicalbookchapter":
                 Searcher.pickChapter(type, conn, scan);
