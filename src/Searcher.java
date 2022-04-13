@@ -225,7 +225,7 @@ public class Searcher {
                     rSet = stmt.executeQuery();
 
                     if (Util.resultSetContainsData(rSet)) {
-                        ArrayList<Integer> potentialIDs = Util.searchPrint(rSet, "CardID");
+                        ArrayList<Integer> potentialIDs = Util.searchPrint(rSet, "Item_ID");
                         itemID = Util.itemListPick(potentialIDs, scan);
                         picked = true;
                     } else {
