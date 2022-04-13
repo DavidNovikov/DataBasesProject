@@ -70,7 +70,8 @@ public class Editor {
         }
     }
 
-    private static PreparedStatement editRelationshipExecuteGeneric(PreparedStatement stmt, Scanner scan, int editing, Connection conn, String relationshipType)
+    private static PreparedStatement editRelationshipExecuteGeneric(PreparedStatement stmt, Scanner scan, int editing,
+            Connection conn, String relationshipType)
             throws Exception {
         try {
             switch (editing) {
@@ -92,7 +93,8 @@ public class Editor {
         }
     }
 
-    private static PreparedStatement editRelationshipExecuteStars(PreparedStatement stmt, Scanner scan, int editing, Connection conn)
+    private static PreparedStatement editRelationshipExecuteStars(PreparedStatement stmt, Scanner scan, int editing,
+            Connection conn)
             throws Exception {
         try {
             switch (editing) {
@@ -107,8 +109,7 @@ public class Editor {
                     stmt.setInt(1, newItemID);
                     break;
                 case 3:
-                    System.out.println("enter the new " + "role");
-                    String newRole = scan.nextLine();
+                    String newRole = Util.getString(scan, "new role");
                     stmt.setString(1, newRole);
                     break;
             }
@@ -157,8 +158,7 @@ public class Editor {
                 case 2:
                 case 3:
                 case 4:
-                    System.out.println("enter the new value:");
-                    String newValue = scan.nextLine();
+                    String newValue = Util.getString(scan, "new value");
                     stmt.setString(1, newValue);
                     break;
                 case 5:
@@ -222,8 +222,7 @@ public class Editor {
 
             switch (editing) {
                 case 1:
-                    System.out.println("enter the new value");
-                    String newName = scan.nextLine();
+                    String newName = Util.getString(scan, "new name");
                     stmt.setString(1, newName);
                     break;
                 case 2:
@@ -356,8 +355,7 @@ public class Editor {
         int itemID = Searcher.pickGenre(conn, scan);
         PreparedStatement stmt = null;
         try {
-            System.out.println("What is the new genre?");
-            String newGenre = scan.nextLine();
+            String newGenre = Util.getString(scan, "new genre");
             stmt = conn.prepareStatement(Maps.genreEditorMap.get("item"));
             stmt.setString(1, newGenre);
             stmt.setInt(2, itemID);
@@ -456,13 +454,11 @@ public class Editor {
         try {
             switch (editing) {
                 case 1:
-                    System.out.println("enter the new " + option1);
-                    int newValue = Integer.parseInt(scan.nextLine());
+                    int newValue = Util.getInteger(scan, "new " + option1);
                     stmt.setInt(1, newValue);
                     break;
                 case 2:
-                    System.out.println("enter the new " + option2);
-                    String newValue2 = scan.nextLine();
+                    String newValue2 = Util.getString(scan, "new " + option2);
                     stmt.setString(1, newValue2);
                     break;
             }
@@ -495,10 +491,8 @@ public class Editor {
         PreparedStatement stmt = null;
         try {
             int ItemID = Searcher.pickChapter(type, conn, scan);
-            System.out.println("What is the name of the chapter that you would like to rename?");
-            String chapterName = scan.nextLine();
-            System.out.println("What is the new name of the chapter?");
-            String newChapterName = scan.nextLine();
+            String chapterName = Util.getString(scan, "chapter you would like to rename");
+            String newChapterName = Util.getString(scan, "new chapter name");
             stmt = conn.prepareStatement(Maps.chapterEditorMap.get(type));
             stmt.setString(1, newChapterName);
             stmt.setString(2, chapterName);

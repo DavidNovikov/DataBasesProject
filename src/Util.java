@@ -116,27 +116,14 @@ public class Util {
 		return request;
 	}
 
-	public static boolean getStatus(Scanner scan) {
-		boolean active = false;
-		String response = " ";
-		while (!(response.equals("y") || response.equals("n"))) {
-			System.out.println("is the item active? y/n");
-			response = scan.nextLine();
-			if (response.equals("y")) {
-				active = true;
-			} else if (!(response.equals("y") || response.equals("n"))) {
-				System.out.println("Invalid input: enter y or n");
-			}
-		}
-		return active;
-	}
-
 	public static String getDate(Scanner scan, String dateName) throws Exception {
 		boolean successful = false;
 		String response = "";
 		while (!successful) {
-			System.out.println("Enter the " + dateName + " in the form YYYY-MM-DD:");
+			System.out.println("Enter the " + dateName + " in the form YYYY-MM-DD or q to quit:");
 			response = scan.nextLine();
+			if (response.toLowerCase().equals("q"))
+				throw new Exception("User quit during operation!");
 			if (!dateIsValid(response)) {
 				System.out.println("Not a valid date!");
 			} else {
@@ -222,12 +209,14 @@ public class Util {
 		return relList;
 	}
 
-	public static String getEmail(Scanner scan) {
+	public static String getEmail(Scanner scan) throws Exception {
 		boolean successful = false;
 		String response = "";
 		while (!successful) {
-			System.out.println("Enter the email:");
+			System.out.println("Enter the email (q to quit):");
 			response = scan.nextLine();
+			if (response.toLowerCase().equals("q"))
+				throw new Exception("User quit during operation!");
 			int atIndex = response.indexOf("@");
 			int dotIndex = response.lastIndexOf(".");
 			if (atIndex != -1 && dotIndex != -1 && atIndex < dotIndex) {
@@ -237,59 +226,6 @@ public class Util {
 			}
 		}
 		return response;
-	}
-
-	public static Relationship relationshipListPick(ArrayList<Relationship> IDs, Scanner scan) throws Exception {
-		boolean picked = false;
-		Relationship rel = new Relationship();
-		while (!picked) {
-			System.out.println(
-					"What entry would you like to select? enter the number before the entry (1, 2, 3... etc)(q to quit): ");
-			try {
-				String response = scan.nextLine();
-				if (response.toLowerCase().equals("q"))
-					throw new Exception("User quit during search");
-
-				int entry = Integer.parseInt(response);
-				if (entry < 1 || entry > IDs.size()) {
-					System.out.println("Invalid choice, try again");
-				} else {
-					picked = true;
-					rel = IDs.get(entry - 1);
-				}
-			} catch (Exception e) {
-				System.out.println(e.getMessage());
-				throw e;
-			}
-		}
-		return rel;
-	}
-
-	public static int itemListPick(ArrayList<Integer> IDs, Scanner scan) throws Exception {
-		boolean picked = false;
-		int newID = -1;
-		while (!picked) {
-			// TODO throw error when transactions implemented
-			System.out.println(
-					"What entry would you like to select? enter the number before the entry (1, 2, 3... etc)(q to quit): ");
-			try {
-				String response = scan.nextLine();
-				if (response.toLowerCase().equals("q"))
-					throw new Exception("User quit during search");
-
-				int entry = Integer.parseInt(response);
-				if (entry < 1 || entry > IDs.size()) {
-					System.out.println("Invalid choice, try again");
-				} else {
-					picked = true;
-					newID = IDs.get(entry - 1);
-				}
-			} catch (Exception e) {
-				System.out.println(e.getMessage());
-				throw e;
-			}
-		}
-		return newID;
 	}
 
 	public static void searchPrintNoRet(ResultSet rSet) throws SQLException {
@@ -423,6 +359,16 @@ public class Util {
 			}
 		}
 		return result;
+	}
+
+	public static String getString(Scanner scan, String strName) throws Exception {
+		String response = "";
+		System.out.println("Enter the " + strName + " or q to quit");
+		response = scan.nextLine();
+		if (response.equals("q")) {
+			throw new Exception("User quit during operation!");
+		}
+		return response;
 	}
 
 	public static double getPrice(Scanner scan, String priceName) throws Exception {

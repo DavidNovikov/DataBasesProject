@@ -39,10 +39,7 @@ public class Searcher {
         boolean found = false;
         while (!found) {
             try {
-                System.out.println("Please enter the " + type + "'s name or q to quit");
-                String cName = scan.nextLine();
-                if (cName.toLowerCase().equals("q"))
-                    throw new Exception("User quit during search");
+                String cName = Util.getString(scan, type + "'s name");
 
                 stmt = conn.prepareStatement(Maps.creatorSearcherMap.get(type));
                 stmt.setString(1, cName);
@@ -50,7 +47,7 @@ public class Searcher {
 
                 if (Util.resultSetContainsData(rSet)) {
                     ArrayList<Integer> potentialIDs = Util.searchPrint(rSet, "creator_ID");
-                    creatorID = Util.itemListPick(potentialIDs, scan);
+                    creatorID = itemListPick(potentialIDs, scan);
                     found = true;
                 } else {
                     System.out.println("None Found");
@@ -104,10 +101,7 @@ public class Searcher {
         boolean found = false;
         while (!found) {
             try {
-                System.out.println("Please enter the " + type + "'s name or q to quit");
-                String itemName = scan.nextLine();
-                if (itemName.toLowerCase().equals("q"))
-                    throw new Exception("User quit during search");
+                String itemName = Util.getString(scan, type + "'s name");
 
                 stmt = conn.prepareStatement(Maps.itemSearcherMap.get(type));
                 stmt.setString(1, itemName);
@@ -115,7 +109,7 @@ public class Searcher {
 
                 if (Util.resultSetContainsData(rSet)) {
                     ArrayList<Integer> potentialIDs = Util.searchPrint(rSet, "Item_ID");
-                    ItemID = Util.itemListPick(potentialIDs, scan);
+                    ItemID = itemListPick(potentialIDs, scan);
                     found = true;
                 } else {
                     System.out.println("None Found");
@@ -138,10 +132,7 @@ public class Searcher {
         boolean found = false;
         while (!found) {
             try {
-                System.out.println("Please enter the Person's email or q to quit");
-                String email = scan.nextLine();
-                if (email.toLowerCase().equals("q"))
-                    throw new Exception("User quit during search");
+                String email = Util.getString(scan, "Person's email");
 
                 stmt = conn.prepareStatement(Maps.searchPersonString);
                 stmt.setString(1, email);
@@ -149,7 +140,7 @@ public class Searcher {
 
                 if (Util.resultSetContainsData(rSet)) {
                     ArrayList<Integer> potentialIDs = Util.searchPrint(rSet, "CardID");
-                    CardID = Util.itemListPick(potentialIDs, scan);
+                    CardID = itemListPick(potentialIDs, scan);
                     found = true;
                 } else {
                     System.out.println("None Found");
@@ -209,11 +200,8 @@ public class Searcher {
         boolean picked = false;
         while (!picked) {
             try {
-                System.out.println(
-                        "Enter the name of the genre you would like to search for, 1 to list all genres, q to quit:");
-                String genre = scan.nextLine();
-                if (genre.toLowerCase().equals("q"))
-                    throw new Exception("User quit during search");
+                String genre = Util.getString(scan,
+                        "name of the genre you would like to search for, 1 to list all genres,");
 
                 if (genre.equals("1")) {
                     stmt = conn.prepareStatement(Maps.genreSearcherMap.get("genres"));
@@ -226,7 +214,7 @@ public class Searcher {
 
                     if (Util.resultSetContainsData(rSet)) {
                         ArrayList<Integer> potentialIDs = Util.searchPrint(rSet, "Item_ID");
-                        itemID = Util.itemListPick(potentialIDs, scan);
+                        itemID = itemListPick(potentialIDs, scan);
                         picked = true;
                     } else {
                         System.out.println("None Found");
@@ -296,7 +284,7 @@ public class Searcher {
 
                 if (Util.resultSetContainsData(rSet)) {
                     ArrayList<Relationship> potentialIDs = Util.searchPrintRelationships(rSet);
-                    relationship = Util.relationshipListPick(potentialIDs, scan);
+                    relationship = relationshipListPick(potentialIDs, scan);
                     found = true;
                 } else {
                     System.out.println("None Found");
@@ -335,6 +323,58 @@ public class Searcher {
             // there is just one item type
             return Maps.relationshipOptionMap.get(relationshipType)[1];
         }
+    }
+
+    public static Relationship relationshipListPick(ArrayList<Relationship> IDs, Scanner scan) throws Exception {
+        boolean picked = false;
+        Relationship rel = new Relationship();
+        while (!picked) {
+            System.out.println(
+                    "What entry would you like to select? enter the number before the entry (1, 2, 3... etc)(q to quit): ");
+            try {
+                String response = scan.nextLine();
+                if (response.toLowerCase().equals("q"))
+                    throw new Exception("User quit during search");
+
+                int entry = Integer.parseInt(response);
+                if (entry < 1 || entry > IDs.size()) {
+                    System.out.println("Invalid choice, try again");
+                } else {
+                    picked = true;
+                    rel = IDs.get(entry - 1);
+                }
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+                throw e;
+            }
+        }
+        return rel;
+    }
+
+    public static int itemListPick(ArrayList<Integer> IDs, Scanner scan) throws Exception {
+        boolean picked = false;
+        int newID = -1;
+        while (!picked) {
+            System.out.println(
+                    "What entry would you like to select? enter the number before the entry (1, 2, 3... etc)(q to quit): ");
+            try {
+                String response = scan.nextLine();
+                if (response.toLowerCase().equals("q"))
+                    throw new Exception("User quit during search");
+
+                int entry = Integer.parseInt(response);
+                if (entry < 1 || entry > IDs.size()) {
+                    System.out.println("Invalid choice, try again");
+                } else {
+                    picked = true;
+                    newID = IDs.get(entry - 1);
+                }
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+                throw e;
+            }
+        }
+        return newID;
     }
 
 }

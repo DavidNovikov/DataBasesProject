@@ -7,17 +7,10 @@ public class Adder {
         PreparedStatement stmt = null;
         try {
             int cardID = Util.nextIDFrom("library_card", conn);
-            // get the email
             String email = Util.getEmail(scan);
-
-            System.out.println("Please enter the first name");
-            String fname = scan.nextLine();
-
-            System.out.println("Please enter the last name");
-            String lname = scan.nextLine();
-
-            System.out.println("Please enter the address");
-            String address = scan.nextLine();
+            String fname = Util.getString(scan, "first name");
+            String lname = Util.getString(scan, "last name");
+            String address = Util.getString(scan, "address");
 
             String query = Maps.addPersonString;
             stmt = conn.prepareStatement(query);
@@ -80,14 +73,9 @@ public class Adder {
 
     private static int addItemBase(String item, Connection conn, Scanner scan) throws Exception {
         PreparedStatement stmt = null;
-
         int itemID = Util.nextIDFrom("item", conn);
-
         try {
-
-            System.out.println("Please enter the title");
-            String title = scan.nextLine();
-
+            String title = Util.getString(scan, "title");
             int year = Util.getInteger(scan, "year released");
 
             stmt = conn.prepareStatement(Maps.itemAdderMap.get("item"));
@@ -352,11 +340,8 @@ public class Adder {
 
         try {
             int creatorID = Searcher.pickCreator("stars", conn, scan);
-
             int itemID = Searcher.pickItem("movie", conn, scan);
-
-            System.out.println("Please enter the role");
-            String role = scan.nextLine();
+            String role = Util.getString(scan, "role");
 
             stmt = conn.prepareStatement(Maps.relationshipAdderMap.get("stars"));
 
@@ -468,9 +453,7 @@ public class Adder {
         PreparedStatement stmt = null;
 
         try {
-            System.out.println("Please enter the " + creatorType + " name");
-            String name = scan.nextLine();
-
+            String name = Util.getString(scan, creatorType);
             String dateOfBirth = Util.getDate(scan, "date of birth");
 
             stmt = conn.prepareStatement(Maps.creatorAdderMap.get(creatorType));
@@ -493,8 +476,7 @@ public class Adder {
         try {
             System.out.println("Please choose the book you would like to add a chapter to: ");
             int ItemID = Searcher.pickChapter(type, conn, scan);
-            System.out.println("What is the name of the chapter that you would like to add?");
-            String chapterName = scan.nextLine();
+            String chapterName = Util.getString(scan, "chapter name");
             stmt = conn.prepareStatement(Maps.chapterAdderMap.get(type));
             stmt.setString(1, chapterName);
             stmt.setInt(2, ItemID);
@@ -513,8 +495,7 @@ public class Adder {
         int itemID = Searcher.pickGenre(conn, scan);
         PreparedStatement stmt = null;
         try {
-            System.out.println("What is the new genre?");
-            String newGenre = scan.nextLine();
+            String newGenre = Util.getString(scan, "new genre");
             stmt = conn.prepareStatement(Maps.genreAdderMap.get("item"));
             stmt.setInt(1, itemID);
             stmt.setString(2, newGenre);

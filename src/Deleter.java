@@ -142,8 +142,7 @@ public class Deleter {
         try {
             System.out.println("Please choose the book you would like to remove a chapter from: ");
             int ItemID = Searcher.pickChapter(type, conn, scan);
-            System.out.println("What is the name of the chapter that you would like to remove?");
-            String chapterName = scan.nextLine();
+            String chapterName = Util.getString(scan, "name of chapter to remove");
             stmt = conn.prepareStatement(Maps.chapterDeleterMap.get(type));
             stmt.setString(2, chapterName);
             stmt.setInt(1, ItemID);
@@ -162,8 +161,7 @@ public class Deleter {
         int itemID = Searcher.pickGenre(conn, scan);
         PreparedStatement stmt = null;
         try {
-            System.out.println("What is the genre you wish to delete?");
-            String newGenre = scan.nextLine();
+            String newGenre = Util.getString(scan, "genre you wish to delete");
             stmt = conn.prepareStatement(Maps.genreDeleterMap.get("item"));
             stmt.setInt(1, itemID);
             stmt.setString(2, newGenre);
