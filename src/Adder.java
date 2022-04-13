@@ -67,7 +67,7 @@ public class Adder {
             addItemSuper(item, conn, scan, newItemID);
             
             while (genreFlag) {
-            	System.out.println("Enter 'n' to stop adding genres, or 'y' to add a genre");
+            	System.out.println("Enter 'n' to stop adding genres, 'q' to quit, or 'y' to add a genre");
                 String choice = scan.nextLine();
 	            switch (choice) {
 	            case "y":
@@ -76,6 +76,8 @@ public class Adder {
 	            case "n":
 	            	genreFlag = false;
 	            	break;
+	            case "q":
+	            	throw new Exception("User quit during operation!");
 	            default:
 	            	System.out.println("Invalid choice, try again");
 	            }
@@ -491,8 +493,7 @@ public class Adder {
 }
     public static void addGenre(Connection conn, Scanner scan) throws Exception {
     	System.out.println("Select an entry to add a genre to");
-    	GenreIDPair genreID = Searcher.pickGenre(conn, scan);
-    	int itemID = genreID.getItemID();
+    	int itemID = Searcher.pickItem(conn, scan);
     	try {
 	        addGenreBase(itemID, conn, scan);
         } catch (Exception e) {
