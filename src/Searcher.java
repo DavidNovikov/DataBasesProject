@@ -209,11 +209,11 @@ public class Searcher {
         return relationship;
     }
 
-    private static String getRelationshipCreatorType(String relationshipType) {
+    public static String getRelationshipCreatorType(String relationshipType) {
         return Maps.relationshipOptionMap.get(relationshipType)[0];
     }
 
-    private static String getRelationshipItemType(String relationshipType, Scanner scan) throws Exception {
+    public static String getRelationshipItemType(String relationshipType, Scanner scan) throws Exception {
         if (Maps.relationshipOptionMap.get(relationshipType).length > 2) {
             // there are multiple options for item type
             String[] optionArray = Maps.relationshipOptionMap.get(relationshipType);

@@ -274,14 +274,6 @@ public class Adder {
     }
 
     public static void addRelationship(Connection conn, Scanner scan) throws Exception {
-
-        System.out.println("Do you know the creator ID and the item ID? y/n");
-        char response = scan.nextLine().charAt(0);
-        if (response != 'y') {
-            System.out.println("Use the search function to find the creator and item IDs to establish a relationship.");
-            return;
-        }
-
         System.out.println(
                 "Enter the type of relationship you are adding: (stars, writes, interviewed, performs, or directs)");
         String relationshipType = scan.nextLine().toLowerCase();
@@ -311,9 +303,9 @@ public class Adder {
         PreparedStatement stmt = null;
 
         try {
-            int creatorID = Util.getInteger(scan, "creator ID");
+            int creatorID = Searcher.pickCreator("stars", conn, scan);
 
-            int itemID = Util.getInteger(scan, "item ID");
+            int itemID = Searcher.pickItem("movie", conn, scan);
 
             System.out.println("Please enter the role");
             String role = scan.nextLine();
@@ -337,8 +329,10 @@ public class Adder {
         PreparedStatement stmt = null;
 
         try {
-            int creatorID = Util.getInteger(scan, "creator ID");
-            int itemID = Util.getInteger(scan, "item ID");
+            String creatorType = Searcher.getRelationshipCreatorType(relationshipType);
+            int creatorID = Searcher.pickCreator(creatorType, conn, scan);
+            String itemType = Searcher.getRelationshipItemType(relationshipType, scan);
+            int itemID = Searcher.pickItem(itemType, conn, scan);
 
             stmt = conn.prepareStatement(Maps.relationshipAdderMap.get(relationshipType));
             stmt.setInt(1, creatorID);
