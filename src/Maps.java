@@ -13,7 +13,7 @@ public class Maps {
     public static Map<String, String> creatorNameMap;
     public static Map<String, String> itemInsertType;
     public static Map<String, String> itemSearcherMap;
-    public static Map<String, String[]> personEditorMap;
+    public static String[] personEditorArr;
     public static Map<String, String[]> relationshipEditorMap;
     public static Map<String, String[]> relationshipOptionMap;
     public static Map<String, String> relationshipAdderMap;
@@ -35,7 +35,6 @@ public class Maps {
         creatorDeleteMap = new HashMap<>();
         nextIDMap = new HashMap<>();
         nextIDColumnMap = new HashMap<>();
-        personEditorMap = new HashMap<>();
         relationshipEditorMap = new HashMap<>();
         relationshipOptionMap = new HashMap<>();
         itemEditorMap = new HashMap<>();
@@ -104,12 +103,11 @@ public class Maps {
         relationshipDeleterMap.put("directs",
                 "delete from directs where Creator_ID = ? and Item_ID = ?;");
 
-        String[] personList = { "update or rollback person SET Email = ? WHERE CardID = ?;",
+        String[] personEditorArr = { "update or rollback person SET Email = ? WHERE CardID = ?;",
                 "update or rollback person SET Fname = ? WHERE CardID = ?;",
                 "update or rollback person SET Lname = ? WHERE CardID = ?;",
                 "update or rollback person SET Address = ? WHERE CardID = ?;",
                 "update or rollback person SET CardID = ? WHERE CardID = ?;" };
-        personEditorMap.put("person", personList);
 
         String[] albumList = { "update or rollback album SET NumberSongs = ? WHERE ItemID = ?;",
                 "update or rollback album SET NumberMinutes = ? WHERE ItemID = ?;" };

@@ -2,7 +2,29 @@ import java.sql.*;
 import java.util.*;
 
 public class Deleter {
-    public static void deleteCreator(String type, Connection conn, Scanner scan) throws Exception {
+
+    public static void deleteCreator(Connection conn, Scanner scan) throws Exception {
+        System.out.println(
+                "Options:\n(actor)\n(director)\n(artist)\n(writer)\nPlease enter the creator you're deleting:");
+        String creatorType = scan.nextLine().toLowerCase();
+        try {
+            switch (creatorType) {
+                case "actor":
+                case "director":
+                case "artist":
+                case "writer":
+                    deleteCreator(creatorType, conn, scan);
+                    break;
+                default:
+                    System.err.println(creatorType + " isn't a valid creator type");
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw e;
+        }
+    }
+
+    private static void deleteCreator(String type, Connection conn, Scanner scan) throws Exception {
         try {
             int cID = Searcher.pickCreator(type, conn, scan);
             deleteCreatorRelationships(cID, type, conn);
@@ -62,7 +84,7 @@ public class Deleter {
     public static void deleteRelationship(Connection conn, Scanner scan) throws Exception {
 
         System.out.println(
-                "Enter the type of relationship you are deleting: (stars, writes, interviewed, performs, or directs)");
+                "Options:\n(stars)\n(writes)\n(interviewed)\n(performs)\n(directs)\nPlease enter the relationship you're deleting:");
         String relationshipType = scan.nextLine().toLowerCase();
 
         try {
@@ -79,7 +101,7 @@ public class Deleter {
                     System.err.println(relationshipType + " isn't a valid relationship type");
             }
         } catch (Exception e) {
-            System.out.println("Unable to delete relationship. Exception:" + e.getMessage());
+            System.out.println(e.getMessage());
             throw e;
         }
     }

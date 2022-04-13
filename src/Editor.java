@@ -3,7 +3,29 @@ import java.util.*;
 
 public class Editor {
 
-    public static void editRelationship(String relationshipType, Connection conn, Scanner scan) throws Exception {
+    public static void editRelationship(Connection conn, Scanner scan) throws Exception {
+        System.out.println(
+                "Options:\n(stars)\n(writes)\n(interviewed)\n(performs)\n(directs)\nPlease enter the relationship you're editing:");
+        String relationshipType = scan.nextLine().toLowerCase();
+        try {
+            switch (relationshipType) {
+                case "stars":
+                case "writes":
+                case "interviewed":
+                case "performs":
+                case "directs":
+                    editRelationship(relationshipType, conn, scan);
+                    break;
+                default:
+                    System.err.println(relationshipType + " isn't a valid relationship type");
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw e;
+        }
+    }
+
+    private static void editRelationship(String relationshipType, Connection conn, Scanner scan) throws Exception {
         // ask if item type is audiobook or album
         Relationship rel = Searcher.pickRelationship(relationshipType, conn, scan);
         PreparedStatement stmt = null;
@@ -120,12 +142,12 @@ public class Editor {
         return option;
     }
 
-    public static void editPerson(String type, Connection conn, Scanner scan) throws Exception {
+    public static void editPerson(Connection conn, Scanner scan) throws Exception {
         PreparedStatement stmt = null;
         try {
             int cardID = Searcher.pickPerson(conn, scan);
             int editing = whatToEditPerson(scan);
-            stmt = conn.prepareStatement(Maps.personEditorMap.get(type)[editing - 1]);
+            stmt = conn.prepareStatement(Maps.personEditorArr[editing - 1]);
             // 1 for email, 2 for fname, 3 for lname, 4 for address, 5 for address
             switch (editing) {
                 case 1:
@@ -169,7 +191,28 @@ public class Editor {
         return option;
     }
 
-    public static void editCreator(String type, Connection conn, Scanner scan) throws Exception {
+    public static void editCreator(Connection conn, Scanner scan) throws Exception {
+        System.out.println(
+                "Options:\n(actor)\n(director)\n(artist)\n(writer)\nPlease enter the creator you're editing:");
+        String creatorType = scan.nextLine().toLowerCase();
+        try {
+            switch (creatorType) {
+                case "actor":
+                case "director":
+                case "artist":
+                case "writer":
+                    editCreator(creatorType, conn, scan);
+                    break;
+                default:
+                    System.err.println(creatorType + " isn't a valid creator type");
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw e;
+        }
+    }
+
+    private static void editCreator(String type, Connection conn, Scanner scan) throws Exception {
         PreparedStatement stmt = null;
         try {
             int creatorID = Searcher.pickCreator(type, conn, scan);
@@ -209,7 +252,34 @@ public class Editor {
         return option;
     }
 
-    public static void editItem(String type, Connection conn, Scanner scan) throws Exception {
+    public static void editItem(Connection conn, Scanner scan) throws Exception {
+        System.out.println(
+                "Options:\n(album)\n(track)\n(interview)\n(movie)\n(audiobook)\n(physicalbook)\n(audiobookchapter)\n(physicalbookchapter)\nPlease enter the item you're editing:");
+        String itemType = scan.nextLine().toLowerCase();
+        try {
+            switch (itemType) {
+                case "album":
+                case "track":
+                case "interview":
+                case "movie":
+                case "audiobook":
+                case "physicalbook":
+                    editItem(itemType, conn, scan);
+                    break;
+                case "audiobookchapter":
+                case "physicalbookchapter":
+                    // TODO: edit chapter method goes here
+                    break;
+                default:
+                    System.err.println(itemType + " isn't a valid item type");
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw e;
+        }
+    }
+
+    private static void editItem(String type, Connection conn, Scanner scan) throws Exception {
         PreparedStatement stmt = null;
         try {
             int itemID = Searcher.pickItem(type, conn, scan);

@@ -58,71 +58,52 @@ public class DBApp {
     public void add() throws Exception {
         // ask for which type of item to add
         System.out.println(
-                "What would you like to add? (Album, Track, Interview, Movie, Audiobook, AudiobookChapter, PhysicalBook, PhysicalBookChapter, Actor, Artist, Director, Writer, Person, or Relationship)");
+                "Adding options:\n(Media)\n(Creator)\n(Person)\n(Relationship)\n(q to quit)\nPlease select one:");
         // get the type
         String type = scan.nextLine().toLowerCase();
         // add depending on the type
         switch (type) {
-            case "album":
-            case "track":
-            case "interview":
-            case "movie":
-            case "audiobook":
-            case "physicalbook":
-                Adder.addItem(Util.changeToDBString(type), conn, scan);
+            case "media":
+                Adder.addItem(conn, scan);
                 break;
-            case "audiobookchapter":
-            case "physicalbookchapter":
-                // TODO: add chapters as attributes
+            case "creator":
+                Adder.addCreator(conn, scan);
                 break;
-            case "actor":
-            case "director":
-            case "artist":
-            case "writer":
-                Adder.addCreator(Util.changeToDBString(type), conn, scan);
+            case "person":
+                Adder.addPerson(conn, scan);
                 break;
             case "relationship":
                 Adder.addRelationship(conn, scan);
                 break;
-            case "person":
-                Adder.addPerson(conn, scan);
+            case "q":
                 break;
             default:
                 // print invalid
                 System.out.println(type + " is an Invalid input");
         }
+
     }
 
     public void delete() throws Exception {
         // Ask the user which record they want to delete
         System.out.println(
-                "Enter the type of the record to be deleted (Album, Track, Interview, Movie, Audiobook, AudiobookChapter, PhysicalBook, PhysicalBookChapter, Actor, Artist, Director, Writer, Person, or Relationship): ");
+                "Deleting options:\n(Media)\n(Creator)\n(Person)\n(Relationship)\n(q to quit)\nPlease select one:");
         String type = scan.nextLine().toLowerCase();
 
         switch (type) {
-            case "album":
-            case "track":
-            case "interview":
-            case "movie":
-            case "audiobook":
-            case "physicalbook":
-                // TODO: delete item
+            case "media":
+                // TODO: Deleter.deleteItem(conn, scan);
                 break;
-            case "audiobookchapter":
-            case "physicalbookchapter":
-                // TODO: delete chapter
-                break;
-            case "actor":
-            case "director":
-            case "artist":
-            case "writer":
-                Deleter.deleteCreator(type, conn, scan);
+            case "creator":
+                Deleter.deleteCreator(conn, scan);
                 break;
             case "person":
                 Deleter.deletePerson(conn, scan);
                 break;
             case "relationship":
                 Deleter.deleteRelationship(conn, scan);
+                break;
+            case "q":
                 break;
             default:
                 // print invalid
@@ -133,37 +114,23 @@ public class DBApp {
     public void edit() throws Exception {
         // Ask the user which record they want to edit
         System.out.println(
-                "Enter the type of the record to be edited (Album, Track, Interview, Movie, Audiobook, AudiobookChapter, PhysicalBook, PhysicalBookChapter, Actor, Artist, Director, Writer, Person, Stars, Writes, Interviewed, Performs, or Directs): ");
+                "Editing options:\n(Media)\n(Creator)\n(Person)\n(Relationship)\n(q to quit)\nPlease select one:");
         String type = scan.nextLine().toLowerCase();
 
         switch (type) {
-            case "album":
-            case "track":
-            case "interview":
-            case "movie":
-            case "audiobook":
-            case "physicalbook":
-                Editor.editItem(type, conn, scan);
+            case "media":
+                Editor.editItem(conn, scan);
                 break;
-            case "audiobookchapter":
-            case "physicalbookchapter":
-                // TODO: edit chapter
-                break;
-            case "actor":
-            case "director":
-            case "artist":
-            case "writeer":
-                Editor.editCreator(type, conn, scan);
+            case "creator":
+                Editor.editCreator(conn, scan);
                 break;
             case "person":
-                Editor.editPerson(type, conn, scan);
+                Editor.editPerson(conn, scan);
                 break;
-            case "stars":
-            case "writes":
-            case "interviewed":
-            case "performs":
-            case "directs":
-                Editor.editRelationship(type, conn, scan);
+            case "relationship":
+                Editor.editRelationship(conn, scan);
+                break;
+            case "q":
                 break;
             default:
                 // print invalid

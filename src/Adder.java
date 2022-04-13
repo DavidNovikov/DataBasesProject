@@ -36,6 +36,33 @@ public class Adder {
         }
     }
 
+    public static void addItem(Connection conn, Scanner scan) throws Exception {
+        System.out.println(
+                "Options:\n(album)\n(track)\n(interview)\n(movie)\n(audiobook)\n(physicalbook)\n(audiobookchapter)\n(physicalbookchapter)\nPlease enter the item you're adding:");
+        String itemType = scan.nextLine().toLowerCase();
+        try {
+            switch (itemType) {
+                case "album":
+                case "track":
+                case "interview":
+                case "movie":
+                case "audiobook":
+                case "physicalbook":
+                    addItem(itemType, conn, scan);
+                    break;
+                case "audiobookchapter":
+                case "physicalbookchapter":
+                    // TODO: add chapter method goes here
+                    break;
+                default:
+                    System.err.println(itemType + " isn't a valid item type");
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw e;
+        }
+    }
+
     public static void addItem(String item, Connection conn, Scanner scan) throws Exception {
         int newItemID;
         try {
@@ -279,20 +306,29 @@ public class Adder {
     // }
 
     public static void addRelationship(Connection conn, Scanner scan) throws Exception {
-
-        System.out.println("Do you know the creator ID and the item ID? y/n");
-        char response = scan.nextLine().charAt(0);
-        if (response != 'y') {
-            System.out.println("Use the search function to find the creator and item IDs to establish a relationship.");
-            return;
-        }
-
         System.out.println(
-                "Enter the type of relationship you are adding: (stars, writes, interviewed, performs, or directs)");
+                "Options:\n(stars)\n(writes)\n(interviewed)\n(performs)\n(directs)\nPlease enter the relationship you're adding:");
         String relationshipType = scan.nextLine().toLowerCase();
-
         try {
+            switch (relationshipType) {
+                case "stars":
+                case "writes":
+                case "interviewed":
+                case "performs":
+                case "directs":
+                    addRelationship(relationshipType, conn, scan);
+                    break;
+                default:
+                    System.err.println(relationshipType + " isn't a valid relationship type");
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw e;
+        }
+    }
 
+    private static void addRelationship(String relationshipType, Connection conn, Scanner scan) throws Exception {
+        try {
             switch (relationshipType) {
                 case "stars":
                     addStarsRelationship(conn, scan);
@@ -312,7 +348,7 @@ public class Adder {
         }
     }
 
-    public static void addStarsRelationship(Connection conn, Scanner scan) throws Exception {
+    private static void addStarsRelationship(Connection conn, Scanner scan) throws Exception {
         PreparedStatement stmt = null;
 
         try {
@@ -339,7 +375,7 @@ public class Adder {
         }
     }
 
-    public static void addGenericRelationships(Connection conn, Scanner scan, String relationshipType)
+    private static void addGenericRelationships(Connection conn, Scanner scan, String relationshipType)
             throws Exception {
         PreparedStatement stmt = null;
 
@@ -362,7 +398,28 @@ public class Adder {
         }
     }
 
-    public static void addCreator(String creatorType, Connection conn, Scanner scan) throws Exception {
+    public static void addCreator(Connection conn, Scanner scan) throws Exception {
+        System.out.println(
+                "Options:\n(actor)\n(director)\n(artist)\n(writer)\nPlease enter the creator you're adding:");
+        String creatorType = scan.nextLine().toLowerCase();
+        try {
+            switch (creatorType) {
+                case "actor":
+                case "director":
+                case "artist":
+                case "writer":
+                    addCreator(creatorType, conn, scan);
+                    break;
+                default:
+                    System.err.println(creatorType + " isn't a valid creator type");
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw e;
+        }
+    }
+
+    private static void addCreator(String creatorType, Connection conn, Scanner scan) throws Exception {
         int newCreatorID;
         try {
             newCreatorID = addCreatorBase(creatorType, conn, scan);
