@@ -185,8 +185,7 @@ public class Searcher {
                 rSet = stmt.executeQuery();
 
                 if (Util.resultSetContainsData(rSet)) {
-                    ArrayList<Integer> potentialIDs = Util.searchPrint(rSet, "BookID");
-                    ItemID = Util.itemListPick(potentialIDs, scan);
+                    Util.searchPrint(rSet, "BookID");
                     found = true;
                 } else {
                     System.out.println("None Found");
