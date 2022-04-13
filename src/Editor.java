@@ -47,13 +47,13 @@ public class Editor {
             stmt = conn.prepareStatement(Maps.relationshipEditorMap.get(relationshipType)[editing - 1]);
             switch (relationshipType) {
                 case "stars":
-                    stmt = editRelationshipExecuteStars(stmt, scan, editing);
+                    stmt = editRelationshipExecuteStars(stmt, scan, editing, conn);
                     break;
                 case "writes":
                 case "interviewed":
                 case "performs":
                 case "directs":
-                    stmt = editRelationshipExecuteGeneric(stmt, scan, editing);
+                    stmt = editRelationshipExecuteGeneric(stmt, scan, editing, conn, relationshipType);
                     break;
                 default:
                     System.out.println(relationshipType + " is an invalid input");
@@ -70,19 +70,19 @@ public class Editor {
         }
     }
 
-    private static PreparedStatement editRelationshipExecuteGeneric(PreparedStatement stmt, Scanner scan, int editing)
+    private static PreparedStatement editRelationshipExecuteGeneric(PreparedStatement stmt, Scanner scan, int editing, Connection conn, String relationshipType)
             throws Exception {
         try {
             switch (editing) {
                 case 1:
-                    System.out.println("enter the new " + "creatorID");
-                    int newValue = Integer.parseInt(scan.nextLine());
-                    stmt.setInt(1, newValue);
+                    String creatorType = Searcher.getRelationshipCreatorType(relationshipType);
+                    int newCreatorID = Searcher.pickCreator(creatorType, conn, scan);
+                    stmt.setInt(1, newCreatorID);
                     break;
                 case 2:
-                    System.out.println("enter the new " + "itemID");
-                    int newValue2 = Integer.parseInt(scan.nextLine());
-                    stmt.setInt(1, newValue2);
+                    String itemType = Searcher.getRelationshipItemType(relationshipType, scan);
+                    int newItemID = Searcher.pickItem(itemType, conn, scan);
+                    stmt.setInt(1, newItemID);
                     break;
             }
             return stmt;
@@ -92,19 +92,19 @@ public class Editor {
         }
     }
 
-    private static PreparedStatement editRelationshipExecuteStars(PreparedStatement stmt, Scanner scan, int editing)
+    private static PreparedStatement editRelationshipExecuteStars(PreparedStatement stmt, Scanner scan, int editing, Connection conn)
             throws Exception {
         try {
             switch (editing) {
                 case 1:
-                    System.out.println("enter the new " + "creatorID");
-                    int newValue = Integer.parseInt(scan.nextLine());
-                    stmt.setInt(1, newValue);
+                    String creatorType = Searcher.getRelationshipCreatorType("stars");
+                    int newCreatorID = Searcher.pickCreator(creatorType, conn, scan);
+                    stmt.setInt(1, newCreatorID);
                     break;
                 case 2:
-                    System.out.println("enter the new " + "itemID");
-                    int newValue2 = Integer.parseInt(scan.nextLine());
-                    stmt.setInt(1, newValue2);
+                    String itemType = Searcher.getRelationshipItemType("stars", scan);
+                    int newItemID = Searcher.pickItem(itemType, conn, scan);
+                    stmt.setInt(1, newItemID);
                     break;
                 case 3:
                     System.out.println("enter the new " + "role");
@@ -123,7 +123,7 @@ public class Editor {
     private static int whatToEditRelationshipGeneric(Scanner scan) throws Exception {
         int option = 0;
         while (option == 0) {
-            System.out.println("Please enter 1 to edit the creatorID, 2 to edit the itemID:");
+            System.out.println("Please enter 1 to edit the creator, 2 to edit the item:");
             option = Integer.valueOf(scan.nextLine());
             if (!(option == 1 || option == 2))
                 option = 0;
@@ -134,7 +134,7 @@ public class Editor {
     private static int whatToEditRelationshipStars(Scanner scan) throws Exception {
         int option = 0;
         while (option == 0) {
-            System.out.println("Please enter 1 to edit the creatorID, 2 to edit the itemID, 3 to edit the role:");
+            System.out.println("Please enter 1 to edit the creator, 2 to edit the item, 3 to edit the role:");
             option = Integer.valueOf(scan.nextLine());
             if (!(option == 1 || option == 2 || option == 3))
                 option = 0;
