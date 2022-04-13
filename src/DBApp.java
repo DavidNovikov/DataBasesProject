@@ -178,6 +178,7 @@ public class DBApp {
                     Util.endTransaction(conn);
                 } catch (Exception e) {
                     Util.forceRollBack(conn);
+                    System.err.println(e.getMessage());
                 }
             }
         }

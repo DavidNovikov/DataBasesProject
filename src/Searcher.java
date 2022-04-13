@@ -25,7 +25,6 @@ public class Searcher {
                         System.err.println(creatorType + " isn't a valid creator type");
                 }
             } catch (Exception e) {
-                System.out.println(e.getMessage());
                 throw e;
             }
         }
@@ -53,7 +52,6 @@ public class Searcher {
                     System.out.println("None Found");
                 }
             } catch (Exception e) {
-                System.out.println(e.getMessage());
                 throw e;
             } finally {
                 Util.closeStmt(stmt);
@@ -87,7 +85,6 @@ public class Searcher {
                         System.err.println(itemType + " isn't a valid item type");
                 }
             } catch (Exception e) {
-                System.out.println(e.getMessage());
                 throw e;
             }
         }
@@ -115,7 +112,6 @@ public class Searcher {
                     System.out.println("None Found");
                 }
             } catch (Exception e) {
-                System.out.println(e.getMessage());
                 throw e;
             } finally {
                 Util.closeStmt(stmt);
@@ -146,7 +142,6 @@ public class Searcher {
                     System.out.println("None Found");
                 }
             } catch (Exception e) {
-                System.out.println(e.getMessage());
                 throw e;
             } finally {
                 Util.closeStmt(stmt);
@@ -182,7 +177,6 @@ public class Searcher {
                     System.out.println("None Found");
                 }
             } catch (Exception e) {
-                System.out.println(e.getMessage());
                 throw e;
             } finally {
                 Util.closeStmt(stmt);
@@ -220,8 +214,7 @@ public class Searcher {
                         System.out.println("None Found");
                     }
                 }
-            } catch (SQLException e) {
-                System.out.println(e.getMessage());
+            } catch (Exception e) {
                 throw e;
             } finally {
                 Util.closeStmt(stmt);
@@ -255,7 +248,6 @@ public class Searcher {
                         System.err.println(relationshipType + " isn't a valid relationship type");
                 }
             } catch (Exception e) {
-                System.out.println(e.getMessage());
                 throw e;
             }
         }
@@ -290,7 +282,6 @@ public class Searcher {
                     System.out.println("None Found");
                 }
             } catch (Exception e) {
-                System.out.println(e.getMessage());
                 throw e;
             } finally {
                 Util.closeStmt(stmt);
@@ -344,7 +335,6 @@ public class Searcher {
                     rel = IDs.get(entry - 1);
                 }
             } catch (Exception e) {
-                System.out.println(e.getMessage());
                 throw e;
             }
         }
@@ -370,7 +360,6 @@ public class Searcher {
                     newID = IDs.get(entry - 1);
                 }
             } catch (Exception e) {
-                System.out.println(e.getMessage());
                 throw e;
             }
         }

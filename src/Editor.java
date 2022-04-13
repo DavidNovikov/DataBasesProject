@@ -20,7 +20,6 @@ public class Editor {
                     System.err.println(relationshipType + " isn't a valid relationship type");
             }
         } catch (Exception e) {
-            System.out.println(e.getMessage());
             throw e;
         }
     }
@@ -63,7 +62,6 @@ public class Editor {
             stmt.setInt(3, rel.getItemID());
             stmt.executeUpdate();
         } catch (Exception e) {
-            System.out.println(e.getMessage());
             throw e;
         } finally {
             Util.closeStmt(stmt);
@@ -88,7 +86,6 @@ public class Editor {
             }
             return stmt;
         } catch (Exception e) {
-            System.out.println("Exception entering new value:" + e);
             throw e;
         }
     }
@@ -115,7 +112,6 @@ public class Editor {
             }
             return stmt;
         } catch (Exception e) {
-            System.out.println("Exception entering new value:" + e);
             throw e;
         }
 
@@ -172,7 +168,6 @@ public class Editor {
             stmt.setInt(2, cardID);
             stmt.executeUpdate();
         } catch (Exception e) {
-            System.out.println(e.getMessage());
             throw e;
         } finally {
             Util.closeStmt(stmt);
@@ -207,7 +202,6 @@ public class Editor {
                     System.err.println(creatorType + " isn't a valid creator type");
             }
         } catch (Exception e) {
-            System.out.println(e.getMessage());
             throw e;
         }
     }
@@ -233,7 +227,6 @@ public class Editor {
             stmt.setInt(2, creatorID);
             stmt.executeUpdate();
         } catch (Exception e) {
-            System.out.println(e.getMessage());
             throw e;
         } finally {
             Util.closeStmt(stmt);
@@ -276,7 +269,6 @@ public class Editor {
                     System.err.println(itemType + " isn't a valid item type");
             }
         } catch (Exception e) {
-            System.out.println(e.getMessage());
             throw e;
         }
     }
@@ -344,7 +336,6 @@ public class Editor {
             stmt.setInt(2, itemID);
             stmt.executeUpdate();
         } catch (Exception e) {
-            System.out.println(e.getMessage());
             throw e;
         } finally {
             Util.closeStmt(stmt);
@@ -361,7 +352,6 @@ public class Editor {
             stmt.setInt(2, itemID);
             stmt.executeUpdate();
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
             throw e;
         } finally {
             Util.closeStmt(stmt);
@@ -421,7 +411,6 @@ public class Editor {
             }
             return stmt;
         } catch (Exception e) {
-            System.out.println("Exception entering new value:" + e);
             throw e;
         }
     }
@@ -443,7 +432,6 @@ public class Editor {
             }
             return stmt;
         } catch (Exception e) {
-            System.out.println("Exception entering new value:" + e);
             throw e;
         }
     }
@@ -464,7 +452,6 @@ public class Editor {
             }
             return stmt;
         } catch (Exception e) {
-            System.out.println("Exception entering new value:" + e);
             throw e;
         }
     }
@@ -482,7 +469,6 @@ public class Editor {
             }
             return stmt;
         } catch (Exception e) {
-            System.out.println("Exception entering new value:" + e);
             throw e;
         }
     }
@@ -499,7 +485,6 @@ public class Editor {
             stmt.setInt(3, ItemID);
             stmt.executeUpdate();
         } catch (Exception e) {
-            System.out.println(e.getMessage());
             throw e;
         } finally {
             Util.closeStmt(stmt);

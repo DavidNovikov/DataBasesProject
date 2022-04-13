@@ -54,7 +54,6 @@ public class Util {
 			rSet = stmt.executeQuery();
 			nextID = rSet.getInt(Maps.nextIDColumnMap.get(tableType)) + 1;
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
 			throw e;
 		} finally {
 			closeStmt(stmt);
@@ -285,7 +284,6 @@ public class Util {
 			rSet = stmt.executeQuery();
 			type = rSet.getString("Type");
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
 			throw e;
 		} finally {
 			closeStmt(stmt);
@@ -332,7 +330,6 @@ public class Util {
 			rSet = stmt.executeQuery();
 			result = resultSetContainsData(rSet);
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
 			throw e;
 		} finally {
 			closeStmt(stmt);
