@@ -456,7 +456,8 @@ public class Adder {
 }
     public static void addGenre(Connection conn, Scanner scan) throws Exception {
     	System.out.println("Select an entry to add a genre to");
-    	int itemID = Searcher.pickGenre(conn, scan);
+    	GenreIDPair genreID = Searcher.pickGenre(conn, scan);
+    	int itemID = genreID.getItemID();
     	try {
 	        addGenreBase(itemID, conn, scan);
         } catch (Exception e) {

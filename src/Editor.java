@@ -280,7 +280,8 @@ public class Editor {
     }
     
     public static void editGenre(String type, Connection conn, Scanner scan) throws Exception {
-    	int itemID = Searcher.pickGenre(conn, scan);
+    	GenreIDPair genreID = Searcher.pickGenre(conn, scan);
+    	int itemID = genreID.getItemID();
     	PreparedStatement stmt = null;
         try {
 	        System.out.println("What is the new genre?");

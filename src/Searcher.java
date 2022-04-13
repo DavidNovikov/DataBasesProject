@@ -122,12 +122,14 @@ public class Searcher {
         return ItemID;
     }
     
-    public static int pickGenre(Connection conn, Scanner scan)throws Exception {
+    public static GenreIDPair pickGenre(Connection conn, Scanner scan)throws Exception {
     	ArrayList<Integer> genreList = new ArrayList<Integer>();
+    	Map<Integer, String> genreStringMap = new HashMap<>();
     	PreparedStatement stmt = null;
         ResultSet rSet = null;
         int genreID = -1;
         boolean listFlag = true;
+        GenreIDPair genreIDPair = new GenreIDPair();
         
         System.out.println("Enter the name of the genre you would like to search for, or 1 to list all genres:");
         String genre = scan.nextLine();
@@ -156,10 +158,19 @@ public class Searcher {
 		        		System.out.println("Enter the name of the genre you would like to search for, or 1 to list all genres:");
 			            genre = scan.nextLine();
 		        	}
-	    	        
+		        	rSet.beforeFirst();
+		        	ResultSetMetaData rSetmd = rSet.getMetaData();
+		        	while (rSet.next()) {
+		        		int genreListIDs = rSet.getInt("Item_ID");
+		        		String genreNew = rSet.getString("Genre");
+		        		genreStringMap.put(genreListIDs, genreNew);
+		        	}
+		        	
 		        }
 		        
-        	} 
+        	}
+        	genreIDPair.setItemID(genreID);
+        	genreIDPair.setGenre(genre);
         }catch (SQLException e) {
             System.out.println(e.getMessage());
             throw e;
@@ -167,7 +178,7 @@ public class Searcher {
             Util.closeStmt(stmt);
             Util.closeRSet(rSet);
         }
-      return genreID;
+      return genreIDPair;
     }
 
     public static Relationship pickRelationship(String type, Connection conn, Scanner scan) throws Exception {

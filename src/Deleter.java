@@ -137,7 +137,8 @@ public class Deleter {
 
     public static void deleteGenre(Connection conn, Scanner scan) throws Exception {
     	System.out.println("Select an entry to delete a genre from");
-    	int itemID = Searcher.pickGenre(conn, scan);
+    	GenreIDPair genreID = Searcher.pickGenre(conn, scan);
+    	int itemID = genreID.getItemID();
     	PreparedStatement stmt = null;
     	try {
 	        System.out.println("What is the genre you wish to delete?");
