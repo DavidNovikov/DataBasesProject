@@ -7,17 +7,10 @@ public class Adder {
         PreparedStatement stmt = null;
         try {
             int cardID = Util.nextIDFrom("library_card", conn);
-            // get the email
             String email = Util.getEmail(scan);
-
-            System.out.println("Please enter the first name");
-            String fname = scan.nextLine();
-
-            System.out.println("Please enter the last name");
-            String lname = scan.nextLine();
-
-            System.out.println("Please enter the address");
-            String address = scan.nextLine();
+            String fname = Util.getString(scan, "first name");
+            String lname = Util.getString(scan, "last name");
+            String address = Util.getString(scan, "address");
 
             String query = Maps.addPersonString;
             stmt = conn.prepareStatement(query);
@@ -36,7 +29,37 @@ public class Adder {
         }
     }
 
-    public static void addItem(String item, Connection conn, Scanner scan) throws Exception {
+    public static void addItem(Connection conn, Scanner scan) throws Exception {
+        System.out.println(
+                "Options:\n(album)\n(track)\n(interview)\n(movie)\n(audiobook)\n(physicalbook)\n(audiobookchapter)\n(physicalbookchapter)\n(genre)\nPlease enter the item you're adding:");
+        String itemType = scan.nextLine().toLowerCase();
+        try {
+            switch (itemType) {
+                case "album":
+                case "track":
+                case "interview":
+                case "movie":
+                case "audiobook":
+                case "physicalbook":
+                    addItem(itemType, conn, scan);
+                    break;
+                case "audiobookchapter":
+                case "physicalbookchapter":
+                    addChapter(itemType, conn, scan);
+                    break;
+                case "genre":
+                    addGenre(conn, scan);
+                    break;
+                default:
+                    System.err.println(itemType + " isn't a valid item type");
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw e;
+        }
+    }
+
+    private static void addItem(String item, Connection conn, Scanner scan) throws Exception {
         int newItemID;
         try {
             newItemID = addItemBase(item, conn, scan);
@@ -50,14 +73,9 @@ public class Adder {
 
     private static int addItemBase(String item, Connection conn, Scanner scan) throws Exception {
         PreparedStatement stmt = null;
-
         int itemID = Util.nextIDFrom("item", conn);
-
         try {
-
-            System.out.println("Please enter the title");
-            String title = scan.nextLine();
-
+            String title = Util.getString(scan, "title");
             int year = Util.getInteger(scan, "year released");
 
             stmt = conn.prepareStatement(Maps.itemAdderMap.get("item"));
@@ -66,10 +84,11 @@ public class Adder {
             stmt.setString(2, title);
             stmt.setInt(3, year);
             String insertType = "";
-            if(item.equals("itemordered")){
-                insertType = Util.getTypeFromList(scan, Arrays.asList("album", "track", "movie", "interview", "audiobook", "physicalbook"));
+            if (item.equals("itemordered")) {
+                insertType = Util.getTypeFromList(scan,
+                        Arrays.asList("album", "track", "movie", "interview", "audiobook", "physicalbook"));
                 addItemSuper(insertType, conn, scan, itemID);
-            }else{
+            } else {
                 insertType = item;
             }
             stmt.setString(4, Maps.itemInsertType.get(insertType));
@@ -114,7 +133,7 @@ public class Adder {
 
     }
 
-    private static void addItemOrdered(Connection conn, Scanner scan, int newItemID) throws Exception{
+    private static void addItemOrdered(Connection conn, Scanner scan, int newItemID) throws Exception {
         PreparedStatement stmt = null;
 
         try {
@@ -126,7 +145,7 @@ public class Adder {
 
             stmt = conn.prepareStatement(Maps.itemAdderMap.get("itemordered"));
 
-            stmt.setInt(1,newItemID);
+            stmt.setInt(1, newItemID);
             stmt.setDouble(2, price);
             stmt.setInt(3, quantity);
             stmt.setString(4, arrivalDate);
@@ -215,7 +234,7 @@ public class Adder {
             int runtime = Util.getInteger(scan, "runtime in minutes");
 
             System.out.println("Please enter the rating");
-            String rating = Util.getTypeFromList(scan, Arrays.asList("G","PG","PG-13","R","NC-17"));
+            String rating = Util.getTypeFromList(scan, Arrays.asList("G", "PG", "PG-13", "R", "NC-17"));
 
             stmt = conn.prepareStatement(Maps.itemAdderMap.get("movie"));
 
@@ -275,11 +294,28 @@ public class Adder {
 
     public static void addRelationship(Connection conn, Scanner scan) throws Exception {
         System.out.println(
-                "Enter the type of relationship you are adding: (stars, writes, interviewed, performs, or directs)");
+                "Options:\n(stars)\n(writes)\n(interviewed)\n(performs)\n(directs)\nPlease enter the relationship you're adding:");
         String relationshipType = scan.nextLine().toLowerCase();
-
         try {
+            switch (relationshipType) {
+                case "stars":
+                case "writes":
+                case "interviewed":
+                case "performs":
+                case "directs":
+                    addRelationship(relationshipType, conn, scan);
+                    break;
+                default:
+                    System.err.println(relationshipType + " isn't a valid relationship type");
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw e;
+        }
+    }
 
+    private static void addRelationship(String relationshipType, Connection conn, Scanner scan) throws Exception {
+        try {
             switch (relationshipType) {
                 case "stars":
                     addStarsRelationship(conn, scan);
@@ -299,16 +335,13 @@ public class Adder {
         }
     }
 
-    public static void addStarsRelationship(Connection conn, Scanner scan) throws Exception {
+    private static void addStarsRelationship(Connection conn, Scanner scan) throws Exception {
         PreparedStatement stmt = null;
 
         try {
             int creatorID = Searcher.pickCreator("stars", conn, scan);
-
             int itemID = Searcher.pickItem("movie", conn, scan);
-
-            System.out.println("Please enter the role");
-            String role = scan.nextLine();
+            String role = Util.getString(scan, "role");
 
             stmt = conn.prepareStatement(Maps.relationshipAdderMap.get("stars"));
 
@@ -324,7 +357,7 @@ public class Adder {
         }
     }
 
-    public static void addGenericRelationships(Connection conn, Scanner scan, String relationshipType)
+    private static void addGenericRelationships(Connection conn, Scanner scan, String relationshipType)
             throws Exception {
         PreparedStatement stmt = null;
 
@@ -346,7 +379,28 @@ public class Adder {
         }
     }
 
-    public static void addCreator(String creatorType, Connection conn, Scanner scan) throws Exception {
+    public static void addCreator(Connection conn, Scanner scan) throws Exception {
+        System.out.println(
+                "Options:\n(actor)\n(director)\n(artist)\n(writer)\nPlease enter the creator you're adding:");
+        String creatorType = scan.nextLine().toLowerCase();
+        try {
+            switch (creatorType) {
+                case "actor":
+                case "director":
+                case "artist":
+                case "writer":
+                    addCreator(creatorType, conn, scan);
+                    break;
+                default:
+                    System.err.println(creatorType + " isn't a valid creator type");
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw e;
+        }
+    }
+
+    private static void addCreator(String creatorType, Connection conn, Scanner scan) throws Exception {
         int newCreatorID;
         try {
             newCreatorID = addCreatorBase(creatorType, conn, scan);
@@ -399,9 +453,7 @@ public class Adder {
         PreparedStatement stmt = null;
 
         try {
-            System.out.println("Please enter the " + creatorType + " name");
-            String name = scan.nextLine();
-
+            String name = Util.getString(scan, creatorType);
             String dateOfBirth = Util.getDate(scan, "date of birth");
 
             stmt = conn.prepareStatement(Maps.creatorAdderMap.get(creatorType));
@@ -418,38 +470,36 @@ public class Adder {
             Util.closeStmt(stmt);
         }
     }
-    
 
-    public static void addChapter(String type, Connection conn, Scanner scan) throws Exception {
-    	PreparedStatement stmt = null;
-    	try {
-    		System.out.println("Please choose the book you would like to add a chapter to: ");
-    		int ItemID = Searcher.pickChapter(type, conn, scan);
-    		System.out.println("What is the name of the chapter that you would like to add?");
-    		String chapterName = scan.nextLine();
-    		stmt = conn.prepareStatement(Maps.chapterAdderMap.get(type));
-    		stmt.setString(1, chapterName);
-    		stmt.setInt(2, ItemID);
-    		stmt.executeUpdate();
-    		
-    	} catch(Exception e) {
-    		System.out.println(e.getMessage());
+    private static void addChapter(String type, Connection conn, Scanner scan) throws Exception {
+        PreparedStatement stmt = null;
+        try {
+            System.out.println("Please choose the book you would like to add a chapter to: ");
+            int ItemID = Searcher.pickChapter(type, conn, scan);
+            String chapterName = Util.getString(scan, "chapter name");
+            stmt = conn.prepareStatement(Maps.chapterAdderMap.get(type));
+            stmt.setString(1, chapterName);
+            stmt.setInt(2, ItemID);
+            stmt.executeUpdate();
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
             throw e;
-    	}finally {
+        } finally {
             Util.closeStmt(stmt);
         }
-}
-    public static void addGenre(Connection conn, Scanner scan) throws Exception {
-    	System.out.println("Select an entry to add a genre to");
-    	int itemID = Searcher.pickGenre(conn, scan);
-    	PreparedStatement stmt = null;
-    	try {
-	        System.out.println("What is the new genre?");
-	        String newGenre = scan.nextLine();
-	        stmt = conn.prepareStatement(Maps.genreAdderMap.get("item"));
-	        stmt.setInt(1, itemID);
-	        stmt.setString(2, newGenre);
-	        stmt.executeUpdate();
+    }
+
+    private static void addGenre(Connection conn, Scanner scan) throws Exception {
+        System.out.println("Select an entry to add a genre to");
+        int itemID = Searcher.pickGenre(conn, scan);
+        PreparedStatement stmt = null;
+        try {
+            String newGenre = Util.getString(scan, "new genre");
+            stmt = conn.prepareStatement(Maps.genreAdderMap.get("item"));
+            stmt.setInt(1, itemID);
+            stmt.setString(2, newGenre);
+            stmt.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
             throw e;
