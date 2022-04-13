@@ -14,6 +14,7 @@ public class Maps {
     public static Map<String, String> creatorNameMap;
     public static Map<String, String> itemInsertType;
     public static Map<String, String> itemSearcherMap;
+    public static Map<String, String[]> itemToRelationshipMap;
     public static String[] personEditorArr = { "update or rollback person SET Email = ? WHERE CardID = ?;",
             "update or rollback person SET Fname = ? WHERE CardID = ?;",
             "update or rollback person SET Lname = ? WHERE CardID = ?;",
@@ -21,6 +22,7 @@ public class Maps {
             "update or rollback person SET CardID = ? WHERE CardID = ?;" };
     public static Map<String, String[]> relationshipEditorMap;
     public static Map<String, String[]> relationshipOptionMap;
+    public static Map<String, String[]> itemToCreatorMap;
     public static Map<String, String> genreSearcherMap;
     public static Map<String, String> genreEditorMap;
     public static Map<String, String> genreAdderMap;
@@ -69,6 +71,8 @@ public class Maps {
         relationshipSearcherMap = new HashMap<>();
         relationshipDeleterMap = new HashMap<>();
         creatorDeleteRelationshipMap = new HashMap<>();
+        itemToCreatorMap = new HashMap<>();
+        itemToRelationshipMap = new HashMap<>();
 
         String[] starsOptionList = { "actor", "movie" };
         String[] writesOptionList = { "writer", "audiobook", "physicalbook" };
@@ -80,6 +84,28 @@ public class Maps {
         relationshipOptionMap.put("interviewed", interviewedOptionList);
         relationshipOptionMap.put("performs", performsOptionList);
         relationshipOptionMap.put("directs", directsOptionList);
+
+        String[] movieOptionListFromItem = { "actor", "director" };
+        String[] interviewOptionListFromItem = { "actor" };
+        String[] bookOptionListFromItem = { "writer" };
+        String[] musicOptionListFromItem = { "artist" };
+
+        itemToCreatorMap.put("movie", movieOptionListFromItem);
+        itemToCreatorMap.put("interview", interviewOptionListFromItem);
+        itemToCreatorMap.put("audiobook", bookOptionListFromItem);
+        itemToCreatorMap.put("physicalbook", bookOptionListFromItem);
+        itemToCreatorMap.put("track", musicOptionListFromItem);
+
+        String[] movieOptionListForRelationship = { "stars", "directs" };
+        String[] interviewOptionListForRelationship = { "interviewed" };
+        String[] bookOptionListForRelationship = { "writes" };
+        String[] musicOptionListForRelationship = { "performs" };
+
+        itemToRelationshipMap.put("movie", movieOptionListForRelationship);
+        itemToRelationshipMap.put("interview", interviewOptionListForRelationship);
+        itemToRelationshipMap.put("audiobook", bookOptionListForRelationship);
+        itemToRelationshipMap.put("physicalbook", bookOptionListForRelationship);
+        itemToRelationshipMap.put("track", musicOptionListForRelationship);
 
         String[] starsList = {
                 "update or rollback stars SET Creator_ID = ? WHERE Creator_ID = ? AND Item_ID = ?;",
@@ -229,15 +255,18 @@ public class Maps {
         itemInsertType.put("audiobook", "ABook");
         itemInsertType.put("physicalbook", "PBook");
 
-        itemSearcherMap.put("album", "SELECT * FROM ITEM ,ALBUM WHERE title = ? COLLATE NOCASE AND ITEM.Item_ID = ALBUM.ItemID ");
-        itemSearcherMap.put("track", "SELECT * FROM ITEM ,TRACK WHERE title = ? COLLATE NOCASE AND ITEM.Item_ID = TRACK.ItemID ");
+        itemSearcherMap.put("album",
+                "SELECT * FROM ITEM ,ALBUM WHERE title = ? COLLATE NOCASE AND ITEM.Item_ID = ALBUM.ItemID ");
+        itemSearcherMap.put("track",
+                "SELECT * FROM ITEM ,TRACK WHERE title = ? COLLATE NOCASE AND ITEM.Item_ID = TRACK.ItemID ");
         itemSearcherMap.put("itemordered",
                 "SELECT * FROM ITEM, item_ordered WHERE title = ? COLLATE NOCASE AND ITEM.Item_ID = Item_Ordered.Item_ID ");
 
         itemSearcherMap.put("interview",
                 "SELECT * FROM ITEM ,interview WHERE title = ? COLLATE NOCASE AND ITEM.Item_ID = interview.ItemID ");
 
-        itemSearcherMap.put("movie", "SELECT * FROM ITEM, movie WHERE title = ? COLLATE NOCASE AND ITEM.Item_ID = movie.ItemID ");
+        itemSearcherMap.put("movie",
+                "SELECT * FROM ITEM, movie WHERE title = ? COLLATE NOCASE AND ITEM.Item_ID = movie.ItemID ");
         itemSearcherMap.put("audiobook",
                 "SELECT * FROM ITEM ,audiobook WHERE title = ? COLLATE NOCASE AND ITEM.Item_ID = audiobook.ItemID ");
         itemSearcherMap.put("physicalbook",
