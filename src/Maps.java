@@ -29,7 +29,7 @@ public class Maps {
     public static Map<String, String> relationshipSearcherMap;
     public static Map<String, String> relationshipDeleterMap;
     public static String addPersonString = "insert or rollback into person values (?,?,?,?,?);";
-    public static String searchPersonString = "SELECT * FROM PERSON WHERE email = ?;";
+    public static String searchPersonString = "SELECT * FROM PERSON WHERE email = ? COLLATE NOCASE;";
     public static String deletePersonString = "delete FROM PERSON WHERE CardID = ?;";
     public static String startTransactionString = "begin transaction;";
     public static String endTransactionString = "commit;";
@@ -177,10 +177,10 @@ public class Maps {
         creatorAdderMap.put("director", "insert or rollback into director values (?,?,?);");
         creatorAdderMap.put("writer", "insert or rollback into writer values (?,?,?);");
 
-        creatorSearcherMap.put("artist", "SELECT * FROM artist where ar_name = ?;");
-        creatorSearcherMap.put("actor", "SELECT * FROM actor where ar_name = ?;");
-        creatorSearcherMap.put("director", "SELECT * FROM director where ar_name = ?;");
-        creatorSearcherMap.put("writer", "SELECT * FROM writer where ar_name = ?;");
+        creatorSearcherMap.put("artist", "SELECT * FROM artist where ar_name = ? COLLATE NOCASE;");
+        creatorSearcherMap.put("actor", "SELECT * FROM actor where ar_name = ? COLLATE NOCASE;");
+        creatorSearcherMap.put("director", "SELECT * FROM director where ar_name = ? COLLATE NOCASE;");
+        creatorSearcherMap.put("writer", "SELECT * FROM writer where ar_name = ? COLLATE NOCASE;");
 
         creatorDeleteMap.put("creator", "delete from creator where Creator_ID = ?;");
         creatorDeleteMap.put("artist", "delete from artist where Creator_ID = ?;");
@@ -229,30 +229,30 @@ public class Maps {
         itemInsertType.put("audiobook", "ABook");
         itemInsertType.put("physicalbook", "PBook");
 
-        itemSearcherMap.put("album", "SELECT * FROM ITEM ,ALBUM WHERE title = ? AND ITEM.Item_ID = ALBUM.ItemID ");
-        itemSearcherMap.put("track", "SELECT * FROM ITEM ,TRACK WHERE title = ? AND ITEM.Item_ID = TRACK.ItemID ");
+        itemSearcherMap.put("album", "SELECT * FROM ITEM ,ALBUM WHERE title = ? COLLATE NOCASE AND ITEM.Item_ID = ALBUM.ItemID ");
+        itemSearcherMap.put("track", "SELECT * FROM ITEM ,TRACK WHERE title = ? COLLATE NOCASE AND ITEM.Item_ID = TRACK.ItemID ");
         itemSearcherMap.put("itemordered",
-                "SELECT * FROM ITEM, item_ordered WHERE title = ? AND ITEM.Item_ID = Item_Ordered.Item_ID ");
+                "SELECT * FROM ITEM, item_ordered WHERE title = ? COLLATE NOCASE AND ITEM.Item_ID = Item_Ordered.Item_ID ");
 
         itemSearcherMap.put("interview",
-                "SELECT * FROM ITEM ,interview WHERE title = ? AND ITEM.Item_ID = interview.ItemID ");
+                "SELECT * FROM ITEM ,interview WHERE title = ? COLLATE NOCASE AND ITEM.Item_ID = interview.ItemID ");
 
-        itemSearcherMap.put("movie", "SELECT * FROM ITEM ,movie WHERE title = ? AND ITEM.Item_ID = movie.ItemID ");
+        itemSearcherMap.put("movie", "SELECT * FROM ITEM, movie WHERE title = ? COLLATE NOCASE AND ITEM.Item_ID = movie.ItemID ");
         itemSearcherMap.put("audiobook",
-                "SELECT * FROM ITEM ,audiobook WHERE title = ? AND ITEM.Item_ID = audiobook.ItemID ");
+                "SELECT * FROM ITEM ,audiobook WHERE title = ? COLLATE NOCASE AND ITEM.Item_ID = audiobook.ItemID ");
         itemSearcherMap.put("physicalbook",
-                "SELECT * FROM ITEM ,physical_book WHERE title = ? AND ITEM.Item_ID = physical_book.ItemID ");
+                "SELECT * FROM ITEM ,physical_book WHERE title = ? COLLATE NOCASE AND ITEM.Item_ID = physical_book.ItemID ");
 
-        chapterSearcherMap.put("audiobookchapter", "SELECT * FROM CHAPTER_AB WHERE BookID = ?;");
-        chapterSearcherMap.put("physicalbookchapter", "SELECT * FROM CHAPTER_PB WHERE BookID = ?;");
+        chapterSearcherMap.put("audiobookchapter", "SELECT * FROM CHAPTER_AB WHERE BookID = ? ;");
+        chapterSearcherMap.put("physicalbookchapter", "SELECT * FROM CHAPTER_PB WHERE BookID = ? ;");
 
-        chapterSearcherMap.put("chapterAB", "SELECT * FROM CHAPTER_AB WHERE BookID = ? AND Title = ?;");
-        chapterSearcherMap.put("chapterPB", "SELECT * FROM CHAPTER_PB WHERE BookID = ? AND Title = ?;");
+        chapterSearcherMap.put("chapterAB", "SELECT * FROM CHAPTER_AB WHERE BookID = ? AND Title = ? COLLATE NOCASE;");
+        chapterSearcherMap.put("chapterPB", "SELECT * FROM CHAPTER_PB WHERE BookID = ? AND Title = ? COLLATE NOCASE;");
 
         chapterEditorMap.put("audiobookchapter",
-                "UPDATE OR ROLLBACK CHAPTER_AB SET Title = ? WHERE BookID IN (SELECT BookID FROM CHAPTER_AB WHERE Title = ? AND BookID = ?);");
+                "UPDATE OR ROLLBACK CHAPTER_AB SET Title = ? WHERE BookID IN (SELECT BookID FROM CHAPTER_AB WHERE Title = ? COLLATE NOCASE AND BookID = ?);");
         chapterEditorMap.put("physicalbookchapter",
-                "UPDATE OR ROLLBACK CHAPTER_PB SET Title = ? WHERE BookID IN (SELECT BookID FROM CHAPTER_PB WHERE Title = ? AND BookID = ?);");
+                "UPDATE OR ROLLBACK CHAPTER_PB SET Title = ? WHERE BookID IN (SELECT BookID FROM CHAPTER_PB WHERE Title = ? COLLATE NOCASE AND BookID = ?);");
 
         chapterAdderMap.put("audiobookchapter", "insert or rollback into chapter_ab values(?, ?);");
         chapterAdderMap.put("physicalbookchapter", "insert or rollback into chapter_pb values(?, ?);");
@@ -260,9 +260,9 @@ public class Maps {
         chapterDeleterMap.put("audiobookchapter", "delete FROM CHAPTER_AB where BookID = ? AND Title = ?;");
         chapterDeleterMap.put("physicalbookchapter", "delete FROM CHAPTER_PB where BookID = ? AND Title = ?;");
 
-        genreSearcherMap.put("genres", "SELECT DISTINCT GENRE FROM ITEM_GENRE");
+        genreSearcherMap.put("genres", "SELECT DISTINCT GENRE FROM ITEM_GENRE COLLATE NOCASE");
         genreSearcherMap.put("search",
-                "SELECT * FROM ITEM_GENRE, ITEM WHERE ITEM_GENRE.Item_ID = ITEM.Item_ID AND ITEM_GENRE.Genre = ?");
+                "SELECT * FROM ITEM_GENRE, ITEM WHERE ITEM_GENRE.Item_ID = ITEM.Item_ID AND ITEM_GENRE.Genre = ? COLLATE NOCASE");
         genreEditorMap.put("item", "UPDATE item_genre SET Genre = ? WHERE Item_ID = ?;");
         genreAdderMap.put("item", "INSERT INTO item_genre values(?,?);");
         genreDeleterMap.put("item", "DELETE FROM item_genre WHERE Item_ID = ? AND Genre = ?;");
