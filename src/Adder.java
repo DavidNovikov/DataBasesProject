@@ -67,13 +67,13 @@ public class Adder {
             addItemSuper(item, conn, scan, newItemID);
             
             while (genreFlag) {
-            	System.out.println("Enter 'q' to stop adding genres, or 'y' to add a genre");
+            	System.out.println("Enter 'n' to stop adding genres, or 'y' to add a genre");
                 String choice = scan.nextLine();
 	            switch (choice) {
 	            case "y":
 	            	addGenreBase(newItemID, conn, scan);
 	            	break;
-	            case "q":
+	            case "n":
 	            	genreFlag = false;
 	            	break;
 	            default:
@@ -496,21 +496,18 @@ public class Adder {
     	try {
 	        addGenreBase(itemID, conn, scan);
         } catch (Exception e) {
-            System.out.println("Failed to insert");
             throw e;
         }
     }
     private static void addGenreBase(int itemID, Connection conn, Scanner scan) throws Exception {
     	PreparedStatement stmt = null;
     	try {
-	        System.out.println("What is the new genre?");
-	        String newGenre = scan.nextLine();
+	        String newGenre = Util.getString(scan, "genre");
 	        stmt = conn.prepareStatement(Maps.genreAdderMap.get("item"));
 	        stmt.setInt(1, itemID);
 	        stmt.setString(2, newGenre);
 	        stmt.executeUpdate();
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
             throw e;
         } finally {
             Util.closeStmt(stmt);

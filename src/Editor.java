@@ -345,12 +345,14 @@ public class Editor {
     public static void editGenre(String type, Connection conn, Scanner scan) throws Exception {
     	GenreIDPair genreID = Searcher.pickGenre(conn, scan);
     	int itemID = genreID.getItemID();
+    	String oldGenre = genreID.getItemGenre();
     	PreparedStatement stmt = null;
         try {
             String newGenre = Util.getString(scan, "new genre");
             stmt = conn.prepareStatement(Maps.genreEditorMap.get("item"));
             stmt.setString(1, newGenre);
             stmt.setInt(2, itemID);
+            stmt.setString(3, oldGenre);
             stmt.executeUpdate();
         } catch (Exception e) {
             throw e;

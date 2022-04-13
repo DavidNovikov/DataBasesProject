@@ -202,13 +202,13 @@ public class Searcher {
         try {
         	while(listFlag) {
 		        if (genre.equals("1")) {
-		        	stmt = conn.prepareStatement(Maps.genreSearcherMap.get("genres"));
+		        	stmt  = conn.prepareStatement(Maps.genreSearcherMap.get("genres"));
 		        	rSet = stmt.executeQuery();
 		        	Util.searchPrintNoRet(rSet);
 		        	System.out.println("Enter the name of the genre you would like to search for, or 1 to list all genres:");
 		            genre = scan.nextLine();
 		        }else {
-		        	stmt = conn.prepareStatement(Maps.genreSearcherMap.get("search"));
+		        	stmt  = conn.prepareStatement(Maps.genreSearcherMap.get("search"));
 		        	stmt.setString(1, genre);
 		        	rSet = stmt.executeQuery();
 		        	genreList = Util.searchPrint(rSet, "Item_ID");
@@ -223,11 +223,12 @@ public class Searcher {
 		        		System.out.println("Enter the name of the genre you would like to search for, or 1 to list all genres:");
 			            genre = scan.nextLine();
 		        	}
-		        	rSet.beforeFirst();
-		        	ResultSetMetaData rSetmd = rSet.getMetaData();
-		        	while (rSet.next()) {
-		        		int genreListIDs = rSet.getInt("Item_ID");
-		        		String genreNew = rSet.getString("Genre");
+		  
+		            PreparedStatement stmt2  = conn.prepareStatement(Maps.genreSearcherMap.get("search"));
+		            ResultSet rSet2 = stmt2.executeQuery();
+		        	while (rSet2.next()) {
+		        		int genreListIDs = rSet2.getInt("Item_ID");
+		        		String genreNew = rSet2.getString("Genre");
 		        		genreStringMap.put(genreListIDs, genreNew);
 		        	}
 		        	

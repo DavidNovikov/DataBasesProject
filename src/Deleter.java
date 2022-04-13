@@ -153,14 +153,11 @@ public class Deleter {
     	int itemID = genreID.getItemID();
     	PreparedStatement stmt = null;
     	try {
-	        System.out.println("What is the genre you wish to delete?");
-	        String newGenre = scan.nextLine();
 	        stmt = conn.prepareStatement(Maps.genreDeleterMap.get("item"));
 	        stmt.setInt(1, itemID);
-	        stmt.setString(2, newGenre);
+	        stmt.setString(2, genreID.getItemGenre());
 	        stmt.executeUpdate();
         } catch (SQLException e) {
-        	System.out.println(e.getMessage());
             throw e;
         } finally {
             Util.closeStmt(stmt);
