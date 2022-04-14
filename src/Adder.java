@@ -494,15 +494,12 @@ public class Adder {
     
     public static void addCheckoutItem(String type, Connection conn, Scanner scan) throws Exception {
     	int itemID = Searcher.pickItemCheckedOut(type, conn, scan);
-    	boolean itemAvailable = false;
+    	boolean itemAvailable = true;
     	if (!Maps.checkoutReturnDates.isEmpty()) {
     		int count =0;
-    		while (count <Maps.checkoutReturnDates.size() && !itemAvailable) {
+    		while (count <Maps.checkoutReturnDates.size() && itemAvailable) {
     			String returnDate = Maps.checkoutReturnDates.get(count);
     			count++;
-    			if (!returnDate.equals("")) {
-    				itemAvailable = true;
-    			}
     			if (returnDate.equals("")) {
     				itemAvailable = false;
     			}
