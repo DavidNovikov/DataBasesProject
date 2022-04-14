@@ -378,5 +378,40 @@ public class Searcher {
         }
         return newID;
     }
+    
+    public static int pickItemCheckedOut(String type, Connection conn, Scanner scan) throws Exception {
+    	ArrayList<String> allReturnDates = new ArrayList<String>();
+    	int itemID = -1;
+    	PreparedStatement stmt = null;
+    	ResultSet rSet = null;
+    	itemID = Searcher.pickItem(type, conn, scan);
+    	try {
+    		String sql = Maps.searchItemCheckoutsString;
+    		stmt = conn.prepareStatement(sql);
+    		stmt.setInt(1, itemID);
+    		
+    		rSet = stmt.executeQuery();
+    		
+    		while (rSet.next()) {
+    			
+    			String returnDate = rSet.getString("Returned_Date");
+    			if (returnDate == null) {
+    				returnDate = "";
+    			}
+    			allReturnDates.add(returnDate);
+    			itemID = rSet.getInt("ItemID");
+    	    	
+    		}
+    	} catch (Exception e) {
+    		throw e;
+    	} finally {
+    		Util.closeRSet(rSet);
+            Util.closeStmt(stmt);            
+        }
+    	Maps.checkoutReturnDates = allReturnDates;
+    	
+
+    	return itemID;
+    }
 
 }

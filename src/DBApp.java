@@ -80,7 +80,7 @@ public class DBApp {
     public void delete() throws Exception {
         // Ask the user which record they want to delete
         System.out.println(
-                "Deleting options:\n(Media)\n(Creator)\n(Person)\n(Relationship)\n(q to quit)\nPlease select one:");
+                "Deleting options:\n(Media)\n(Creator)\n(Person)\n(Relationship)\n(Checkout Record)\n(q to quit)\nPlease select one:");
         String type = scan.nextLine().toLowerCase();
 
         switch (type) {
@@ -96,6 +96,8 @@ public class DBApp {
             case "relationship":
                 Deleter.deleteRelationship(conn, scan);
                 break;
+            case "checkoutrecord":
+            	Deleter.deleteItemCheckedOut(conn,scan);
             case "q":
                 break;
             default:
@@ -107,7 +109,7 @@ public class DBApp {
     public void edit() throws Exception {
         // Ask the user which record they want to edit
         System.out.println(
-                "Editing options:\n(Media)\n(Creator)\n(Person)\n(Relationship)\n(q to quit)\nPlease select one:");
+                "Editing options:\n(Media)\n(Creator)\n(Person)\n(Relationship)\n(Checkout Record)\n(q to quit)\nPlease select one:");
         String type = scan.nextLine().toLowerCase();
 
         switch (type) {
@@ -123,12 +125,39 @@ public class DBApp {
             case "relationship":
                 Editor.editRelationship(conn, scan);
                 break;
+            case "checkout record":
+            	Editor.editItemCheckedOut(conn, scan);
             case "q":
                 break;
             default:
                 // print invalid
                 System.out.println(type + " is an Invalid input");
         }
+    }
+    
+    public void checkout() throws Exception {
+        // Ask the user what type of record they want to check out
+        System.out.println(
+                "Enter the type of the record to be checked out (Album, Track, Interview, Movie, Audiobook, or PhysicalBook): ");
+        String type = scan.nextLine().toLowerCase();
+        try {
+            switch (type) {
+            case "album":
+            case "track":
+            case "interview":
+            case "movie":
+            case "audiobook":
+            case "physicalbook":
+                Adder.addCheckoutItem(type,conn,scan);
+                break;
+            default:
+                // print invalid
+                System.out.println(type + " is an Invalid input");
+            }
+        } catch (Exception e) {
+            System.out.println("failed to insert");
+        }
+        
     }
 
     private void execute() {
@@ -157,7 +186,8 @@ public class DBApp {
                             // search for a record and print it
                             search();
                         case 'c':
-                            // TODO: implement checkout
+                        	//ask the user for a record to checkout and add it to the list of items checked out.
+                            checkout();
                             break;
                         case 'd':
                             delete();
