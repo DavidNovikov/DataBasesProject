@@ -3,38 +3,39 @@ import java.util.*;
 
 public class Deleter {
     public static void deleteItemCheckedOut(Connection conn, Scanner scan) throws Exception {
-    	System.out.println("Enter the type of record that was checked out, to be deleted. (Album, Track, Interview, Movie, Audiobook, or PhysicalBook): ");
+        System.out.println(
+                "Enter the type of record that was checked out, to be deleted. (Album, Track, Interview, Movie, Audiobook, or PhysicalBook): ");
         String type = scan.nextLine().toLowerCase();
         int itemID = -1;
-    	switch (type) {
-        	case "album":
-        	case "track":
-        	case "interview":
-        	case "movie":
-        	case "audiobook":
-        	case "physicalbook":
-        		itemID = Searcher.pickItem(type,conn, scan);
-            break;
-        	default:
-        		// print invalid
-        		System.out.println(type + " is an Invalid input");
+        switch (type) {
+            case "album":
+            case "track":
+            case "interview":
+            case "movie":
+            case "audiobook":
+            case "physicalbook":
+                itemID = Searcher.pickItem(type, conn, scan);
+                break;
+            default:
+                // print invalid
+                System.out.println(type + " is an Invalid input");
         }
-    	String checkoutDate = Util.getDate(scan, "Checkout Date");
-    	PreparedStatement stmt = null;
-    	try {
-    		String sql = Maps.deleteItemCheckoutsString;
-    		stmt = conn.prepareStatement(sql);
-    		stmt.setInt(1, itemID);
-    		stmt.setString(2,checkoutDate);
-    		stmt.executeUpdate();
-    	} catch (Exception e) {
-    		System.out.println(e.getMessage());
-    		throw e;
-    	} finally {
-            Util.closeStmt(stmt);            
-        }  
-    	
-    	System.out.println("Record deleted");
+        String checkoutDate = Util.getDate(scan, "Checkout Date");
+        PreparedStatement stmt = null;
+        try {
+            String sql = Maps.deleteItemCheckoutsString;
+            stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, itemID);
+            stmt.setString(2, checkoutDate);
+            stmt.executeUpdate();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw e;
+        } finally {
+            Util.closeStmt(stmt);
+        }
+
+        System.out.println("Record deleted");
     }
 
     public static void deleteCreator(Connection conn, Scanner scan) throws Exception {
@@ -60,11 +61,24 @@ public class Deleter {
     private static void deleteCreator(String type, Connection conn, Scanner scan) throws Exception {
         try {
             int cID = Searcher.pickCreator(type, conn, scan);
+            // TODO delete the items that the creator created but only if they're the only
+            // creator
+            // maybe delete relationships and then clean up items that are left
+            // TODO delete relationship
             deleteCreatorRelationships(cID, type, conn);
+            deleteItemsOnlyMadeByCreator(type, conn);
             deleteCreatorSuper(cID, type, conn);
             deleteCreatorBase(cID, type, conn);
         } catch (Exception e) {
             throw e;
+        }
+    }
+
+    private static void deleteItemsOnlyMadeByCreator(String type, Connection conn) throws Exception {
+        ArrayList<Integer> ItemsWithNoCreator = Searcher.getItemsWithoutRelationshipsForCreatorType(type, conn);
+        for (Integer itemID : ItemsWithNoCreator) {
+            String itemType = Util.getItemType(itemID, conn);
+            deleteItemWithItemID(itemID, itemType, conn);
         }
     }
 
@@ -150,10 +164,30 @@ public class Deleter {
     }
 
     public static void deletePerson(Connection conn, Scanner scan) throws Exception {
+        int cardID = Searcher.pickPerson(conn, scan);
+        deleteItemsCheckedOutEntrysByPerson(conn, cardID);
+        deletePersonFromLibrary(conn, cardID);
+    }
+
+    private static void deletePersonFromLibrary(Connection conn, int cardID)
+            throws Exception {
         PreparedStatement stmt = null;
         try {
-            int cardID = Searcher.pickPerson(conn, scan);
             stmt = conn.prepareStatement(Maps.deletePersonString);
+            stmt.setInt(1, cardID);
+            stmt.executeUpdate();
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            Util.closeStmt(stmt);
+        }
+    }
+
+    private static void deleteItemsCheckedOutEntrysByPerson(Connection conn, int cardID)
+            throws Exception {
+        PreparedStatement stmt = null;
+        try {
+            stmt = conn.prepareStatement(Maps.deletePersonsCheckoutsString);
             stmt.setInt(1, cardID);
             stmt.executeUpdate();
         } catch (Exception e) {
@@ -181,16 +215,29 @@ public class Deleter {
         }
     }
 
+    public static void deleteGenreWithItemID(int itemID, Connection conn) throws Exception {
+        PreparedStatement stmt = null;
+        try {
+            stmt = conn.prepareStatement(Maps.genreDeleterMap.get("itemIDOnly"));
+            stmt.setInt(1, itemID);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw e;
+        } finally {
+            Util.closeStmt(stmt);
+        }
+    }
+
     public static void deleteGenre(Connection conn, Scanner scan) throws Exception {
-    	System.out.println("Select an entry to delete a genre from");
-    	GenreIDPair genreID = Searcher.pickGenre(conn, scan);
-    	int itemID = genreID.getItemID();
-    	PreparedStatement stmt = null;
-    	try {
-	        stmt = conn.prepareStatement(Maps.genreDeleterMap.get("item"));
-	        stmt.setInt(1, itemID);
-	        stmt.setString(2, genreID.getItemGenre());
-	        stmt.executeUpdate();
+        System.out.println("Select an entry to delete a genre from");
+        GenreIDPair genreID = Searcher.pickGenre(conn, scan);
+        int itemID = genreID.getItemID();
+        PreparedStatement stmt = null;
+        try {
+            stmt = conn.prepareStatement(Maps.genreDeleterMap.get("item"));
+            stmt.setInt(1, itemID);
+            stmt.setString(2, genreID.getItemGenre());
+            stmt.executeUpdate();
         } catch (SQLException e) {
             throw e;
         } finally {
@@ -230,28 +277,105 @@ public class Deleter {
     private static void deleteItem(String type, Connection conn, Scanner scan) throws Exception {
         try {
             int itemID = Searcher.pickItem(type, conn, scan);
-
-            // if the type is itemordered, get the corresponding item type for the itemID
-            // and call deleteItemSuper on that
-            if (type.equals("itemordered")) {
-                String databaseType = Util.getTypeColumnInItemFromItemID(itemID, conn);
-                // convert the database type to the types we use for java program
-                String javaType = Util.changeToJavaString(databaseType);
-                // delete item super from that type
-                deleteItemSuper(itemID, javaType, conn, scan);
-            } else if (Util.itemIsInItemsOrdered(itemID, conn)) {
-                // check to see if the item is in ordered items. If so, make them delete it as
-                // an itemOrdered
-                throw new Exception("This item was ordered. To delete it, delete it as an \"itemOrdered\"\n");
-            }
-            deleteItemSuper(itemID, type, conn, scan);
-            deleteItemBase(itemID, type, conn, scan);
+            deleteItemWithItemID(itemID, type, conn);
         } catch (Exception e) {
             throw e;
         }
     }
 
-    private static void deleteItemBase(int itemID, String type, Connection conn, Scanner scan) throws Exception {
+    private static void deleteItemWithItemID(int itemID, String type, Connection conn) throws Exception {
+        try {
+            // if the type is itemordered, get the corresponding item type for the itemID
+            // and call deleteItemSuper on that
+            if (Util.itemIsInItemsOrdered(itemID, conn)) {// this catches things not bassed as itmeordered
+                deleteItemSuper(itemID, "itemordered", conn);
+            }
+            if (type.equals("itemordered")) {// this catches things that were ordered and gets their other super class
+                String databaseType = Util.getTypeColumnInItemFromItemID(itemID, conn);
+                // convert the database type to the types we use for java program
+                String javaType = Util.changeToJavaString(databaseType);
+                // delete item super from that type
+                deleteItemSuper(itemID, javaType, conn);
+            }
+
+            deleteTracksAndChapters(itemID, type, conn);
+            if (!type.equals("album"))
+                deleteRelationshipWithItemID(itemID, type, conn);
+            deleteGenreWithItemID(itemID, conn);
+            deleteItemsCheckedOutEntrysByItemID(conn, itemID);
+            deleteItemSuper(itemID, type, conn);
+            deleteItemBase(itemID, type, conn);
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+    private static void deleteItemsCheckedOutEntrysByItemID(Connection conn, int itemID)
+            throws Exception {
+        PreparedStatement stmt = null;
+        try {
+            stmt = conn.prepareStatement(Maps.deleteItemCheckedoutString);
+            stmt.setInt(1, itemID);
+            stmt.executeUpdate();
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            Util.closeStmt(stmt);
+        }
+    }
+
+    private static void deleteRelationshipWithItemID(int itemID, String type, Connection conn) throws Exception {
+        PreparedStatement stmt = null;
+        String[] vals = Maps.itemDeleteRelationshipMap.get(type);
+        for (String val : vals) {
+            try {
+                stmt = conn.prepareStatement(val);
+                stmt.setInt(1, itemID);
+                stmt.executeUpdate();
+            } catch (Exception e) {
+                throw e;
+            } finally {
+                Util.closeStmt(stmt);
+            }
+        }
+    }
+
+    private static void deleteTracksAndChapters(int itemID, String type, Connection conn)
+            throws Exception {
+        switch (type) {
+            case "album":
+                deleteTracksWithAlbumID(itemID, conn);
+                break;
+            case "audiobook":
+            case "physicalbook":
+                deleteChaptersWithBookID(itemID, type, conn);
+                break;
+        }
+    }
+
+    private static void deleteChaptersWithBookID(int bookID, String type, Connection conn)
+            throws Exception {
+        PreparedStatement stmt = null;
+        try {
+            stmt = conn.prepareStatement(Maps.itemDependDeleteMap.get(type));
+            stmt.setInt(1, bookID);
+            stmt.executeUpdate();
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            Util.closeStmt(stmt);
+        }
+    }
+
+    private static void deleteTracksWithAlbumID(int albumID, Connection conn)
+            throws Exception {
+        ArrayList<Integer> trackIDs = Searcher.getTracksFromAlbumID(albumID, conn);
+        for (Integer trackID : trackIDs) {
+            deleteItemWithItemID(trackID, "track", conn);
+        }
+    }
+
+    private static void deleteItemBase(int itemID, String type, Connection conn) throws Exception {
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement(Maps.itemDeleteMap.get("item"));
@@ -264,7 +388,7 @@ public class Deleter {
         }
     }
 
-    private static void deleteItemSuper(int itemID, String type, Connection conn, Scanner scan) throws Exception {
+    private static void deleteItemSuper(int itemID, String type, Connection conn) throws Exception {
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement(Maps.itemDeleteMap.get(type));

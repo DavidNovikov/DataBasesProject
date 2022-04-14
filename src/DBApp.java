@@ -97,7 +97,7 @@ public class DBApp {
                 Deleter.deleteRelationship(conn, scan);
                 break;
             case "checkoutrecord":
-            	Deleter.deleteItemCheckedOut(conn,scan);
+                Deleter.deleteItemCheckedOut(conn, scan);
             case "q":
                 break;
             default:
@@ -126,7 +126,7 @@ public class DBApp {
                 Editor.editRelationship(conn, scan);
                 break;
             case "checkout record":
-            	Editor.editItemCheckedOut(conn, scan);
+                Editor.editItemCheckedOut(conn, scan);
             case "q":
                 break;
             default:
@@ -134,7 +134,7 @@ public class DBApp {
                 System.out.println(type + " is an Invalid input");
         }
     }
-    
+
     public void checkout() throws Exception {
         // Ask the user what type of record they want to check out
         System.out.println(
@@ -142,22 +142,22 @@ public class DBApp {
         String type = scan.nextLine().toLowerCase();
         try {
             switch (type) {
-            case "album":
-            case "track":
-            case "interview":
-            case "movie":
-            case "audiobook":
-            case "physicalbook":
-                Adder.addCheckoutItem(type,conn,scan);
-                break;
-            default:
-                // print invalid
-                System.out.println(type + " is an Invalid input");
+                case "album":
+                case "track":
+                case "interview":
+                case "movie":
+                case "audiobook":
+                case "physicalbook":
+                    Adder.addCheckoutItem(type, conn, scan);
+                    break;
+                default:
+                    // print invalid
+                    System.out.println(type + " is an Invalid input");
             }
         } catch (Exception e) {
             System.out.println("failed to insert");
         }
-        
+
     }
 
     private void execute() {
@@ -165,7 +165,7 @@ public class DBApp {
         while (input != 'q') {
             // ask the user for input
             System.out.println(
-                    "Enter 'a' to add new records, 'e' to edit a record, 's' to search for a record, 'd' to delete a record, 'c' to check out a record, 'o' to manage orders, 'p' to manage library cards/patrons, and 'q' to quit.");
+                    "Enter 'a' to add new records, 'e' to edit a record, 's' to search for a record, 'd' to delete a record, 'c' to check out a record, and 'q' to quit.");
 
             // get user input
             input = scan.nextLine().charAt(0);
@@ -186,17 +186,12 @@ public class DBApp {
                             // search for a record and print it
                             search();
                         case 'c':
-                        	//ask the user for a record to checkout and add it to the list of items checked out.
+                            // ask the user for a record to checkout and add it to the list of items checked
+                            // out.
                             checkout();
                             break;
                         case 'd':
                             delete();
-                            break;
-                        case 'o':
-                            // TODO: order/edit/delete records
-                            break;
-                        case 'p':
-                            // TODO: manage people func
                             break;
                         case 'q':
                             // quit the program
