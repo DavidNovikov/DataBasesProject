@@ -490,4 +490,93 @@ public class Editor {
             Util.closeStmt(stmt);
         }
     }
+    
+    public static void editItemCheckedOut(Connection conn, Scanner scan) throws Exception {
+    	System.out.println("What type of item was checked out:\n(album)\n(track)\n(interview)\n(movie)\n(audiobook)\n(physicalbook)");
+    	String itemType = scan.nextLine().toLowerCase();
+    	int itemID = Searcher.pickItem(itemType,conn, scan);
+    	String checkoutDate = Util.getDate(scan, "Checkout Date");
+    	System.out.println("What do you want to edit about the checkout record:\n(itemID)\n(cardID)\n(dueDate)\n(checkoutDate)\n(returnDate)");
+    	String whatToEdit = scan.nextLine().toLowerCase();
+    	
+    	switch (whatToEdit) {
+    		case "itemid":
+    			editItemCheckedOutID(conn, scan, 0, itemID, checkoutDate);
+    			break;
+    		case "cardid":
+    			editItemCheckedOutID(conn,scan, 1, itemID, checkoutDate);
+    			break;
+    		case "duedate":
+    			editItemCheckedOutDate(conn,scan,0, itemID, checkoutDate);
+    			break;
+    		case "checkoutdate":
+    			editItemCheckedOutDate(conn,scan,1, itemID, checkoutDate);
+    			break;
+    		case "returndate":
+    			editItemCheckedOutDate(conn,scan,2, itemID, checkoutDate);
+    			break;
+    		default:
+                // print invalid
+                System.out.println(whatToEdit + " is an Invalid input");
+    	}
+    }
+    
+    public static void editItemCheckedOutID(Connection conn, Scanner scan, int option, int itemID, String checkoutDate) throws Exception {
+    	PreparedStatement stmt = null;
+    	System.out.println("Enter the new ID");
+		int newID = Integer.parseInt(scan.nextLine());
+    	try {
+    		stmt = conn.prepareStatement(Maps.editItemCheckoutIDList[option]);
+    		switch (option) {
+    			case 0:
+    				stmt.setInt(1, newID);
+    				stmt.setInt(2, itemID);
+    				stmt.setString(3, checkoutDate);
+    				stmt.executeUpdate();
+    				break;
+    			case 1:
+    				stmt.setInt(1, newID);
+    				stmt.setInt(2, itemID);
+    				stmt.setString(3, checkoutDate);
+    				stmt.executeUpdate();
+    				break;
+    		}
+    	} catch (Exception e) {
+    		throw e;
+    	} finally {
+    		Util.closeStmt(stmt);
+    	}    	
+    }
+    
+    public static void editItemCheckedOutDate(Connection conn, Scanner scan, int option, int itemID, String checkoutDate) throws Exception {
+    	PreparedStatement stmt = null;
+    	String newDate = Util.getDate(scan,"New Date");
+    	try {
+    		stmt = conn.prepareStatement(Maps.editItemCheckoutDateList[option]);
+    		switch (option) {
+    			case 0:
+    				stmt.setString(1, newDate);
+    				stmt.setInt(2, itemID);
+    				stmt.setString(3, checkoutDate);
+    				stmt.executeUpdate();
+    				break;
+    			case 1:
+    				stmt.setString(1, newDate);
+    				stmt.setInt(2, itemID);
+    				stmt.setString(3, checkoutDate);
+    				stmt.executeUpdate();
+    				break;
+    			case 2:
+    				stmt.setString(1, newDate);
+    				stmt.setInt(2, itemID);
+    				stmt.setString(3, checkoutDate);
+    				stmt.executeUpdate();
+    				break;
+    		}
+    	} catch (Exception e) {
+    		throw e;
+    	} finally {
+    		Util.closeStmt(stmt);
+    	}    	
+    }
 }
