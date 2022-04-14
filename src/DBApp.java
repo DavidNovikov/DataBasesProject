@@ -80,7 +80,7 @@ public class DBApp {
     public void delete() throws Exception {
         // Ask the user which record they want to delete
         System.out.println(
-                "Deleting options:\n(Media)\n(Creator)\n(Person)\n(Relationship)\n(q to quit)\nPlease select one:");
+                "Deleting options:\n(Media)\n(Creator)\n(Person)\n(Relationship)\n(Checkout Record)\n(q to quit)\nPlease select one:");
         String type = scan.nextLine().toLowerCase();
 
         switch (type) {
@@ -96,6 +96,8 @@ public class DBApp {
             case "relationship":
                 Deleter.deleteRelationship(conn, scan);
                 break;
+            case "checkoutrecord":
+            	Deleter.deleteItemCheckedOut(conn,scan);
             case "q":
                 break;
             default:
@@ -107,7 +109,7 @@ public class DBApp {
     public void edit() throws Exception {
         // Ask the user which record they want to edit
         System.out.println(
-                "Editing options:\n(Media)\n(Creator)\n(Person)\n(Relationship)\n(q to quit)\nPlease select one:");
+                "Editing options:\n(Media)\n(Creator)\n(Person)\n(Relationship)\n(Checkout Record)\n(q to quit)\nPlease select one:");
         String type = scan.nextLine().toLowerCase();
 
         switch (type) {
@@ -123,6 +125,8 @@ public class DBApp {
             case "relationship":
                 Editor.editRelationship(conn, scan);
                 break;
+            case "checkout record":
+            	Editor.editItemCheckedOut(conn, scan);
             case "q":
                 break;
             default:
@@ -144,7 +148,7 @@ public class DBApp {
             case "movie":
             case "audiobook":
             case "physicalbook":
-                checkout.addCheckoutItem(type,conn,scan);
+                Adder.addCheckoutItem(type,conn,scan);
                 break;
             default:
                 // print invalid

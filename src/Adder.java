@@ -491,4 +491,55 @@ public class Adder {
             Util.closeStmt(stmt);
         }
     }
+    
+    public static void addCheckoutItem(String type, Connection conn, Scanner scan) throws Exception {
+    	int itemID = Searcher.pickItemCheckedOut(type, conn, scan);
+    	boolean itemAvailable = false;
+    	if (!Maps.checkoutReturnDates.isEmpty()) {
+    		int count =0;
+    		while (count <Maps.checkoutReturnDates.size() && !itemAvailable) {
+    			String returnDate = Maps.checkoutReturnDates.get(count);
+    			count++;
+    			if (!returnDate.equals("")) {
+    				itemAvailable = true;
+    			}
+    			if (returnDate.equals("")) {
+    				itemAvailable = false;
+    			}
+    		}
+    		if (!itemAvailable) {
+    			System.out.println("There are none of this item available to be checked out.");
+    			return;
+    		}
+    	}
+    	if (Util.itemIsInItemsOrdered(itemID, conn)) {
+    		System.out.println("Item is currently being ordered, cannot check it out yet.");
+    		return;
+    	}
+    	
+		System.out.println("Your item is available to be checked out.");
+		PreparedStatement stmt = null;
+		int cardID = Searcher.pickPerson(conn, scan);
+		String formattedCurrentDate = Util.getDate(scan, "Checkout Date");
+		String formattedDueDate = Util.getDate(scan, "Due Date");
+
+		try {
+			String sql = Maps.addItemCheckoutString;
+			stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, itemID);
+			stmt.setInt(2, cardID);
+			stmt.setString(3, formattedDueDate);
+			stmt.setNull(4, Types.NULL);
+			stmt.setString(5, formattedCurrentDate);
+			stmt.executeUpdate();
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			Util.closeStmt(stmt);
+		}
+		System.out.println("Your item has been checked out. Your due date is: " + formattedDueDate);
+		return;
+    	
+    }
 }

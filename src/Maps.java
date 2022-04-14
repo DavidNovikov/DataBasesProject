@@ -33,7 +33,7 @@ public class Maps {
     public static String deletePersonString = "delete FROM PERSON WHERE CardID = ?;";
     public static String addItemCheckoutString = "insert into item_checked_out values (?,?,?,?,?);";
     public static String searchItemCheckoutsString = "SELECT * FROM ITEM_CHECKED_OUT WHERE ItemID = ?;";
-    public static String deleteItemCheckoutsString = "DELETE FROM ITEM_CHECKED_OUT WHERE ItemID = ? AND Checkout_Date = ?;";
+    public static String deleteItemCheckoutsString = "delete from ITEM_CHECKED_OUT WHERE ItemID = ? AND Checkout_Date = ?;";
     public static String startTransactionString = "begin transaction;";
     public static String endTransactionString = "commit;";
     public static String forceRollBackString = "ROLLBACK;";
@@ -43,6 +43,14 @@ public class Maps {
     public static Map<String, String> chapterDeleterMap;
     public static String getTypeColumnInItemFromItemIDString = "SELECT Type FROM Item WHERE Item_ID = ?;";
     public static String checkItemInOrderedString = "SELECT * FROM Item_Ordered WHERE Item_ID = ?;";
+    public static ArrayList<String> checkoutReturnDates = new ArrayList<String>();
+    public static String[] editItemCheckoutIDList = {
+    		"update or rollback item_checked_out SET ItemID = ? WHERE ItemID = ? AND Checkout_Date = ?;",
+    		"update or rollback item_checked_out SET CardID = ? WHERE ItemID = ? AND Checkout_Date = ?;"};
+    public static String[] editItemCheckoutDateList = {
+    		"update or rollback item_checked_out SET Due_Date = ? WHERE ItemID = ? AND Checkout_Date = ?;",
+    		"update or rollback item_checked_out SET Checkout_Date = ? WHERE ItemID = ? AND Checkout_Date = ?;",
+    		"update or rollback item_checked_out SET Returned_Date = ? WHERE ItemID = ? AND Checkout_Date = ?;"};
 
     // Instantiating the static maps
     static {
@@ -83,7 +91,7 @@ public class Maps {
         relationshipOptionMap.put("interviewed", interviewedOptionList);
         relationshipOptionMap.put("performs", performsOptionList);
         relationshipOptionMap.put("directs", directsOptionList);
-
+        
         String[] starsList = {
                 "update or rollback stars SET Creator_ID = ? WHERE Creator_ID = ? AND Item_ID = ?;",
                 "update or rollback stars SET Item_ID = ? WHERE Creator_ID = ? AND Item_ID = ?;",
