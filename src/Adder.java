@@ -62,9 +62,26 @@ public class Adder {
     private static void addItem(String item, Connection conn, Scanner scan) throws Exception {
         int newItemID;
         try {
+        	boolean genreFlag = true;
             newItemID = addItemBase(item, conn, scan);
             addItemSuper(item, conn, scan, newItemID);
-            // addItemGenre(item, conn, scan, newItemID);
+            
+            while (genreFlag) {
+            	System.out.println("Enter 'n' to stop adding genres, 'q' to quit, or 'y' to add a genre");
+                String choice = scan.nextLine();
+	            switch (choice) {
+	            case "y":
+	            	addGenreBase(newItemID, conn, scan);
+	            	break;
+	            case "n":
+	            	genreFlag = false;
+	            	break;
+	            case "q":
+	            	throw new Exception("User quit during operation!");
+	            default:
+	            	System.out.println("Invalid choice, try again");
+	            }
+            }
         } catch (Exception e) {
             throw e;
         }
@@ -472,23 +489,29 @@ public class Adder {
         } finally {
             Util.closeStmt(stmt);
         }
-    }
 
-    private static void addGenre(Connection conn, Scanner scan) throws Exception {
-        System.out.println("Select an entry to add a genre to");
-        int itemID = Searcher.pickGenre(conn, scan);
-        PreparedStatement stmt = null;
-        try {
-            String newGenre = Util.getString(scan, "new genre");
-            stmt = conn.prepareStatement(Maps.genreAdderMap.get("item"));
-            stmt.setInt(1, itemID);
-            stmt.setString(2, newGenre);
-            stmt.executeUpdate();
+}
+    public static void addGenre(Connection conn, Scanner scan) throws Exception {
+    	System.out.println("Select an entry to add a genre to");
+    	int itemID = Searcher.pickItem(conn, scan);
+    	try {
+	        addGenreBase(itemID, conn, scan);
         } catch (Exception e) {
-            System.out.println("Unable to insert genre");
+            throw e;
+        }
+    }
+    private static void addGenreBase(int itemID, Connection conn, Scanner scan) throws Exception {
+    	PreparedStatement stmt = null;
+    	try {
+	        String newGenre = Util.getString(scan, "genre");
+	        stmt = conn.prepareStatement(Maps.genreAdderMap.get("item"));
+	        stmt.setInt(1, itemID);
+	        stmt.setString(2, newGenre);
+	        stmt.executeUpdate();
+        } catch (SQLException e) {
             throw e;
         } finally {
             Util.closeStmt(stmt);
         }
-    }
+	}
 }
