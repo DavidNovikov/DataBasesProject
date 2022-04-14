@@ -68,6 +68,7 @@ public class DBApp {
                 break;
             case "relationship":
                 Adder.addRelationship(conn, scan);
+                break;
             case "q":
                 break;
             default:
@@ -98,6 +99,7 @@ public class DBApp {
                 break;
             case "checkoutrecord":
                 Deleter.deleteItemCheckedOut(conn, scan);
+                break;
             case "q":
                 break;
             default:
@@ -127,6 +129,7 @@ public class DBApp {
                 break;
             case "checkout record":
                 Editor.editItemCheckedOut(conn, scan);
+                break;
             case "q":
                 break;
             default:
@@ -185,6 +188,7 @@ public class DBApp {
                         case 's':
                             // search for a record and print it
                             search();
+                            break;
                         case 'c':
                             // ask the user for a record to checkout and add it to the list of items checked
                             // out.
@@ -228,15 +232,6 @@ public class DBApp {
         try {
             // create a database connection
             app.getConnection();
-            // These can be uncommented to perform a sanity check that you're connecting to
-            // the db correctly
-            try {
-                System.out.println(Util.nextIDFrom("Item", app.conn));
-                System.out.println(Util.nextIDFrom("creator", app.conn));
-                System.out.println(Util.nextIDFrom("library_card", app.conn));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
             app.execute();
         } catch (Exception e) {
             System.err.println(e.getMessage());
