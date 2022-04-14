@@ -391,5 +391,52 @@ public class Util {
 		}
 		return result;
 	}
-	
+
+	public static String getItemType(Integer itemID, Connection conn) throws Exception {
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		String type;
+		try {
+
+			stmt = conn.prepareStatement(Maps.getItemType);
+			stmt.setInt(1, itemID);
+			rSet = stmt.executeQuery();
+
+			if (Util.resultSetContainsData(rSet)) {
+				type = rSet.getString("type");
+			} else {
+				throw new Exception(itemID + " item not found");
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			Util.closeStmt(stmt);
+			Util.closeRSet(rSet);
+		}
+		switch (type) {
+			case "ALBUM":
+				type = "album";
+				break;
+			case "Track":
+				type = "track";
+				break;
+			case "interview":
+				type = "interview";
+				break;
+			case "MOVIE":
+				type = "movie";
+				break;
+			case "ABook":
+				type = "audiobook";
+				break;
+			case "PBook":
+				type = "physicalbook";
+				break;
+			default:
+				throw new Exception(itemID + " has an invalid type");
+		}
+
+		return type;
+	}
+
 }

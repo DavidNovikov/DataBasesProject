@@ -66,10 +66,19 @@ public class Deleter {
             // maybe delete relationships and then clean up items that are left
             // TODO delete relationship
             deleteCreatorRelationships(cID, type, conn);
+            deleteItemsOnlyMadeByCreator(type, conn);
             deleteCreatorSuper(cID, type, conn);
             deleteCreatorBase(cID, type, conn);
         } catch (Exception e) {
             throw e;
+        }
+    }
+
+    private static void deleteItemsOnlyMadeByCreator(String type, Connection conn) throws Exception {
+        ArrayList<Integer> ItemsWithNoCreator = Searcher.getItemsWithoutRelationshipsForCreatorType(type, conn);
+        for (Integer itemID : ItemsWithNoCreator) {
+            String itemType = Util.getItemType(itemID, conn);
+            deleteItemWithItemID(itemID, itemType, conn);
         }
     }
 

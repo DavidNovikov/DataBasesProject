@@ -380,6 +380,29 @@ public class Searcher {
         return newID;
     }
 
+    public static ArrayList<Integer> getItemsWithoutRelationshipsForCreatorType(String type, Connection conn)
+            throws Exception {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        ArrayList<Integer> IDmap = new ArrayList<Integer>();
+        String[] possibleItemTypes = Maps.creatorToRemovedItemsMap.get(type);
+        for (int i = 0; i < possibleItemTypes.length; i++) {
+            try {
+                stmt = conn.prepareStatement(possibleItemTypes[i]);
+                rSet = stmt.executeQuery();
+                while (rSet.next()) {
+                    IDmap.add(rSet.getInt("ItemID"));
+                }
+            } catch (Exception e) {
+                throw e;
+            } finally {
+                Util.closeStmt(stmt);
+                Util.closeRSet(rSet);
+            }
+        }
+        return IDmap;
+    }
+
     public static ArrayList<Integer> getTracksFromAlbumID(int albumID, Connection conn) throws Exception {
         PreparedStatement stmt = null;
         ResultSet rSet = null;

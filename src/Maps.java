@@ -17,6 +17,7 @@ public class Maps {
     public static Map<String, String> itemInsertType;
     public static Map<String, String> itemSearcherMap;
     public static Map<String, String[]> itemToRelationshipMap;
+    public static Map<String, String[]> creatorToRemovedItemsMap;
     public static String[] personEditorArr = { "update or rollback person SET Email = ? WHERE CardID = ?;",
             "update or rollback person SET Fname = ? WHERE CardID = ?;",
             "update or rollback person SET Lname = ? WHERE CardID = ?;",
@@ -43,6 +44,7 @@ public class Maps {
     public static String startTransactionString = "begin transaction;";
     public static String endTransactionString = "commit;";
     public static String forceRollBackString = "ROLLBACK;";
+    public static String getItemType = "select type from item where item_id = ?;";
     public static Map<String, String> chapterSearcherMap;
     public static Map<String, String> chapterEditorMap;
     public static Map<String, String> chapterAdderMap;
@@ -92,6 +94,7 @@ public class Maps {
         itemToCreatorMap = new HashMap<>();
         itemToRelationshipMap = new HashMap<>();
         itemDependDeleteMap = new HashMap<>();
+        creatorToRemovedItemsMap = new HashMap<>();
 
         String[] starsOptionList = { "actor", "movie" };
         String[] writesOptionList = { "writer", "audiobook", "physicalbook" };
@@ -103,6 +106,19 @@ public class Maps {
         relationshipOptionMap.put("interviewed", interviewedOptionList);
         relationshipOptionMap.put("performs", performsOptionList);
         relationshipOptionMap.put("directs", directsOptionList);
+
+        String[] actorOptionList = {
+                "select itemid from movie where itemid not in (select item_id from stars) and itemid not in (select item_id from directs);",
+                "select itemid from interview where itemid not in (select item_id from interviewed);" };
+        String[] writerOptionList = { "select itemid from audiobook where itemid not in (select item_id from writes);",
+                "select itemid from physical_book where itemid not in (select item_id from writes);" };
+        String[] artistOptionList = { "select itemid from track where itemid not in (select item_id from performs);" };
+        String[] directorOptionList = {
+                "select itemid from movie where itemid not in (select item_id from stars) and itemid not in (select item_id from directs);" };
+        creatorToRemovedItemsMap.put("actor", actorOptionList);
+        creatorToRemovedItemsMap.put("writer", writerOptionList);
+        creatorToRemovedItemsMap.put("artist", artistOptionList);
+        creatorToRemovedItemsMap.put("director", directorOptionList);
 
         String[] movieOptionListFromItem = { "actor", "director" };
         String[] interviewOptionListFromItem = { "actor" };
