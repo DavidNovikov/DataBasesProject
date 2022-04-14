@@ -192,58 +192,54 @@ public class Searcher {
     	Map<Integer, String> genreStringMap = new HashMap<>();
     	PreparedStatement stmt = null;
         ResultSet rSet = null;
-        int genreID = -1;
-        boolean listFlag = true;
-        GenreIDPair genreIDPair = new GenreIDPair();
+        PreparedStatement stmt2 = null;
+        ResultSet rSet2 = null;
+        int itemID = -1;
+        boolean listFlag = false;
+        GenreIDPair genreIDPair = new GenreIDPair(-1, null);
         
-        System.out.println("Enter the name of the genre you would like to search for, or 1 to list all genres:");
-        String genre = scan.nextLine();
-        
-        try {
-        	while(listFlag) {
-		        if (genre.equals("1")) {
-		        	stmt  = conn.prepareStatement(Maps.genreSearcherMap.get("genres"));
-		        	rSet = stmt.executeQuery();
-		        	Util.searchPrintNoRet(rSet);
-		        	System.out.println("Enter the name of the genre you would like to search for, or 1 to list all genres:");
-		            genre = scan.nextLine();
-		        }else {
-		        	stmt  = conn.prepareStatement(Maps.genreSearcherMap.get("search"));
-		        	stmt.setString(1, genre);
-		        	rSet = stmt.executeQuery();
-		        	genreList = Util.searchPrint(rSet, "Item_ID");
-		        	if (genreList.size() !=0 ) {
-			        	System.out.println("What entry would you like to select? enter the number before the entry (1, 2, 3... etc): ");
-		    	        int entry = Integer.parseInt(scan.nextLine());
-		    	        genreID = genreList.get(entry-1);
-		    	        listFlag = false;
-		    	        
-		        	} else {
-		        		System.out.println("Query returned no entries");
-		        		System.out.println("Enter the name of the genre you would like to search for, or 1 to list all genres:");
-			            genre = scan.nextLine();
-		        	}
-		  
-		            PreparedStatement stmt2  = conn.prepareStatement(Maps.genreSearcherMap.get("search"));
-		            ResultSet rSet2 = stmt2.executeQuery();
-		        	while (rSet2.next()) {
-		        		int genreListIDs = rSet2.getInt("Item_ID");
-		        		String genreNew = rSet2.getString("Genre");
-		        		genreStringMap.put(genreListIDs, genreNew);
-		        	}
-		        	
-		        }
-		        
+        while(!listFlag) {
+        	try {
+                String genre = Util.getString(scan, "name of the genre you would like to search for, 1 to list all genres,");
+                if (genre.equals("1")) {
+                	stmt = conn.prepareStatement(Maps.genreSearcherMap.get("genres"));
+                    rSet = stmt.executeQuery();
+                    Util.searchPrintNoRet(rSet);
+                } else {
+                	 stmt = conn.prepareStatement(Maps.genreSearcherMap.get("search"));
+                	 stmt2 = conn.prepareStatement(Maps.genreSearcherMap.get("search"));
+                     stmt.setString(1, genre);
+                     stmt2.setString(1, genre);
+                     rSet = stmt.executeQuery();
+                     rSet2 = stmt2.executeQuery();
+                     
+                     if (Util.resultSetContainsData(rSet)) {
+                         genreList = Util.searchPrint(rSet, "Item_ID");
+                         itemID = itemListPick(genreList, scan); 
+                         listFlag = true;
+                         if (Util.resultSetContainsData(rSet2)) {
+                        	while (rSet2.next()) {
+	                        	int genreListIDs = rSet2.getInt("Item_ID");
+	                        	String genreNew = rSet2.getString("Genre");
+	     		        		genreStringMap.put(genreListIDs, genreNew);
+                        	}
+                        	genreIDPair.setItemID(itemID);
+                        	genreIDPair.setGenre(genreStringMap.get(itemID));
+                         }
+                     } else {
+                    	 System.out.println("None Found");
+                     }
+                }
+        	} catch(Exception e){
+        		throw e;
+        	} finally {
+        		 Util.closeStmt(stmt);
+                 Util.closeRSet(rSet);
+                 Util.closeStmt(stmt2);
+                 Util.closeRSet(rSet2);
         	}
-        	genreIDPair.setItemID(genreID);
-        	genreIDPair.setGenre(genre);
-        }catch (SQLException e) {
-            System.out.println(e.getMessage());
-            throw e;
-        } finally {
-            Util.closeStmt(stmt);
-            Util.closeRSet(rSet);
         }
+      
       return genreIDPair;
     }
     
