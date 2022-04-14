@@ -187,44 +187,62 @@ public class Searcher {
         return ItemID;
     }
 
-    public static int pickGenre(Connection conn, Scanner scan) throws Exception {
-        PreparedStatement stmt = null;
+    public static GenreIDPair pickGenre(Connection conn, Scanner scan)throws Exception {
+    	ArrayList<Integer> genreList = new ArrayList<Integer>();
+    	Map<Integer, String> genreStringMap = new HashMap<>();
+    	PreparedStatement stmt = null;
         ResultSet rSet = null;
+        PreparedStatement stmt2 = null;
+        ResultSet rSet2 = null;
         int itemID = -1;
-        boolean picked = false;
-        while (!picked) {
-            try {
-                String genre = Util.getString(scan,
-                        "name of the genre you would like to search for, 1 to list all genres,");
-
+        boolean listFlag = false;
+        GenreIDPair genreIDPair = new GenreIDPair(-1, null);
+        
+        while(!listFlag) {
+        	try {
+                String genre = Util.getString(scan, "name of the genre you would like to search for, 1 to list all genres,");
                 if (genre.equals("1")) {
-                    stmt = conn.prepareStatement(Maps.genreSearcherMap.get("genres"));
+                	stmt = conn.prepareStatement(Maps.genreSearcherMap.get("genres"));
                     rSet = stmt.executeQuery();
                     Util.searchPrintNoRet(rSet);
                 } else {
-                    stmt = conn.prepareStatement(Maps.genreSearcherMap.get("search"));
-                    stmt.setString(1, genre);
-                    rSet = stmt.executeQuery();
-
-                    if (Util.resultSetContainsData(rSet)) {
-                        ArrayList<Integer> potentialIDs = Util.searchPrint(rSet, "Item_ID");
-                        itemID = itemListPick(potentialIDs, scan);
-                        picked = true;
-                    } else {
-                        System.out.println("None Found");
-                    }
+                	 stmt = conn.prepareStatement(Maps.genreSearcherMap.get("search"));
+                	 stmt2 = conn.prepareStatement(Maps.genreSearcherMap.get("search"));
+                     stmt.setString(1, genre);
+                     stmt2.setString(1, genre);
+                     rSet = stmt.executeQuery();
+                     rSet2 = stmt2.executeQuery();
+                     
+                     if (Util.resultSetContainsData(rSet)) {
+                         genreList = Util.searchPrint(rSet, "Item_ID");
+                         itemID = itemListPick(genreList, scan); 
+                         listFlag = true;
+                         if (Util.resultSetContainsData(rSet2)) {
+                        	while (rSet2.next()) {
+	                        	int genreListIDs = rSet2.getInt("Item_ID");
+	                        	String genreNew = rSet2.getString("Genre");
+	     		        		genreStringMap.put(genreListIDs, genreNew);
+                        	}
+                        	genreIDPair.setItemID(itemID);
+                        	genreIDPair.setGenre(genreStringMap.get(itemID));
+                         }
+                     } else {
+                    	 System.out.println("None Found");
+                     }
                 }
-            } catch (Exception e) {
-                throw e;
-            } finally {
-                Util.closeStmt(stmt);
-                Util.closeRSet(rSet);
-            }
+        	} catch(Exception e){
+        		throw e;
+        	} finally {
+        		 Util.closeStmt(stmt);
+                 Util.closeRSet(rSet);
+                 Util.closeStmt(stmt2);
+                 Util.closeRSet(rSet2);
+        	}
         }
-        return itemID;
-
+      
+      return genreIDPair;
     }
-
+    
     public static Relationship pickRelationship(Connection conn, Scanner scan) throws Exception {
         Relationship relationship = null;
         boolean found = false;
@@ -345,19 +363,14 @@ public class Searcher {
         boolean picked = false;
         int newID = -1;
         while (!picked) {
-            System.out.println(
-                    "What entry would you like to select? enter the number before the entry (1, 2, 3... etc)(q to quit): ");
             try {
-                String response = scan.nextLine();
-                if (response.toLowerCase().equals("q"))
-                    throw new Exception("User quit during search");
-
-                int entry = Integer.parseInt(response);
-                if (entry < 1 || entry > IDs.size()) {
+                Integer response = Util.getInteger(scan, "entry you would like to search for (1,2,3...etc)");
+                
+                if (response < 1 || response > IDs.size()) {
                     System.out.println("Invalid choice, try again");
                 } else {
                     picked = true;
-                    newID = IDs.get(entry - 1);
+                    newID = IDs.get(response - 1);
                 }
             } catch (Exception e) {
                 throw e;

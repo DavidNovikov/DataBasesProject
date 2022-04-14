@@ -181,17 +181,17 @@ public class Deleter {
         }
     }
 
-    private static void deleteGenre(Connection conn, Scanner scan) throws Exception {
-        System.out.println("Select an entry to delete a genre from");
-        int itemID = Searcher.pickGenre(conn, scan);
-        PreparedStatement stmt = null;
-        try {
-            String newGenre = Util.getString(scan, "genre you wish to delete");
-            stmt = conn.prepareStatement(Maps.genreDeleterMap.get("item"));
-            stmt.setInt(1, itemID);
-            stmt.setString(2, newGenre);
-            stmt.executeUpdate();
-        } catch (Exception e) {
+    public static void deleteGenre(Connection conn, Scanner scan) throws Exception {
+    	System.out.println("Select an entry to delete a genre from");
+    	GenreIDPair genreID = Searcher.pickGenre(conn, scan);
+    	int itemID = genreID.getItemID();
+    	PreparedStatement stmt = null;
+    	try {
+	        stmt = conn.prepareStatement(Maps.genreDeleterMap.get("item"));
+	        stmt.setInt(1, itemID);
+	        stmt.setString(2, genreID.getItemGenre());
+	        stmt.executeUpdate();
+        } catch (SQLException e) {
             throw e;
         } finally {
             Util.closeStmt(stmt);
