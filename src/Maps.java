@@ -33,6 +33,7 @@ public class Maps {
     public static String addPersonString = "insert or rollback into person values (?,?,?,?,?);";
     public static String searchPersonString = "SELECT * FROM PERSON WHERE email = ? COLLATE NOCASE;";
     public static String deletePersonString = "delete FROM PERSON WHERE CardID = ?;";
+    public static String deletePersonsCheckoutsString = "delete from ITEM_CHECKED_OUT where CardID = ?;";
     public static String startTransactionString = "begin transaction;";
     public static String endTransactionString = "commit;";
     public static String forceRollBackString = "ROLLBACK;";
@@ -289,10 +290,11 @@ public class Maps {
         chapterDeleterMap.put("audiobookchapter", "delete FROM CHAPTER_AB where BookID = ? AND Title = ?;");
         chapterDeleterMap.put("physicalbookchapter", "delete FROM CHAPTER_PB where BookID = ? AND Title = ?;");
 
-        genreSearcherMap.put("genres", "SELECT DISTINCT GENRE FROM ITEM_GENRE COLLATE NOCASE");
+        genreSearcherMap.put("genres", "SELECT DISTINCT GENRE FROM ITEM_GENRE");
         genreSearcherMap.put("search",
                 "SELECT * FROM ITEM_GENRE, ITEM WHERE ITEM_GENRE.Item_ID = ITEM.Item_ID AND ITEM_GENRE.Genre = ? COLLATE NOCASE");
-        genreEditorMap.put("item", "UPDATE or rollback item_genre SET Genre = ? WHERE Item_ID = ?;");
+        genreEditorMap.put("item",
+                "UPDATE or rollback item_genre SET Genre = ? WHERE Item_ID IN (SELECT Item_ID FROM ITEM_GENRE WHERE Item_ID = ? AND Genre = ?);");
         genreAdderMap.put("item", "INSERT or rollback INTO item_genre values(?,?);");
         genreDeleterMap.put("item", "DELETE FROM item_genre WHERE Item_ID = ? AND Genre = ?;");
 
