@@ -292,8 +292,8 @@ public class Maps {
         genreSearcherMap.put("genres", "SELECT DISTINCT GENRE FROM ITEM_GENRE COLLATE NOCASE");
         genreSearcherMap.put("search",
                 "SELECT * FROM ITEM_GENRE, ITEM WHERE ITEM_GENRE.Item_ID = ITEM.Item_ID AND ITEM_GENRE.Genre = ? COLLATE NOCASE");
-        genreEditorMap.put("item", "UPDATE item_genre SET Genre = ? WHERE Item_ID = ?;");
-        genreAdderMap.put("item", "INSERT INTO item_genre values(?,?);");
+        genreEditorMap.put("item", "UPDATE or rollback item_genre SET Genre = ? WHERE Item_ID = ?;");
+        genreAdderMap.put("item", "INSERT or rollback INTO item_genre values(?,?);");
         genreDeleterMap.put("item", "DELETE FROM item_genre WHERE Item_ID = ? AND Genre = ?;");
 
     }
