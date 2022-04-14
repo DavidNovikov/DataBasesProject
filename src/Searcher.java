@@ -363,19 +363,14 @@ public class Searcher {
         boolean picked = false;
         int newID = -1;
         while (!picked) {
-            System.out.println(
-                    "What entry would you like to select? enter the number before the entry (1, 2, 3... etc)(q to quit): ");
             try {
-                String response = scan.nextLine();
-                if (response.toLowerCase().equals("q"))
-                    throw new Exception("User quit during search");
-
-                int entry = Integer.parseInt(response);
-                if (entry < 1 || entry > IDs.size()) {
+                Integer response = Util.getInteger(scan, "entry you would like to search for (1,2,3...etc)");
+                
+                if (response < 1 || response > IDs.size()) {
                     System.out.println("Invalid choice, try again");
                 } else {
                     picked = true;
-                    newID = IDs.get(entry - 1);
+                    newID = IDs.get(response - 1);
                 }
             } catch (Exception e) {
                 throw e;
